@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>David Gwilt Composition Prize • Voting Form</title>
+  <title>David Gwilt Composition Prize • Voting</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-zinc-950 text-zinc-200 min-h-screen">
   <div class="max-w-2xl mx-auto py-12 px-6">
-    <h1 class="text-4xl font-bold text-amber-400 text-center mb-2">David Gwilt Composition Prize Voting Form</h1>
+    <h1 class="text-4xl font-bold text-amber-400 text-center mb-2">David Gwilt Composition Prize</h1>
+    <p class="text-center text-zinc-400 mb-10">2026 Composers' Concert Voting Form</p>
 
     <div class="bg-zinc-900 rounded-3xl p-8 border border-zinc-800">
       <form id="votingForm" class="space-y-10">
@@ -21,8 +22,7 @@
             <select id="role" required class="bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 w-full">
               <option value="">Select Role...</option>
               <option value="Ensemble Member">Ensemble Member</option>
-              <option value="Composition Faculty ">Composition Faculty</option>
-            
+              <option value="Faculty Member">Faculty Member</option>
             </select>
           </div>
         </div>
@@ -47,7 +47,7 @@
 
         <div>
           <h2 class="text-xl font-semibold text-amber-300 mb-4">3. Comments (Optional)</h2>
-          <textarea id="comments" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4" placeholder="Any feedback..."></textarea>
+          <textarea id="comments" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4" placeholder="Brief feedback..."></textarea>
         </div>
 
         <button type="submit" id="submitBtn" 
@@ -91,7 +91,6 @@
       btn.innerHTML = 'Submitting...';
 
       const data = {
-        Timestamp: new Date().toISOString(),
         VoterName: document.getElementById('voterName').value.trim(),
         Role: document.getElementById('role').value,
         First: document.getElementById('rank1').value,
@@ -101,140 +100,17 @@
       };
 
       try {
-        await await fetch(https://script.google.com/macros/s/AKfycbwulMDYRbD4j3eChU62zFrd6XP24ODl-jNCUMgmgGhypj1VIGB5l6g2QMAWUIqdv8t8/exec, {
-<html>
-<head>
-  <base target="_top">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
-</head>
-<body class="bg-zinc-950 text-zinc-200">
-  <div class="max-w-6xl mx-auto p-6">
-
-    <!-- Password Screen -->
-    <div id="loginScreen">
-      <div class="max-w-md mx-auto mt-20 bg-zinc-900 rounded-3xl p-10 border border-zinc-700">
-        <h1 class="text-2xl font-bold text-center mb-8">Admin Dashboard</h1>
-        <input type="password" id="passwordInput" placeholder="Enter Admin Password"
-               class="w-full px-6 py-4 bg-zinc-800 rounded-2xl text-center text-lg focus:outline-none focus:border-amber-500">
-        <button onclick="login()" 
-                class="mt-6 w-full bg-amber-500 text-black font-bold py-4 rounded-2xl">Unlock Dashboard</button>
-        <p id="errorMsg" class="text-red-400 text-center mt-4 hidden">Incorrect password</p>
-      </div>
-    </div>
-
-    <!-- Main Dashboard -->
-    <div id="dashboard" class="hidden">
-      <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-amber-400">David Gwilt Composition Prize</h1>
-        <button onclick="logout()" class="text-zinc-400 hover:text-white">Logout</button>
-      </div>
-
-      <button onclick="loadData()" class="mb-6 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 rounded-2xl font-medium">
-        <i class="fa-solid fa-refresh"></i> Refresh
-      </button>
-
-      <div id="ranking" class="mb-12"></div>
-      <div id="allVotes" class="space-y-4"></div>
-    </div>
-  </div>
-
-  <script>
-    const ADMIN_PASSWORD = "dgwilt2026";   // Must match the one in Code.gs
-
-    function login() {
-      const pwd = document.getElementById('passwordInput').value;
-      if (pwd === ADMIN_PASSWORD) {
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('dashboard').classList.remove('hidden');
-        loadData();
-      } else {
-        document.getElementById('errorMsg').classList.remove('hidden');
-        setTimeout(() => document.getElementById('errorMsg').classList.add('hidden'), 3000);
-      }
-    }
-
-    function logout() {
-      document.getElementById('dashboard').classList.add('hidden');
-      document.getElementById('loginScreen').classList.remove('hidden');
-      document.getElementById('passwordInput').value = '';
-    }
-
-    function loadData() {
-      google.script.run
-        .withSuccessHandler(showData)
-        .getAllVotes();
-    }
-
-    function showData(rows) {
-      if (rows.length <= 1) {
-        document.getElementById('allVotes').innerHTML = "<p class='text-zinc-400'>No votes yet.</p>";
-        return;
-      }
-
-      // Calculate scores
-      const scores = {};
-      rows.slice(1).forEach(row => {
-        if (row[3]) scores[row[3]] = (scores[row[3]] || 0) + 5;
-        if (row[4]) scores[row[4]] = (scores[row[4]] || 0) + 3;
-        if (row[5]) scores[row[5]] = (scores[row[5]] || 0) + 1;
-      });
-
-      // Render Ranking
-      let rankHTML = `<h2 class="text-2xl font-semibold mb-4">Current Ranking (5-3-1)</h2>
-        <table class="w-full bg-zinc-900 rounded-2xl overflow-hidden">
-          <thead><tr class="bg-zinc-800"><th class="py-4 px-6 text-left">Rank</th><th class="py-4 px-6 text-left">Piece</th><th class="py-4 px-6 text-center">Points</th></tr></thead><tbody>`;
-
-      Object.entries(scores)
-        .sort((a,b) => b[1] - a[1])
-        .forEach(([piece, points], i) => {
-          rankHTML += `<tr class="border-t border-zinc-800">
-            <td class="py-4 px-6 font-bold ${i===0 ? 'text-amber-400' : ''}">#${i+1}</td>
-            <td class="py-4 px-6">${piece}</td>
-            <td class="py-4 px-6 text-center font-mono text-xl">${points}</td>
-          </tr>`;
-        });
-
-      rankHTML += `</tbody></table>`;
-      document.getElementById('ranking').innerHTML = rankHTML;
-
-      // Render All Votes
-      let votesHTML = `<h3 class="font-semibold mb-4">All Submissions (${rows.length-1})</h3>`;
-      rows.slice(1).reverse().forEach(row => {
-        votesHTML += `
-          <div class="bg-zinc-900 rounded-2xl p-6">
-            <div class="flex justify-between">
-              <strong>${row[1]}</strong>
-              <span class="text-xs text-zinc-500">${new Date(row[0]).toLocaleString()}</span>
-            </div>
-            <div class="grid grid-cols-3 gap-4 mt-4 text-sm">
-              <div><span class="text-amber-400">1st</span><br>${row[3] || '-'}</div>
-              <div><span class="text-amber-400">2nd</span><br>${row[4] || '-'}</div>
-              <div><span class="text-amber-400">3rd</span><br>${row[5] || '-'}</div>
-            </div>
-            ${row[6] ? `<p class="mt-4 text-xs italic text-zinc-400">"${row[6]}"</p>` : ''}
-          </div>`;
-      });
-      document.getElementById('allVotes').innerHTML = votesHTML;
-    }
-
-    // Allow pressing Enter in password field
-    document.getElementById('passwordInput').addEventListener('keypress', e => {
-      if (e.key === 'Enter') login();
-    });
-  </script>
-</body>
-</html>', {
+        await fetch('https://script.google.com/macros/s/AKfycbwulMDYRbD4j3eChU62zFrd6XP24ODl-jNCUMgmgGhypj1VIGB5l6g2QMAWUIqdv8t8/exec', {
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
 
-        alert("✅ Vote submitted successfully! Thank you.");
+        alert("✅ Thank you! Your vote has been successfully submitted.");
         this.reset();
       } catch (err) {
-        alert("Submission failed. Please try again.");
+        alert("❌ Submission failed. Please check your internet connection and try again.");
       }
 
       btn.disabled = false;
