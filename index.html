@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>David Gwilt Composition Prize • Voting</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200 min-h-screen">
+  <div class="max-w-5xl mx-auto py-8 px-6">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-amber-400">David Gwilt Composition Prize</h1>
+      <div class="flex gap-3">
+        <button onclick="showTab(0)" id="tab0" class="tab-btn px-6 py-2.5 rounded-2xl font-medium active">Voting Form</button>
+        <button onclick="showTab(1)" id="tab1" class="tab-btn px-6 py-2.5 rounded-2xl font-medium">Admin Dashboard</button>
+      </div>
+    </div>
+
+    <!-- ==================== VOTING FORM ==================== -->
+    <div id="tab-content-0">
+      <div class="bg-zinc-900 rounded-3xl shadow-2xl p-8 border border-zinc-800">
+        <form id="votingForm" class="space-y-10">
+          <div>
+            <h2 class="text-xl font-semibold text-amber-300 mb-4">1. Voter Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm mb-1">Voter Name <span class="text-red-400">*</span></label>
+                <input type="text" id="voterName" required class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3">
+              </div>
+              <div>
+                <label class="block text-sm mb-1">Role <span class="text-red-400">*</span></label>
+                <select id="role" required class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3">
+                  <option value="">Select role...</option>
+                  <option value="Ensemble Member">Ensemble Member</option>
+                  <option value="Composition Faculty">Composition Faculty</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h2 class="text-xl font-semibold text-amber-300 mb-4">2. Prize Ranking (Top 3)</h2>
+            <div class="space-y-6">
+              <div class="bg-zinc-800/70 border border-amber-500/30 rounded-2xl p-6">
+                <label class="block font-semibold text-amber-400 mb-2">1st Choice (5 pts)</label>
+                <select id="rank1" required class="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-3"></select>
+              </div>
+              <div class="bg-zinc-800/70 border border-zinc-700 rounded-2xl p-6">
+                <label class="block font-semibold text-zinc-300 mb-2">2nd Choice (3 pts)</label>
+                <select id="rank2" required class="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-3"></select>
+              </div>
+              <div class="bg-zinc-800/70 border border-zinc-700 rounded-2xl p-6">
+                <label class="block font-semibold text-zinc-300 mb-2">3rd Choice (1 pt)</label>
+                <select id="rank3" required class="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-3"></select>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h2 class="text-xl font-semibold text-amber-300 mb-4">3. Comments (Optional)</h2>
+            <textarea id="comments" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3" placeholder="Brief feedback..."></textarea>
+          </div>
+
+          <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-yellow-600 py-4 rounded-2xl text-lg font-semibold">
+            Submit Vote
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ==================== ADMIN DASHBOARD ==================== -->
+    <div id="tab-content-1" class="hidden">
+      <div class="bg-zinc-900 rounded-3xl shadow-2xl p-8 border border-zinc-800">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-semibold">Admin Dashboard</h2>
+          <div class="flex gap-3">
+            <button onclick="exportToCSV()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-xl text-sm font-medium flex items-center gap-2">
+              <i class="fa-solid fa-download"></i> Export CSV
+            </button>
+            <button onclick="clearAllVotes()" class="px-5 py-2 bg-red-900 hover:bg-red-800 rounded-xl text-sm">Clear All Votes</button>
+          </div>
+        </div>
+
+        <!-- Editable Work List -->
+        <div class="mb-10">
+          <h3 class="font-semibold mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-list"></i> Composition List (Editable)
+          </h3>
+          <div id="workList" class="space-y-2 mb-4"></div>
+          <div class="flex gap-3">
+            <input type="text" id="newWork" placeholder="Add new composition" 
+                   class="flex-1 bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3">
+            <button onclick="addNewWork()" class="px-6 bg-zinc-700 hover:bg-zinc-600 rounded-xl">Add</button>
+          </div>
+        </div>
+
+        <div id="resultsTable" class="overflow-x-auto mb-12"></div>
+
+        <h3 class="font-semibold mb-4 text-lg">All Votes Submitted</h3>
+        <div id="voteList" class="space-y-4 max-h-96 overflow-y-auto"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Password Modal -->
+  <div id="passwordModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+    <div class="bg-zinc-900 rounded-3xl p-8 w-full max-w-md border border-zinc-700">
+      <h3 class="text-xl font-semibold mb-6 text-center">Admin Access</h3>
+      <input type="password" id="adminPassword" placeholder="Enter admin password" 
+             class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-center text-lg focus:border-amber-500">
+      <div class="flex gap-4 mt-6">
+        <button onclick="cancelLogin()" 
+                class="flex-1 py-4 rounded-2xl border border-zinc-700 hover:bg-zinc-800">Cancel</button>
+        <button onclick="verifyPassword()" 
+                class="flex-1 py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-black font-semibold">Unlock Dashboard</button>
+      </div>
+      <p id="passwordError" class="text-red-400 text-center mt-4 text-sm hidden">Incorrect password</p>
+    </div>
+  </div>
+
+  <script>
+    // ==================== CONFIGURATION ====================
+    const ADMIN_PASSWORD = "dgwilt2026";   // ← Change this to your preferred password
+
+    let works = JSON.parse(localStorage.getItem('dgwiltWorks')) || [
+      "1. Echoes of Eternity", "2. Fractured Light", "3. Silent Currents",
+      "4. Celestial Drift", "5. Veiled Rhythms", "6. Ember and Ash",
+      "7. The Forgotten Threshold", "8. Quantum Lullaby"
+    ];
+
+    let votes = JSON.parse(localStorage.getItem('dgwiltVotes') || '[]');
+    let isAdminAuthenticated = false;
+
+    function saveWorks() {
+      localStorage.setItem('dgwiltWorks', JSON.stringify(works));
+    }
+
+    function populateDropdowns() {
+      const selects = [document.getElementById('rank1'), document.getElementById('rank2'), document.getElementById('rank3')];
+      selects.forEach(select => {
+        select.innerHTML = '<option value="">— Select —</option>';
+        works.forEach(work => {
+          const opt = document.createElement('option');
+          opt.value = work;
+          opt.textContent = work;
+          select.appendChild(opt);
+        });
+      });
+    }
+
+    function renderWorkList() {
+      const container = document.getElementById('workList');
+      container.innerHTML = '';
+      works.forEach((work, index) => {
+        const div = document.createElement('div');
+        div.className = "flex items-center justify-between bg-zinc-800 rounded-xl px-4 py-3 group";
+        div.innerHTML = `
+          <span>${work}</span>
+          <button onclick="removeWork(${index})" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-500">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function addNewWork() {
+      const input = document.getElementById('newWork');
+      const value = input.value.trim();
+      if (value && !works.includes(value)) {
+        works.push(value);
+        saveWorks();
+        renderWorkList();
+        populateDropdowns();
+        input.value = '';
+      }
+    }
+
+    function removeWork(index) {
+      if (confirm("Remove this composition?")) {
+        works.splice(index, 1);
+        saveWorks();
+        renderWorkList();
+        populateDropdowns();
+      }
+    }
+
+    function validateSelections() {
+      const s1 = document.getElementById('rank1').value;
+      const s2 = document.getElementById('rank2').value;
+      const s3 = document.getElementById('rank3').value;
+      const arr = [s1, s2, s3].filter(Boolean);
+      return new Set(arr).size === arr.length;
+    }
+
+    // Form Submit
+    document.getElementById('votingForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (!validateSelections()) return alert("Cannot select the same work more than once.");
+
+      const vote = {
+        timestamp: new Date().toISOString(),
+        voter: document.getElementById('voterName').value.trim(),
+        role: document.getElementById('role').value,
+        first: document.getElementById('rank1').value,
+        second: document.getElementById('rank2').value,
+        third: document.getElementById('rank3').value,
+        comments: document.getElementById('comments').value.trim()
+      };
+
+      votes.push(vote);
+      localStorage.setItem('dgwiltVotes', JSON.stringify(votes));
+
+      alert("✅ Vote submitted successfully!");
+      this.reset();
+      if (isAdminAuthenticated) refreshDashboard();
+    });
+
+    function calculateScores() {
+      const scores = {};
+      works.forEach(w => scores[w] = 0);
+      votes.forEach(v => {
+        if (v.first) scores[v.first] = (scores[v.first] || 0) + 5;
+        if (v.second) scores[v.second] = (scores[v.second] || 0) + 3;
+        if (v.third) scores[v.third] = (scores[v.third] || 0) + 1;
+      });
+      return Object.entries(scores).map(([work, points]) => ({ work, points }))
+                .sort((a, b) => b.points - a.points);
+    }
+
+    function renderResults() {
+      const ranked = calculateScores();
+      let html = `<table class="w-full"><thead><tr class="border-b border-zinc-700">
+                    <th class="py-4 px-6 text-left">Rank</th>
+                    <th class="py-4 px-6 text-left">Composition</th>
+                    <th class="py-4 px-6 text-center">Points</th>
+                  </tr></thead><tbody>`;
+      ranked.forEach((item, i) => {
+        html += `<tr class="border-b border-zinc-800 hover:bg-zinc-800/50">
+                  <td class="py-5 px-6 ${i===0 ? 'text-amber-400 font-bold' : ''}">#${i+1}</td>
+                  <td class="py-5 px-6">${item.work}</td>
+                  <td class="py-5 px-6 text-center font-mono text-2xl">${item.points}</td>
+                 </tr>`;
+      });
+      html += `</tbody></table>`;
+      document.getElementById('resultsTable').innerHTML = html;
+    }
+
+    function renderVoteList() {
+      const container = document.getElementById('voteList');
+      container.innerHTML = votes.length === 0 ? `<p class="text-zinc-500">No votes yet.</p>` : '';
+      votes.forEach(v => {
+        const div = document.createElement('div');
+        div.className = "bg-zinc-800 rounded-2xl p-5 text-sm";
+        div.innerHTML = `
+          <div class="flex justify-between mb-3">
+            <div><strong>${v.voter}</strong> <span class="text-zinc-500">(${v.role})</span></div>
+            <span class="text-xs text-zinc-500">${new Date(v.timestamp).toLocaleString()}</span>
+          </div>
+          <div class="grid grid-cols-3 gap-4 text-xs">
+            <div><span class="text-amber-400">1st</span><br>${v.first || '-'}</div>
+            <div><span class="text-amber-400">2nd</span><br>${v.second || '-'}</div>
+            <div><span class="text-amber-400">3rd</span><br>${v.third || '-'}</div>
+          </div>
+          ${v.comments ? `<p class="mt-3 italic text-zinc-400">"${v.comments}"</p>` : ''}
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function refreshDashboard() {
+      renderResults();
+      renderVoteList();
+      renderWorkList();
+    }
+
+    function exportToCSV() {
+      let csv = "Timestamp,Voter,Role,1st Choice,2nd Choice,3rd Choice,Comments\n";
+      votes.forEach(v => {
+        csv += `"${v.timestamp}","${v.voter}","${v.role}","${v.first || ''}","${v.second || ''}","${v.third || ''}","${(v.comments || '').replace(/"/g, '""')}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `dgwilt_votes_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+    }
+
+    function clearAllVotes() {
+      if (confirm("Delete ALL votes permanently?")) {
+        votes = [];
+        localStorage.removeItem('dgwiltVotes');
+        refreshDashboard();
+      }
+    }
+
+    // Password Protection
+    function showTab(n) {
+      if (n === 1 && !isAdminAuthenticated) {
+        document.getElementById('passwordModal').classList.remove('hidden');
+        document.getElementById('adminPassword').focus();
+        return;
+      }
+      document.querySelectorAll('.tab-btn').forEach((btn, i) => btn.classList.toggle('active', i === n));
+      document.getElementById('tab-content-0').classList.toggle('hidden', n !== 0);
+      document.getElementById('tab-content-1').classList.toggle('hidden', n !== 1);
+      if (n === 1) refreshDashboard();
+    }
+
+    function verifyPassword() {
+      const input = document.getElementById('adminPassword');
+      if (input.value === ADMIN_PASSWORD) {
+        isAdminAuthenticated = true;
+        document.getElementById('passwordModal').classList.add('hidden');
+        showTab(1);
+        input.value = '';
+      } else {
+        document.getElementById('passwordError').classList.remove('hidden');
+        setTimeout(() => document.getElementById('passwordError').classList.add('hidden'), 2500);
+      }
+    }
+
+    function cancelLogin() {
+      document.getElementById('passwordModal').classList.add('hidden');
+      document.getElementById('adminPassword').value = '';
+    }
+
+    // Initialize
+    window.onload = () => {
+      populateDropdowns();
+      renderWorkList();
+      showTab(0);
+    };
+  </script>
+</body>
+</html>
