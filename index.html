@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,20 +5,35 @@
   <title>David Gwilt Composition Prize • Voting</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* Custom focus ring for the purple theme */
+    .focus-purple:focus {
+      outline: 2px solid #7e22ce;
+      outline-offset: 1px;
+    }
+  </style>
 </head>
-<body class="bg-zinc-950 text-zinc-200 min-h-screen">
+<body class="bg-zinc-50 text-zinc-800 min-h-screen font-sans">
   <div class="max-w-2xl mx-auto py-12 px-6">
-    <h1 class="text-4xl font-bold text-amber-400 text-center mb-2">2026 David Gwilt Composition Prize</h1>
-    <p class="text-center text-zinc-400 mb-10">Voting Form</p>
-
-    <div class="bg-zinc-900 rounded-3xl p-8 border border-zinc-800">
+    <div class="text-center mb-10">
+      <h1 class="text-4xl font-extrabold text-purple-900 mb-2">2026 David Gwilt Composition Prize</h1>
+      <div class="h-1 w-24 bg-gradient-to-r from-amber-400 to-yellow-600 mx-auto rounded-full"></div>
+      <p class="text-zinc-500 mt-4 font-medium uppercase tracking-widest text-sm">Official Voting Form</p>
+    </div>
+    
+    <div class="bg-white rounded-3xl p-8 shadow-xl shadow-purple-100 border border-purple-50">
       <form id="votingForm" class="space-y-10">
+        
+        <!-- Section 1 -->
         <div>
-          <h2 class="text-xl font-semibold text-amber-300 mb-4">1. Voter Information</h2>
+          <div class="flex items-center space-x-2 mb-4">
+            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 text-purple-700 font-bold text-sm">1</span>
+            <h2 class="text-xl font-bold text-purple-900">Voter Information</h2>
+          </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <input type="text" id="voterName" placeholder="Full Name" required
-                   class="bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 w-full">
-            <select id="role" required class="bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 w-full">
+                   class="bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 w-full focus-purple">
+            <select id="role" required class="bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 w-full focus-purple">
               <option value="">Select Role...</option>
               <option value="Ensemble Member">Ensemble Member</option>
               <option value="Faculty Member">Faculty Member</option>
@@ -27,38 +41,59 @@
           </div>
         </div>
 
+        <!-- Section 2 -->
         <div>
-          <h2 class="text-xl font-semibold text-amber-300 mb-4">2. Top 3 Ranking</h2>
+          <div class="flex items-center space-x-2 mb-4">
+            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 text-purple-700 font-bold text-sm">2</span>
+            <h2 class="text-xl font-bold text-purple-900">Top 3 Ranking</h2>
+          </div>
           <div class="space-y-6">
-            <div>
-              <label class="block text-amber-400 mb-1">1st Choice (5 pts)</label>
-              <select id="rank1" required class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4"></select>
+            <div class="relative">
+              <label class="block text-amber-600 font-bold text-sm mb-1 ml-1">1st Choice (5 pts)</label>
+              <select id="rank1" required class="w-full bg-zinc-50 border-2 border-amber-200 rounded-2xl px-5 py-4 focus-purple appearance-none"></select>
             </div>
             <div>
-              <label class="block text-zinc-300 mb-1">2nd Choice (3 pts)</label>
-              <select id="rank2" required class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4"></select>
+              <label class="block text-purple-700 font-bold text-sm mb-1 ml-1">2nd Choice (3 pts)</label>
+              <select id="rank2" required class="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 focus-purple"></select>
             </div>
             <div>
-              <label class="block text-zinc-300 mb-1">3rd Choice (1 pt)</label>
-              <select id="rank3" required class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4"></select>
+              <label class="block text-purple-700 font-bold text-sm mb-1 ml-1">3rd Choice (1 pt)</label>
+              <select id="rank3" required class="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 focus-purple"></select>
             </div>
           </div>
         </div>
 
+        <!-- Section 3 -->
         <div>
-          <h2 class="text-xl font-semibold text-amber-300 mb-4">3. Comments (Optional)</h2>
-          <textarea id="comments" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4" placeholder="Brief feedback..."></textarea>
+          <div class="flex items-center space-x-2 mb-4">
+            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 text-purple-700 font-bold text-sm">3</span>
+            <h2 class="text-xl font-bold text-purple-900">Comments</h2>
+          </div>
+          <textarea id="comments" rows="4" class="w-full bg-zinc-50 border border-zinc-200 rounded-3xl px-5 py-4 focus-purple" placeholder="Brief feedback (optional)..."></textarea>
         </div>
 
-        <button type="submit" id="submitBtn" 
-                class="w-full bg-gradient-to-r from-amber-500 to-yellow-600 text-black font-bold py-5 rounded-3xl text-lg">
-          Submit My Vote
-        </button>
+        <!-- Action Buttons -->
+        <div class="space-y-4 pt-6">
+            <button type="submit" id="submitBtn"
+                    class="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-5 rounded-3xl text-lg shadow-lg shadow-purple-200 transition-all transform active:scale-[0.98]">
+              Submit My Vote
+            </button>
+            
+            <a id="dashboardBtn" href="#" target="_blank"
+               class="block w-full text-center border-2 border-amber-400 text-amber-700 font-bold py-4 rounded-3xl text-md hover:bg-amber-50 transition-all">
+               <i class="fa-solid fa-crown mr-2"></i> View Live Dashboard
+            </a>
+        </div>
       </form>
     </div>
+    
+    <p class="text-center text-zinc-400 text-xs mt-8">© 2026 David Gwilt Composition Prize committee</p>
   </div>
 
   <script>
+    // --- SINGLE SOURCE OF TRUTH ---
+    const CONFIG_URL = "https://script.google.com/macros/s/AKfycbwF_vtTTTPeInMNAmS3E0WETCAH0q0D9SW7po5aY7jq8IkLvpc3byXmx8MGj7BVMTFOhA/exec";
+
     const works = [
       "Cody Wong Lok Heng: Hectic",
       "Chan Lok Tim: Floating Voices",
@@ -70,7 +105,11 @@
       "Antal Lau Yan Ho: Six Seven"
     ];
 
-    function populateDropdowns() {
+    function initPage() {
+      // Link the Dashboard Button dynamically
+      document.getElementById('dashboardBtn').href = CONFIG_URL;
+
+      // Populate dropdowns
       ['rank1', 'rank2', 'rank3'].forEach(id => {
         const sel = document.getElementById(id);
         sel.innerHTML = '<option value="">— Select a work —</option>';
@@ -85,10 +124,10 @@
 
     document.getElementById('votingForm').addEventListener('submit', async function(e) {
       e.preventDefault();
-      
+     
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
-      btn.innerHTML = 'Submitting...';
+      btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin mr-2"></i> Processing...';
 
       const data = {
         VoterName: document.getElementById('voterName').value.trim(),
@@ -100,24 +139,23 @@
       };
 
       try {
-        await fetch('https://script.google.com/macros/s/AKfycbwF_vtTTTPeInMNAmS3E0WETCAH0q0D9SW7po5aY7jq8IkLvpc3byXmx8MGj7BVMTFOhA/exec', {
+        await fetch(CONFIG_URL, {
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
-
-        alert("✅ Thank you! Your vote has been successfully submitted.");
+        alert("✨ Thank you! Your vote has been recorded successfully.");
         this.reset();
       } catch (err) {
-        alert("❌ Submission failed. Please check your internet connection and try again.");
+        alert("⚠️ Submission failed. Please check your internet connection.");
       }
-
+      
       btn.disabled = false;
       btn.innerHTML = 'Submit My Vote';
     });
 
-    window.onload = populateDropdowns;
+    window.onload = initPage;
   </script>
 </body>
 </html>
