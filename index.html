@@ -1,161 +1,196 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>David Gwilt Composition Prize • Voting</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
-  <style>
-    /* Custom focus ring for the purple theme */
-    .focus-purple:focus {
-      outline: 2px solid #7e22ce;
-      outline-offset: 1px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Data Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="bg-zinc-50 text-zinc-800 min-h-screen font-sans">
-  <div class="max-w-2xl mx-auto py-12 px-6">
-    <div class="text-center mb-10">
-      <h1 class="text-4xl font-extrabold text-purple-900 mb-2">2026 David Gwilt Composition Prize</h1>
-      <div class="h-1 w-24 bg-gradient-to-r from-amber-400 to-yellow-600 mx-auto rounded-full"></div>
-      <p class="text-zinc-500 mt-4 font-medium uppercase tracking-widest text-sm">Official Voting Form</p>
-    </div>
-    
-    <div class="bg-white rounded-3xl p-8 shadow-xl shadow-purple-100 border border-purple-50">
-      <form id="votingForm" class="space-y-10">
-        
-        <!-- Section 1 -->
-        <div>
-          <div class="flex items-center space-x-2 mb-4">
-            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 text-purple-700 font-bold text-sm">1</span>
-            <h2 class="text-xl font-bold text-purple-900">Voter Information</h2>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <input type="text" id="voterName" placeholder="Full Name" required
-                   class="bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 w-full focus-purple">
-            <select id="role" required class="bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 w-full focus-purple">
-              <option value="">Select Role...</option>
-              <option value="Ensemble Member">Ensemble Member</option>
-              <option value="Faculty Member">Faculty Member</option>
-            </select>
-          </div>
+<body class="bg-gray-50 font-sans text-gray-800">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Data Directory</h1>
+            <p class="mt-2 text-sm text-gray-600">Dynamically synced with your live Google Sheet.</p>
         </div>
 
-        <!-- Section 2 -->
-        <div>
-          <div class="flex items-center space-x-2 mb-4">
-            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 text-purple-700 font-bold text-sm">2</span>
-            <h2 class="text-xl font-bold text-purple-900">Top 3 Ranking</h2>
-          </div>
-          <div class="space-y-6">
-            <div class="relative">
-              <label class="block text-amber-600 font-bold text-sm mb-1 ml-1">1st Choice (5 pts)</label>
-              <select id="rank1" required class="w-full bg-zinc-50 border-2 border-amber-200 rounded-2xl px-5 py-4 focus-purple appearance-none"></select>
+        <div class="bg-white p-4 rounded-xl shadow-xs border border-gray-200 mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
+            <div class="w-full sm:w-72 relative">
+                <input type="text" id="searchInput" placeholder="Search anything..." 
+                    class="w-full pl-4 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
             </div>
-            <div>
-              <label class="block text-purple-700 font-bold text-sm mb-1 ml-1">2nd Choice (3 pts)</label>
-              <select id="rank2" required class="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 focus-purple"></select>
-            </div>
-            <div>
-              <label class="block text-purple-700 font-bold text-sm mb-1 ml-1">3rd Choice (1 pt)</label>
-              <select id="rank3" required class="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-4 focus-purple"></select>
-            </div>
-          </div>
-        </div>
-
-        <!-- Section 3 -->
-        <div>
-          <div class="flex items-center space-x-2 mb-4">
-            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 text-purple-700 font-bold text-sm">3</span>
-            <h2 class="text-xl font-bold text-purple-900">Comments</h2>
-          </div>
-          <textarea id="comments" rows="4" class="w-full bg-zinc-50 border border-zinc-200 rounded-3xl px-5 py-4 focus-purple" placeholder="Brief feedback (optional)..."></textarea>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="space-y-4 pt-6">
-            <button type="submit" id="submitBtn"
-                    class="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-5 rounded-3xl text-lg shadow-lg shadow-purple-200 transition-all transform active:scale-[0.98]">
-              Submit My Vote
-            </button>
             
-            <a id="dashboardBtn" href="#" target="_blank"
-               class="block w-full text-center border-2 border-amber-400 text-amber-700 font-bold py-4 rounded-3xl text-md hover:bg-amber-50 transition-all">
-               <i class="fa-solid fa-crown mr-2"></i> Admin Dashboard
-            </a>
+            <div class="w-full sm:w-58 flex items-center gap-2">
+                <label for="filterDropdown" id="filterLabel" class="text-xs font-medium text-gray-500 whitespace-nowrap">Filter By:</label>
+                <select id="filterDropdown" class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-blue-500">
+                    <option value="">All Categories</option>
+                </select>
+            </div>
         </div>
-      </form>
+
+        <div id="loading" class="flex justify-center items-center py-20">
+            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+            <span class="ml-3 text-gray-600 font-medium">Loading live data...</span>
+        </div>
+
+        <div id="error" class="hidden bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6">
+            <p class="font-medium">Failed to load data.</p>
+            <p class="text-xs mt-1 text-red-600">Please make sure the Google Sheet's Share settings are set to <strong>"Anyone with the link can view"</strong>.</p>
+        </div>
+
+        <div id="tableContainer" class="hidden bg-white shadow-xs border border-gray-200 rounded-xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 text-left text-sm">
+                    <thead id="tableHeader" class="bg-gray-50 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        </thead>
+                    <tbody id="tableBody" class="divide-y divide-gray-200 bg-white">
+                        </tbody>
+                </table>
+            </div>
+            <div id="noResults" class="hidden text-center py-12 text-gray-500">
+                No matching records found.
+            </div>
+        </div>
     </div>
-    
-    <p class="text-center text-zinc-400 text-xs mt-8">© 2026 David Gwilt Composition Prize committee</p>
-  </div>
 
-  <script>
-    // --- SINGLE SOURCE OF TRUTH ---
-    const CONFIG_URL = "https://script.google.com/macros/s/AKfycbwLCL4qr_KNuUDn-ls9HIqEOmoDKgGirys7jUX7AZy35oXu7ZRt4AZ138NKIbDyUZMKbg/exec";
+    <script>
+        // Updated with your explicit Sheet ID
+        const sheetId = '1ClxNbtnTS94u7WqscJZcY3d5MaBYyJZTwvI5eWrtWZ8';
+        const jsonUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
 
-    const works = [
-      "Cody Wong Lok Heng: Hectic",
-      "Chan Lok Tim: Floating Voices",
-      "Kasper Chan Chi Huen: Three Encounters with My Mother in the Dreams",
-      "Jack Yau Chi Fung: Judgement Day",
-      "Chiu Long Hei: Ashes",
-      "Royce Lei Lok In: Aqua Fantasy",
-      "Daniel Lau Lik Chi: Ascending the Plateau of Joy",
-      "Antal Lau Yan Ho: Six Seven"
-    ];
+        let globalData = [];
+        let headers = [];
 
-    function initPage() {
-      // Link the Dashboard Button dynamically
-      document.getElementById('dashboardBtn').href = CONFIG_URL;
+        // DOM elements
+        const loadingEl = document.getElementById('loading');
+        const errorEl = document.getElementById('error');
+        const tableContainerEl = document.getElementById('tableContainer');
+        const tableHeaderEl = document.getElementById('tableHeader');
+        const tableBodyEl = document.getElementById('tableBody');
+        const searchInput = document.getElementById('searchInput');
+        const filterDropdown = document.getElementById('filterDropdown');
+        const filterLabel = document.getElementById('filterLabel');
+        const noResultsEl = document.getElementById('noResults');
 
-      // Populate dropdowns
-      ['rank1', 'rank2', 'rank3'].forEach(id => {
-        const sel = document.getElementById(id);
-        sel.innerHTML = '<option value="">— Select a work —</option>';
-        works.forEach(work => {
-          const opt = document.createElement('option');
-          opt.value = work;
-          opt.textContent = work;
-          sel.appendChild(opt);
-        });
-      });
-    }
+        async function init() {
+            try {
+                const response = await fetch(jsonUrl);
+                if (!response.ok) throw new Error('Network issue');
+                
+                const text = await response.text();
+                
+                // Parse out Google's structural response wrapper safely
+                const jsonStart = text.indexOf('{');
+                const jsonEnd = text.lastIndexOf('}') + 1;
+                const jsonString = text.slice(jsonStart, jsonEnd);
+                const dataObj = JSON.parse(jsonString);
 
-    document.getElementById('votingForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-     
-      const btn = document.getElementById('submitBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin mr-2"></i> Processing...';
+                // Map column headers (fall back to letters if headers are unnamed)
+                headers = dataObj.table.cols.map((col, index) => col.label || `Column ${index + 1}`);
 
-      const data = {
-        VoterName: document.getElementById('voterName').value.trim(),
-        Role: document.getElementById('role').value,
-        First: document.getElementById('rank1').value,
-        Second: document.getElementById('rank2').value,
-        Third: document.getElementById('rank3').value,
-        Comments: document.getElementById('comments').value.trim()
-      };
+                // Map data rows cleanly matching header indexes
+                globalData = dataObj.table.rows.map(row => {
+                    let rowData = {};
+                    headers.forEach((header, index) => {
+                        const cell = row.c[index];
+                        // Extract formatted string value if available, otherwise raw value, else empty string
+                        rowData[header] = cell ? (cell.f ? cell.f : (cell.v ?? '')) : '';
+                    });
+                    return rowData;
+                });
 
-      try {
-        await fetch(CONFIG_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-        alert("✨ Thank you! Your vote has been recorded successfully.");
-        this.reset();
-      } catch (err) {
-        alert("⚠️ Submission failed. Please check your internet connection.");
-      }
-      
-      btn.disabled = false;
-      btn.innerHTML = 'Submit My Vote';
-    });
+                if (headers.length > 0) {
+                    setupFilterDropdown();
+                    renderTableHeader();
+                    renderTableData(globalData);
+                    
+                    loadingEl.classList.add('hidden');
+                    tableContainerEl.classList.remove('hidden');
+                } else {
+                    showError();
+                }
 
-    window.onload = initPage;
-  </script>
+            } catch (err) {
+                console.error("Error fetching sheet data:", err);
+                showError();
+            }
+        }
+
+        function showError() {
+            loadingEl.classList.add('hidden');
+            errorEl.classList.remove('hidden');
+        }
+
+        // Sets up the dropdown filter utilizing unique values from the 1st Column
+        function setupFilterDropdown() {
+            const firstColumnHeader = headers[0];
+            filterLabel.textContent = `${firstColumnHeader}:`;
+            
+            const uniqueValues = [...new Set(globalData.map(item => String(item[firstColumnHeader])))]
+                                    .filter(val => val && val.trim() !== "");
+
+            uniqueValues.sort().forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = value;
+                filterDropdown.appendChild(option);
+            });
+        }
+
+        function renderTableHeader() {
+            let html = '<tr>';
+            headers.forEach(header => {
+                html += `<th scope="col" class="px-6 py-4 font-semibold text-gray-700">${header}</th>`;
+            });
+            html += '</tr>';
+            tableHeaderEl.innerHTML = html;
+        }
+
+        function renderTableData(data) {
+            tableBodyEl.innerHTML = '';
+            
+            if (data.length === 0) {
+                noResultsEl.classList.remove('hidden');
+                return;
+            }
+            noResultsEl.classList.add('hidden');
+
+            data.forEach(row => {
+                let htmlRow = '<tr class="hover:bg-gray-50 transition-colors border-b border-gray-100">';
+                headers.forEach(header => {
+                    const cellValue = row[header] || '';
+                    htmlRow += `<td class="px-6 py-4 text-gray-600">${cellValue}</td>`;
+                });
+                htmlRow += '</tr>';
+                tableBodyEl.insertAdjacentHTML('beforeend', htmlRow);
+            });
+        }
+
+        function filterAndSearchData() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedCategory = filterDropdown.value;
+            const firstColumnHeader = headers[0];
+
+            const filteredData = globalData.filter(row => {
+                // Dropdown match
+                const matchesCategory = selectedCategory === "" || String(row[firstColumnHeader]) === selectedCategory;
+
+                // Keyword match (across all text fields)
+                const matchesSearch = headers.some(header => {
+                    const val = String(row[header] || '').toLowerCase();
+                    return val.includes(searchTerm);
+                });
+
+                return matchesCategory && matchesSearch;
+            });
+
+            renderTableData(filteredData);
+        }
+
+        searchInput.addEventListener('input', filterAndSearchData);
+        filterDropdown.addEventListener('change', filterAndSearchData);
+
+        init();
+    </script>
 </body>
 </html>
