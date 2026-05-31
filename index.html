@@ -30,21 +30,22 @@
         <div class="bg-white p-6 rounded-2xl shadow-xs border border-slate-200/80 mb-8 flex flex-col md:flex-row gap-4 items-end">
             <div class="w-full md:flex-1">
                 <label for="searchInput" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Search Catalog</label>
-                <div class="relative">
-                    <input type="text" id="searchInput" placeholder="Type keywords to filter rows instantly..." 
-                        class="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm font-medium">
-                </div>
+                <input type="text" id="searchInput" placeholder="Search keywords across all metrics..." 
+                    class="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm font-medium">
             </div>
             
             <div class="w-full md:w-64">
-                <label for="filterDropdown" id="filterLabel" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Filter Category</label>
-                <select id="filterDropdown" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-hidden focus:ring-2 focus:ring-blue-500 cursor-pointer">
-                    <option value="">Show All</option>
+                <label for="sortDropdown" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Sort Order</label>
+                <select id="sortDropdown" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-hidden focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                    <option value="entry_desc">Date Added: Newest First</option>
+                    <option value="entry_asc">Date Added: Oldest First</option>
+                    <option value="year_desc">Chronological: High to Low</option>
+                    <option value="year_asc">Chronological: Low to High</option>
                 </select>
             </div>
 
             <button id="resetFilters" class="w-full md:w-auto px-5 py-3 bg-slate-100 hover:bg-slate-200 active:scale-98 transition-all text-sm font-semibold text-slate-600 rounded-xl cursor-pointer whitespace-nowrap">
-                Clear Filters
+                Reset Dashboard
             </button>
         </div>
 
@@ -52,17 +53,17 @@
             <div class="relative flex items-center justify-center">
                 <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-blue-600"></div>
             </div>
-            <span class="mt-4 text-sm font-semibold text-slate-500 tracking-wide">Streaming live data entries...</span>
+            <span class="mt-4 text-sm font-semibold text-slate-500 tracking-wide">Streaming data index...</span>
         </div>
 
         <div id="error" class="hidden bg-rose-50 border border-rose-200 text-rose-900 p-6 rounded-2xl mb-8 shadow-xs">
             <div class="flex gap-3">
                 <svg class="h-6 w-6 text-rose-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                 <div>
-                    <h3 class="text-base font-bold">Browser Block Detected (Local CORS Block)</h3>
-                    <p class="text-sm text-rose-700 mt-1">Modern browsers prevent local workspace files (`file:///`) from securely pulling information from Google servers directly.</p>
+                    <h3 class="text-base font-bold">Local Environment Execution Blocked</h3>
+                    <p class="text-sm text-rose-700 mt-1">To protect data integrity, modern browsers prevent standard file paths (`file:///`) from securely capturing information from external databases.</p>
                     <div class="mt-4 bg-white/80 p-3 rounded-xl text-xs font-mono text-slate-700 border border-rose-100">
-                        <strong>To view your live dashboard:</strong> Upload this file to GitHub Pages, or use VS Code's "Live Server" extension, or run `python -m http.server` via your terminal.
+                        <strong>Deployment Fix:</strong> Push this code to GitHub Pages, or right-click and run via VS Code's "Live Server" extension.
                     </div>
                 </div>
             </div>
@@ -74,30 +75,29 @@
 
             <div id="noResults" class="hidden text-center py-20 bg-white border border-dashed border-slate-200 rounded-2xl">
                 <svg class="mx-auto h-12 w-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                <h3 class="mt-4 text-sm font-bold text-slate-900">No matching records found</h3>
-                <p class="mt-1 text-xs text-slate-500">Try adjusting your keywords, spellings, or resetting your primary category dropdown.</p>
+                <h3 class="mt-4 text-sm font-bold text-slate-900">No matching search criteria</h3>
+                <p class="mt-1 text-xs text-slate-500">Try adjusting your keywords, clarifying parameters, or resetting your sorting selection.</p>
             </div>
         </div>
 
     </div>
 
     <script>
-        // Directly mapped onto your exact project ID
         const sheetId = '1ClxNbtnTS94u7WqscJZcY3d5MaBYyJZTwvI5eWrtWZ8';
         const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
 
         let globalData = [];
         let headers = [];
+        let yearHeaderName = '';
 
-        // UI Element Selectors
+        // UI Selectors
         const loadingEl = document.getElementById('loading');
         const errorEl = document.getElementById('error');
         const gridContainerEl = document.getElementById('gridContainer');
         const cardsLayoutEl = document.getElementById('cardsLayout');
         const recordCountEl = document.getElementById('recordCount');
         const searchInput = document.getElementById('searchInput');
-        const filterDropdown = document.getElementById('filterDropdown');
-        const filterLabel = document.getElementById('filterLabel');
+        const sortDropdown = document.getElementById('sortDropdown');
         const noResultsEl = document.getElementById('noResults');
         const resetBtn = document.getElementById('resetFilters');
 
@@ -107,12 +107,25 @@
                 header: true,
                 skipEmptyLines: true,
                 complete: function(results) {
-                    globalData = results.data;
                     headers = results.meta.fields;
+                    
+                    // Map raw rows and explicitly preserve original Entry Order indices
+                    globalData = results.data.map((row, index) => ({
+                        ...row,
+                        __entryIndex: index 
+                    }));
 
                     if (headers && headers.length > 0) {
-                        setupUIValues();
-                        renderDashboard(globalData);
+                        // Scan headers to locate a column representing "Year"
+                        yearHeaderName = headers.find(h => h.toLowerCase().includes('year')) || '';
+                        
+                        // If no explicit 'Year' column header text is found, hide the chronological sorting variants
+                        if (!yearHeaderName) {
+                            document.querySelector('option[value="year_desc"]').remove();
+                            document.querySelector('option[value="year_asc"]').remove();
+                        }
+
+                        processDataDisplay();
                         
                         loadingEl.classList.add('hidden');
                         gridContainerEl.classList.remove('hidden');
@@ -121,7 +134,7 @@
                     }
                 },
                 error: function(err) {
-                    console.error("Fetch Exception:", err);
+                    console.error("Database Connection Error:", err);
                     showError();
                 }
             });
@@ -132,25 +145,40 @@
             errorEl.classList.remove('hidden');
         }
 
-        // Sets up intelligent filters and counts based on whatever data columns exist
-        function setupUIValues() {
-            const firstCol = headers[0];
-            filterLabel.textContent = `Filter By ${firstCol}`;
-            
-            // Generate unique, sorted filters
-            const uniqueOptions = [...new Set(globalData.map(item => String(item[firstCol] || '').trim()))]
-                                    .filter(val => val !== "");
-            
-            uniqueOptions.sort().forEach(val => {
-                const opt = document.createElement('option');
-                opt.value = val;
-                opt.textContent = val;
-                filterDropdown.appendChild(opt);
+        function processDataDisplay() {
+            const query = searchInput.value.toLowerCase().trim();
+            const sortStrategy = sortDropdown.value;
+
+            // 1. Filter dataset by search term
+            let processedData = globalData.filter(row => {
+                return headers.some(header => String(row[header] || '').toLowerCase().includes(query));
             });
+
+            // 2. Apply professional sorting strategies
+            processedData.sort((a, b) => {
+                if (sortStrategy === 'entry_desc') {
+                    return b.__entryIndex - a.__entryIndex; // Newest row entries first
+                }
+                if (sortStrategy === 'entry_asc') {
+                    return a.__entryIndex - b.__entryIndex; // Oldest row entries first
+                }
+                if (sortStrategy === 'year_desc' && yearHeaderName) {
+                    const valA = parseInt(a[yearHeaderName]) || 0;
+                    const valB = parseInt(b[yearHeaderName]) || 0;
+                    return valB - valA; // Modern/highest years down to oldest
+                }
+                if (sortStrategy === 'year_asc' && yearHeaderName) {
+                    const valA = parseInt(a[yearHeaderName]) || 0;
+                    const valB = parseInt(b[yearHeaderName]) || 0;
+                    return valA - valB; // Historic/lowest years up to newest
+                }
+                return 0;
+            });
+
+            renderCards(processedData);
         }
 
-        // Generates user-friendly dashboard cards rather than crowded standard grid boxes
-        function renderDashboard(data) {
+        function renderCards(data) {
             cardsLayoutEl.innerHTML = '';
             recordCountEl.textContent = data.length;
 
@@ -161,27 +189,22 @@
             noResultsEl.classList.add('hidden');
 
             data.forEach((row, rowIndex) => {
-                const mainTitleKey = headers[1] || headers[0]; // Uses 2nd column as main title text, fallback to 1st
-                const accentBadgeKey = headers[0]; // Uses 1st column as prominent badge category
+                const titleKey = headers[1] || headers[0];
+                const badgeKey = headers[0];
                 
-                const cardTitle = row[mainTitleKey] || `Entry #${rowIndex + 1}`;
-                const badgeText = row[accentBadgeKey] || '';
+                const cardTitle = row[titleKey] || `Record ID: ${row[badgeKey] || rowIndex + 1}`;
+                const badgeText = row[badgeKey] || '';
 
-                // Outer Card Shell Structure
                 let cardHtml = `
                     <div class="bg-white border border-slate-200/80 rounded-2xl shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col justify-between">
                         <div>
-                            ${badgeText ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-blue-50 text-blue-700 mb-3 border border-blue-100/50 uppercase tracking-wide">${badgeText}</span>` : ''}
-                            
+                            ${badgeText ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 mb-3 border border-slate-200/60 uppercase tracking-wide">${badgeText}</span>` : ''}
                             <h3 class="text-lg font-bold text-slate-900 mb-4 line-clamp-2">${cardTitle}</h3>
-                            
                             <div class="space-y-2 text-xs border-t border-slate-100 pt-3">
                 `;
 
                 headers.forEach(header => {
-                    // Skip printing title/badge names inside card loops twice to maximize layout readability
-                    if (header === mainTitleKey || header === accentBadgeKey) return;
-                    
+                    if (header === titleKey || header === badgeKey) return;
                     const value = row[header] || '—';
                     cardHtml += `
                         <div class="flex items-start justify-between gap-4">
@@ -201,33 +224,14 @@
             });
         }
 
-        // Live Combined Search Engine Functionality
-        function processDataFilters() {
-            const query = searchInput.value.toLowerCase().trim();
-            const selectedCategory = filterDropdown.value;
-            const primaryKey = headers[0];
-
-            const filtered = globalData.filter(row => {
-                const matchesDropdown = selectedCategory === "" || String(row[primaryKey] || '').trim() === selectedCategory;
-                
-                const matchesQuery = headers.some(header => {
-                    return String(row[header] || '').toLowerCase().includes(query);
-                });
-
-                return matchesDropdown && matchesQuery;
-            });
-
-            renderDashboard(filtered);
-        }
-
-        // Event Handling binds
-        searchInput.addEventListener('input', processDataFilters);
-        filterDropdown.addEventListener('change', processDataFilters);
+        // Event Handling
+        searchInput.addEventListener('input', processDataDisplay);
+        sortDropdown.addEventListener('change', processDataDisplay);
         
         resetBtn.addEventListener('click', () => {
             searchInput.value = '';
-            filterDropdown.value = '';
-            renderDashboard(globalData);
+            sortDropdown.value = 'entry_desc';
+            processDataDisplay();
         });
 
         init();
