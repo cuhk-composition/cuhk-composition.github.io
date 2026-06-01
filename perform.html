@@ -195,12 +195,11 @@
 <script>
     let globalConcertsDataset = [];
 
-    // 1. Define the Global Callback Function that Google Sheets will reply to
+    // JSONP callback function handling direct data streams from Google Sheets
     window.handleGoogleSheetResponse = function(dataObject) {
         try {
             const rows = dataObject.table.rows;
             
-            // Map the custom columns cleanly
             const expectedHeaders = [
                 'Date', 'Cantonese', 'Premiere/Performance', 'Title', 'Instrumentation', 
                 'Performer', 'Venue', 'City', 'Country', 'Link', 'Time', 'Occasion/Presenter'
@@ -210,126 +209,7 @@
                 let item = {};
                 expectedHeaders.forEach((header, index) => {
                     const cellValue = row.c[index];
+                    let val = '';
                     if (cellValue && cellValue.f) {
-                        item[header] = cellValue.f.trim();
-                    } else if (cellValue && cellValue.v !== null && cellValue.v !== undefined) {
-                        item[header] = String(cellValue.v).trim();
-                    } else {
-                        item[header] = '';
-                    }
-                });
-                return item;
-            }).filter(item => item.Date && item.Title); // Filter out empty rows
-
-            // Activate Search Input
-            document.getElementById('concertSearch').disabled = false;
-            document.getElementById('concertSearch').placeholder = "Type keywords here to filter schedule...";
-            
-            displayConcerts(globalConcertsDataset);
-
-        } catch (error) {
-            console.error(error);
-            document.getElementById('statusAlert').innerText = "Data parsing error. Please check your columns layout.";
-        }
-    };
-
-    // 2. Inject Data Request dynamically as a script tag to prevent browser CORS blockages
-    function initLiveFetch() {
-        const spreadsheetId = '1ewOnbKddBpx4YFSQpfvhOvmJCznhGzdcS2DyMFp7d08';
-        const gid = '1551264105';
-        
-        // This endpoint bypasses CORS and triggers handleGoogleSheetResponse directly
-        const jsonpUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=responseHandler:handleGoogleSheetResponse&gid=${gid}`;
-        
-        const scriptElement = document.createElement('script');
-        scriptElement.src = jsonpUrl;
-        scriptElement.onerror = function() {
-            document.getElementById('statusAlert').innerText = "Failed to communicate with Google Sheets. Confirm 'Anyone with the link can view' is set.";
-        };
-        document.body.appendChild(scriptElement);
-    }
-
-    // Render Cards UI
-    function displayConcerts(itemsList) {
-        const listContainer = document.getElementById('concertsContainer');
-        const statusAlert = document.getElementById('statusAlert');
-        listContainer.innerHTML = '';
-
-        if (itemsList.length === 0) {
-            statusAlert.style.display = 'block';
-            statusAlert.innerText = "No concert items found matching that query.";
-            return;
-        } else {
-            statusAlert.style.display = 'none';
-        }
-
-        itemsList.forEach(item => {
-            const cardNode = document.createElement('div');
-            cardNode.className = 'concert-card';
-
-            let year = '2026';
-            let monthDayStr = item.Date;
-            if (item.Date.includes('-')) {
-                const parts = item.Date.split('-');
-                year = parts[0];
-                monthDayStr = (parts[1] && parts[2]) ? `${parts[1]}/${parts[2]}` : item.Date;
-            }
-            
-            const timeDisplay = item.Time || 'TBA';
-            const descriptionContent = `Concert features a performance of <strong>"${item.Title}"</strong> arranged ${item.Instrumentation || ''}. Brought to stage by ${item.Performer || 'various artists'} at ${item.Venue || 'the designated venue'}. ${item['Occasion/Presenter'] ? 'Presented on the occasion of: ' + item['Occasion/Presenter'] + '.' : ''}`;
-
-            let badgesArr = [];
-            if (item['Premiere/Performance']) badgesArr.push({ text: item['Premiere/Performance'], type: 'yellow' });
-            if (item.Instrumentation) badgesArr.push({ text: item.Instrumentation.replace(/^for\s+/i, ''), type: 'yellow' });
-            if (item.Cantonese === 'Y' || item.Cantonese === 'Yes') badgesArr.push({ text: 'Cantonese Repertoire', type: 'gray' });
-
-            const tagsHTML = badgesArr.map(badge => {
-                const modifierClass = badge.type === "gray" ? "gray-badge" : "yellow-badge";
-                return `<span class="tag ${modifierClass}">${badge.text}</span>`;
-            }).join('');
-
-            const venueElement = item.Link 
-                ? `<a href="${item.Link}" target="_blank">${item.Venue || 'View Event Link'}</a>`
-                : (item.Venue || 'TBA');
-
-            cardNode.innerHTML = `
-                <div class="card-left-date">
-                    <span class="date-year">${year}</span>
-                    <span class="date-day">${monthDayStr}</span>
-                    <span class="date-time">${timeDisplay}</span>
-                </div>
-                <div class="card-right-content">
-                    <h2 class="concert-title">${item.Title}</h2>
-                    <div class="concert-meta">
-                        <span class="meta-node location">${item.City || 'Osaka'}${item.Country ? ', ' + item.Country : ''}</span>
-                        <span class="meta-node hall">${venueElement}</span>
-                    </div>
-                    <div class="concert-desc">${descriptionContent}</div>
-                    <div class="concert-tags">${tagsHTML}</div>
-                </div>
-            `;
-            listContainer.appendChild(cardNode);
-        });
-    }
-
-    // Filter Logic
-    document.getElementById('concertSearch').addEventListener('input', function(event) {
-        const filterToken = event.target.value.toLowerCase().trim();
-        const matchingConcerts = globalConcertsDataset.filter(concert => {
-            return (
-                (concert.Title && concert.Title.toLowerCase().includes(filterToken)) ||
-                (concert.Venue && concert.Venue.toLowerCase().includes(filterToken)) ||
-                (concert.Performer && concert.Performer.toLowerCase().includes(filterToken)) ||
-                (concert.Instrumentation && concert.Instrumentation.toLowerCase().includes(filterToken)) ||
-                (concert.City && concert.City.toLowerCase().includes(filterToken))
-            );
-        });
-        displayConcerts(matchingConcerts);
-    });
-
-    // Start Live Sync Process on DOM Load
-    window.addEventListener('DOMContentLoaded', initLiveFetch);
-</script>
-
-</body>
-</html>
+                        val = cellValue.f.trim();
+                    } else if (cellValue && cellValue.v !== null && cellValue.v !== undefined
