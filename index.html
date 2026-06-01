@@ -200,7 +200,7 @@
                 const textType = (row['Text-type'] || '').trim();
                 const textFirst = (row['Text-first'] || '').trim();
                 let masterTextType = '';
-                if (textType && textFirst) masterTextType = `${textType} [${textFirst}]`;
+                if (textType && textFirst) masterTextType = `${textType}\n${textFirst}`;
                 else masterTextType = textType || textFirst || '';
 
                 const mediaLink = (row['Media Link'] || '').trim();
