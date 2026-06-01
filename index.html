@@ -3,67 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>粵語藝術歌曲資料庫 Cantonese Art Song Database</title>
+    <title>Vocal & Choral Repertoire Directory</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 <body class="bg-slate-50 font-sans text-slate-900 selection:bg-blue-500 selection:text-white">
 
-    <div class="h-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600"></div>
+    <div class="h-2 bg-gradient-to-r from-blue-700 via-indigo-600 to-teal-500"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         
         <div class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 pb-8 mb-8 gap-4">
             <div>
-                <h1 id="hubTitle" class="text-4xl font-extrabold text-slate-900 tracking-tight">粵語藝術歌曲資料庫 Cantonese Art Song Database</h1>
+                <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">Repertoire Directory</h1>
                 <p class="mt-2 text-base text-slate-500 flex items-center gap-2">
                     <span class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    A project of <a href="https://cantonesecomposition.com">cantonesecomposition.com</a>
+                    Dynamically synced with Google Sheets
                 </p>
             </div>
             <div class="bg-white px-5 py-3 rounded-xl border border-slate-200/80 shadow-xs flex items-center gap-3 w-fit">
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Entries</span>
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Entries / 總數</span>
                 <span id="recordCount" class="text-2xl font-black text-blue-600">0</span>
             </div>
         </div>
 
         <div class="bg-white p-6 rounded-2xl shadow-xs border border-slate-200/80 mb-8 flex flex-col md:flex-row gap-4 items-end">
             <div class="w-full md:flex-1">
-                <label for="searchInput" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Search Catalog</label>
-                <input type="text" id="searchInput" placeholder="Search keywords across all metrics..." 
+                <label for="searchInput" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Search Catalog / 搜尋目錄</label>
+                <input type="text" id="searchInput" placeholder="Search title, composer, instrumentation, text type..." 
                     class="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm font-medium">
             </div>
             
-            <div class="w-full md:w-64">
-                <label for="sortDropdown" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Sort Order</label>
+            <div class="w-full md:w-72">
+                <label for="sortDropdown" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Sort By / 排序方式</label>
                 <select id="sortDropdown" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-hidden focus:ring-2 focus:ring-blue-500 cursor-pointer">
-                    <option value="entry_desc">Date Added: Newest First</option>
-                    <option value="entry_asc">Date Added: Oldest First</option>
-                    <option value="year_desc">Chronological: High to Low</option>
-                    <option value="year_asc">Chronological: Low to High</option>
+                    <option value="latest_entry">最新加入 Latest Entry First</option>
+                    <option value="earliest_entry">最先加入 Earliest Entry First</option>
+                    <option value="year_latest">年份最近 Year: Latest First</option>
+                    <option value="year_oldest">年份最遠 Year: Oldest First</option>
                 </select>
             </div>
 
             <button id="resetFilters" class="w-full md:w-auto px-5 py-3 bg-slate-100 hover:bg-slate-200 active:scale-98 transition-all text-sm font-semibold text-slate-600 rounded-xl cursor-pointer whitespace-nowrap">
-                Reset Dashboard
+                Reset / 重設
             </button>
         </div>
 
         <div id="loading" class="flex flex-col justify-center items-center py-24">
-            <div class="relative flex items-center justify-center">
-                <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-blue-600"></div>
-            </div>
-            <span class="mt-4 text-sm font-semibold text-slate-500 tracking-wide">Streaming data index...</span>
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-blue-600"></div>
+            <span class="mt-4 text-sm font-semibold text-slate-500 tracking-wide">Streaming real-time entries...</span>
         </div>
 
         <div id="error" class="hidden bg-rose-50 border border-rose-200 text-rose-900 p-6 rounded-2xl mb-8 shadow-xs">
             <div class="flex gap-3">
                 <svg class="h-6 w-6 text-rose-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                 <div>
-                    <h3 class="text-base font-bold">Local Environment Execution Blocked</h3>
-                    <p class="text-sm text-rose-700 mt-1">To protect data integrity, modern browsers prevent standard file paths (`file:///`) from securely capturing information from external databases.</p>
+                    <h3 class="text-base font-bold">Local File Execution Policy Protection</h3>
+                    <p class="text-sm text-rose-700 mt-1">Browsers block data delivery queries targeting live files when launched directly using standard file clicks (`file:///`).</p>
                     <div class="mt-4 bg-white/80 p-3 rounded-xl text-xs font-mono text-slate-700 border border-rose-100">
-                        <strong>Deployment Fix:</strong> Push this code to GitHub Pages, or right-click and run via VS Code's "Live Server" extension.
+                        Please upload this file onto GitHub Pages, run it via VS Code's "Live Server" extension, or execute `python -m http.server` locally inside your terminal.
                     </div>
                 </div>
             </div>
@@ -75,22 +73,22 @@
 
             <div id="noResults" class="hidden text-center py-20 bg-white border border-dashed border-slate-200 rounded-2xl">
                 <svg class="mx-auto h-12 w-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                <h3 class="mt-4 text-sm font-bold text-slate-900">No matching search criteria</h3>
-                <p class="mt-1 text-xs text-slate-500">Try adjusting your keywords, clarifying parameters, or resetting your sorting selection.</p>
+                <h3 class="mt-4 text-sm font-bold text-slate-900">No matching search criteria found</h3>
+                <p class="mt-1 text-xs text-slate-500">Try checking your spelling variations or optimizing your keyword searches.</p>
             </div>
         </div>
 
     </div>
 
     <script>
+        // Mapped directly to your customized workspace data repository ID
         const sheetId = '1ClxNbtnTS94u7WqscJZcY3d5MaBYyJZTwvI5eWrtWZ8';
         const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
 
         let globalData = [];
         let headers = [];
-        let yearHeaderName = '';
 
-        // UI Selectors
+        // Selecting DOM elements
         const loadingEl = document.getElementById('loading');
         const errorEl = document.getElementById('error');
         const gridContainerEl = document.getElementById('gridContainer');
@@ -109,24 +107,14 @@
                 complete: function(results) {
                     headers = results.meta.fields;
                     
-                    // Map raw rows and explicitly preserve original Entry Order indices
+                    // Capture natural index tracking parameter rows 
                     globalData = results.data.map((row, index) => ({
                         ...row,
-                        __entryIndex: index 
+                        __naturalIndex: index
                     }));
 
                     if (headers && headers.length > 0) {
-                        // Scan headers to locate a column representing "Year"
-                        yearHeaderName = headers.find(h => h.toLowerCase().includes('year')) || '';
-                        
-                        // If no explicit 'Year' column header text is found, hide the chronological sorting variants
-                        if (!yearHeaderName) {
-                            document.querySelector('option[value="year_desc"]').remove();
-                            document.querySelector('option[value="year_asc"]').remove();
-                        }
-
-                        processDataDisplay();
-                        
+                        processDashboardEngine();
                         loadingEl.classList.add('hidden');
                         gridContainerEl.classList.remove('hidden');
                     } else {
@@ -134,7 +122,7 @@
                     }
                 },
                 error: function(err) {
-                    console.error("Database Connection Error:", err);
+                    console.error("Connection failed:", err);
                     showError();
                 }
             });
@@ -145,40 +133,47 @@
             errorEl.classList.remove('hidden');
         }
 
-        function processDataDisplay() {
+        // Processing matching routines & active structural array shifts
+        function processDashboardEngine() {
             const query = searchInput.value.toLowerCase().trim();
-            const sortStrategy = sortDropdown.value;
+            const sortingType = sortDropdown.value;
 
-            // 1. Filter dataset by search term
-            let processedData = globalData.filter(row => {
-                return headers.some(header => String(row[header] || '').toLowerCase().includes(query));
+            // Omnisearch execution checking cross-column items
+            let items = globalData.filter(row => {
+                return headers.some(h => String(row[h] || '').toLowerCase().includes(query));
             });
 
-            // 2. Apply professional sorting strategies
-            processedData.sort((a, b) => {
-                if (sortStrategy === 'entry_desc') {
-                    return b.__entryIndex - a.__entryIndex; // Newest row entries first
+            // Sorting logic engine mapping explicitly onto specified requirements
+            items.sort((a, b) => {
+                if (sortingType === 'latest_entry') {
+                    return b.__naturalIndex - a.__naturalIndex; // Newest sheet row indexing first
                 }
-                if (sortStrategy === 'entry_asc') {
-                    return a.__entryIndex - b.__entryIndex; // Oldest row entries first
+                if (sortingType === 'earliest_entry') {
+                    return a.__naturalIndex - b.__naturalIndex; // Earliest sheet row tracking first
                 }
-                if (sortStrategy === 'year_desc' && yearHeaderName) {
-                    const valA = parseInt(a[yearHeaderName]) || 0;
-                    const valB = parseInt(b[yearHeaderName]) || 0;
-                    return valB - valA; // Modern/highest years down to oldest
-                }
-                if (sortStrategy === 'year_asc' && yearHeaderName) {
-                    const valA = parseInt(a[yearHeaderName]) || 0;
-                    const valB = parseInt(b[yearHeaderName]) || 0;
-                    return valA - valB; // Historic/lowest years up to newest
+                
+                // Year string evaluation logic parameters
+                if (sortingType === 'year_latest' || sortingType === 'year_oldest') {
+                    const yearA = parseYearValue(a['Year']);
+                    const yearB = parseYearValue(b['Year']);
+                    return sortingType === 'year_latest' ? yearB - yearA : yearA - yearB;
                 }
                 return 0;
             });
 
-            renderCards(processedData);
+            renderCatalogCards(items);
         }
 
-        function renderCards(data) {
+        // Helper string parser dealing with numeric variations like '2015/25' seamlessly
+        function parseYearValue(yearStr) {
+            if (!yearStr) return 0;
+            const corePart = String(yearStr).split('/')[0];
+            const parsedInt = parseInt(corePart.replace(/\D/g, ''));
+            return isNaN(parsedInt) ? 0 : parsedInt;
+        }
+
+        // Custom Layout Card Engine logic following strict item configurations 
+        function renderCatalogCards(data) {
             cardsLayoutEl.innerHTML = '';
             recordCountEl.textContent = data.length;
 
@@ -188,52 +183,100 @@
             }
             noResultsEl.classList.add('hidden');
 
-            data.forEach((row, rowIndex) => {
-                const titleKey = headers[1] || headers[0];
-                const badgeKey = headers[0];
+            data.forEach(row => {
+                // Synthesizing title items cleanly 
+                const titleC = (row['Title (C)'] || '').trim();
+                const titleE = (row['Title (E)'] || '').trim();
+                let masterTitle = '';
+                if (titleC && titleE) masterTitle = `${titleC} (${titleE})`;
+                else masterTitle = titleC || titleE || 'Untitled Work';
+
+                // Synthesizing composer configurations
+                const compC = (row['Composer (C)'] || '').trim();
+                const compE = (row['Composer (E)'] || '').trim();
+                let masterComposer = '';
+                if (compC && compE) masterComposer = `${compC} ${compE}`;
+                else masterComposer = compC || compE || '';
+
+                // Synthesizing instrumental grouping profiles
+                const voice = (row['Voice Type'] || '').trim();
+                const instruments = (row['Instrument(s)'] || '').trim();
+                let masterInstrumentation = '';
+                if (voice && instruments) masterInstrumentation = `${voice}, ${instruments}`;
+                else masterInstrumentation = voice || instruments || '';
+
+                // Synthesizing Lyrics strings
+                const textC = (row['Text (C)'] || '').trim();
+                const textE = (row['Text (E)'] || '').trim();
+                let masterLyrics = '';
+                if (textC && textE) masterLyrics = `${textC} / ${textE}`;
+                else masterLyrics = textC || textE || '';
+
+                // Synthesizing textual composition types
+                const textType = (row['Text-type'] || '').trim();
+                const textFirst = (row['Text-first'] || '').trim();
+                let masterTextType = '';
+                if (textType && textFirst) masterTextType = `${textType} [${textFirst}]`;
+                else masterTextType = textType || textFirst || '';
+
+                // Extract operational links checking elements
+                const mediaLink = (row['Media Link'] || '').trim();
+                const year = (row['Year'] || '').trim();
+                const duration = (row['Duration'] || '').trim();
+                const publisher = (row['Publisher'] || '').trim();
+                const notes = (row['Notes'] || '').trim();
+                const premiere = (row['Premiere'] || '').trim();
+                const perusal = (row['Perusal Score'] || '').trim();
+
+                const hasMedia = mediaLink !== '';
+
+                // Conditional block elements array map parsing helper
+                let fieldsHtml = '';
+                if (year) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Year:</span> <span class="text-slate-700 font-medium">${year}</span></p>`;
+                if (masterComposer) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Composer:</span> <span class="text-slate-700 font-medium">${masterComposer}</span></p>`;
+                if (masterInstrumentation) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Instrumentation:</span> <span class="text-slate-700 font-medium">${masterInstrumentation}</span></p>`;
+                if (duration) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Duration:</span> <span class="text-slate-700 font-medium">${duration}</span></p>`;
+                if (masterLyrics) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Lyrics:</span> <span class="text-slate-700 font-medium">${masterLyrics}</span></p>`;
+                if (masterTextType) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Text Type:</span> <span class="text-slate-700 font-medium">${masterTextType}</span></p>`;
+                if (publisher) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Publisher:</span> <span class="text-slate-700 font-medium">${publisher}</span></p>`;
+                if (notes) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Notes:</span> <span class="text-slate-700 font-medium">${notes}</span></p>`;
+                if (premiere) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Premiere:</span> <span class="text-slate-700 font-medium">${premiere}</span></p>`;
+                if (perusal) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Perusal Score:</span> <span class="text-slate-700 font-medium">${perusal}</span></p>`;
+
+                // Create full interactive wrapper shells conditional on link availability
+                const wrapperStart = hasMedia 
+                    ? `<a href="${mediaLink}" target="_blank" rel="noopener noreferrer" class="group block bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs hover:shadow-md hover:border-blue-300 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+                       <span class="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity text-blue-500">
+                           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                       </span>`
+                    : `<div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs transition-all duration-300">`;
                 
-                const cardTitle = row[titleKey] || `Record ID: ${row[badgeKey] || rowIndex + 1}`;
-                const badgeText = row[badgeKey] || '';
+                const wrapperEnd = hasMedia ? `</a>` : `</div>`;
 
                 let cardHtml = `
-                    <div class="bg-white border border-slate-200/80 rounded-2xl shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col justify-between">
-                        <div>
-                            ${badgeText ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 mb-3 border border-slate-200/60 uppercase tracking-wide">${badgeText}</span>` : ''}
-                            <h3 class="text-lg font-bold text-slate-900 mb-4 line-clamp-2">${cardTitle}</h3>
-                            <div class="space-y-2 text-xs border-t border-slate-100 pt-3">
-                `;
-
-                headers.forEach(header => {
-                    if (header === titleKey || header === badgeKey) return;
-                    const value = row[header] || '—';
-                    cardHtml += `
-                        <div class="flex items-start justify-between gap-4">
-                            <span class="text-slate-400 font-semibold shrink-0">${header}:</span>
-                            <span class="text-slate-700 text-right font-medium break-all">${value}</span>
+                    ${wrapperStart}
+                        <h3 class="text-xl font-bold text-slate-900 mb-4 pr-6 ${hasMedia ? 'group-hover:text-blue-600 transition-colors' : ''}">${masterTitle}</h3>
+                        <div class="space-y-2 text-sm border-t border-slate-100 pt-3">
+                            ${fieldsHtml}
                         </div>
-                    `;
-                });
-
-                cardHtml += `
-                            </div>
-                        </div>
-                    </div>
+                    ${wrapperEnd}
                 `;
                 
                 cardsLayoutEl.insertAdjacentHTML('beforeend', cardHtml);
             });
         }
 
-        // Event Handling
-        searchInput.addEventListener('input', processDataDisplay);
-        sortDropdown.addEventListener('change', processDataDisplay);
+        // Binds event listeners
+        searchInput.addEventListener('input', processDashboardEngine);
+        sortDropdown.addEventListener('change', processDashboardEngine);
         
         resetBtn.addEventListener('click', () => {
             searchInput.value = '';
-            sortDropdown.value = 'entry_desc';
-            processDataDisplay();
+            sortDropdown.value = 'latest_entry';
+            processDashboardEngine();
         });
 
+        // Initialize App
         init();
     </script>
 </body>
