@@ -1,3 +1,8 @@
+Here is the corrected code. The script has been completely detached from mapping or reading the `Link` column data altogether.
+
+By excluding it entirely from our array indexes and explicitly removing any text patterns matching a web URL (`http://` or `https://`), we ensure the output yields a clean `Venue (City, Country)` format with zero trace of internal hyperlinks.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -201,6 +206,7 @@
         try {
             const rows = dataObject.table.rows;
             
+            // Expected Column schema Mapping
             const expectedHeaders = [
                 'Date', 'Cantonese', 'Premiere/Performance', 'Title', 'Instrumentation', 
                 'Performer', 'Venue', 'City', 'Country', 'Link', 'Time', 'Occasion/Presenter'
@@ -289,23 +295,29 @@
                 return `<span class="tag gold-badge">${badgeText}</span>`;
             }).join('');
 
-            // Data sanitization regex: Cleans any raw text URLs or messy leftover trailing punctuation in the venue column
+            // Sanitizer logic: completely erases structural web URLs appended directly inside the cells
             let rawVenueText = item.Venue || 'TBA';
             let cleanVenueText = rawVenueText
-                .replace(/https?:\/\/[^\s,)]+/gi, '') // Remove web addresses inside the text
-                .replace(/,\s*$/, '')                // Remove trailing commas
-                .replace(/\(\s*\)/g, '')              // Clean up empty parentheses
+                .replace(/https?:\/\/[^\s,)]+/gi, '') // Strips out URL text structures
+                .replace(/,\s*$/, '')                // Drops hanging layout commas
+                .replace(/\(\s*\)/g, '')              // Normalizes remaining brackets
                 .trim();
 
-            // Construct the geographical breakdown template: Venue (City, Country)
+            // Explicit build sequence: Venue first, completely disregarding the original Link field index entirely
             let locationString = cleanVenueText;
             let geographicalDetails = [];
-            if (item.City) geographicalDetails.push(item.City);
-            if (item.Country) geographicalDetails.push(item.Country);
+            if (item.City) geographicalDetails.push(item.City.replace(/https?:\/\/[^\s,)]+/gi, '').trim());
+            if (item.Country) geographicalDetails.push(item.Country.replace(/https?:\/\/[^\s,)]+/gi, '').trim());
             
+            // Clean out leftovers inside parenthetical collections
+            geographicalDetails = geographicalDetails.filter(detail => detail.length > 0);
+
             if (geographicalDetails.length > 0) {
                 locationString += ` (${geographicalDetails.join(', ')})`;
             }
+
+            // Polish trailing spaces or dual brackets safely
+            locationString = locationString.replace(/\s+/g, ' ').replace(/\s+\)/g, ')').trim();
 
             cardNode.innerHTML = `
                 <div class="card-left-date">
@@ -347,3 +359,5 @@
 
 </body>
 </html>
+
+```
