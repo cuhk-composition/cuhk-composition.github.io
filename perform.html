@@ -29,7 +29,6 @@
             margin: 0 auto;
         }
 
-        /* Title layout matching Screenshot 2026-06-02 at 12.39.01 AM.jpg */
         h1.section-title {
             font-size: 24px;
             font-weight: bold;
@@ -49,7 +48,6 @@
             background-color: var(--accent-orange);
         }
 
-        /* Search input bar wrapper styles */
         .search-block {
             margin-bottom: 24px;
         }
@@ -70,13 +68,11 @@
             box-shadow: 0 0 0 2px rgba(217, 155, 38, 0.15);
         }
 
-        /* Cards List container structure */
         .concerts-list {
             display: flex;
             flex-direction: column;
         }
 
-        /* Layout structure mirroring Screenshot 2026-06-02 at 12.39.01 AM.jpg */
         .concert-card {
             display: flex;
             border-bottom: 1px solid var(--border-gray);
@@ -84,7 +80,6 @@
             gap: 24px;
         }
 
-        /* Left-side Date block layout */
         .card-left-date {
             min-width: 110px;
             text-align: center;
@@ -113,7 +108,6 @@
             color: var(--text-secondary);
         }
 
-        /* Right-side dynamic parameters container */
         .card-right-content {
             flex-grow: 1;
         }
@@ -153,7 +147,6 @@
             margin-bottom: 14px;
         }
 
-        /* Badge/Tags configuration styles */
         .concert-tags {
             display: flex;
             flex-wrap: wrap;
@@ -178,7 +171,6 @@
             padding: 3px 9px;
         }
 
-        /* Dynamic Feedback system element states */
         .status-message {
             text-align: center;
             padding: 48px;
@@ -193,7 +185,7 @@
     <h1 class="section-title">Concerts List</h1>
 
     <div class="search-block">
-        <input type="text" id="concertSearch" class="search-bar" placeholder="Loading data..." disabled>
+        <input type="text" id="concertSearch" class="search-bar" placeholder="Loading dynamic feed..." disabled>
     </div>
 
     <div id="concertsContainer" class="concerts-list"></div>
@@ -201,30 +193,14 @@
 </div>
 
 <script>
-    // Google Visualization API endpoint targeting your specific Spreadsheet ID and Tab GID
-    const SPREADSHEET_ID = '1ewOnbKddBpx4YFSQpfvhOvmJCznhGzdcS2DyMFp7d08';
-    const GID = '1551264105';
-    const JSON_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
-
     let globalConcertsDataset = [];
 
-    // Fetches and parses standard raw JSON response from open read-only spreadsheets
-    async function loadLiveSpreadsheetData() {
+    // 1. Define the Global Callback Function that Google Sheets will reply to
+    window.handleGoogleSheetResponse = function(dataObject) {
         try {
-            const response = await fetch(JSON_URL);
-            if (!response.ok) throw new Error("Could not reach sheet endpoint.");
-            
-            const rawText = await response.text();
-            
-            // Clean Google's standard protective JSON wrapper string block: "/*O_o*/ google.visualization.Query.setResponse({...});"
-            const jsonString = rawText.substring(rawText.indexOf("{"), rawText.lastIndexOf("}") + 1);
-            const dataObject = JSON.parse(jsonString);
-            
             const rows = dataObject.table.rows;
-            const cols = dataObject.table.cols;
-
-            // Generate an index map based on column labels or systematic assignment
-            // Columns sequence: Date (A), Cantonese (B), Premiere/Performance (C), Title (D), Instrumentation (E), Performer (F), Venue (G), City (H), Country (I), Link (J), Time (K), Occasion/Presenter (L)
+            
+            // Map the custom columns cleanly
             const expectedHeaders = [
                 'Date', 'Cantonese', 'Premiere/Performance', 'Title', 'Instrumentation', 
                 'Performer', 'Venue', 'City', 'Country', 'Link', 'Time', 'Occasion/Presenter'
@@ -234,7 +210,6 @@
                 let item = {};
                 expectedHeaders.forEach((header, index) => {
                     const cellValue = row.c[index];
-                    // Handle complex cell format structures natively
                     if (cellValue && cellValue.f) {
                         item[header] = cellValue.f.trim();
                     } else if (cellValue && cellValue.v !== null && cellValue.v !== undefined) {
@@ -244,30 +219,45 @@
                     }
                 });
                 return item;
-            }).filter(item => item.Date && item.Title); // Render valid items with an entry date and title present
+            }).filter(item => item.Date && item.Title); // Filter out empty rows
 
-            // Enable interface components
+            // Activate Search Input
             document.getElementById('concertSearch').disabled = false;
-            document.getElementById('concertSearch').placeholder = "Type keywords here to filter schedule contents...";
+            document.getElementById('concertSearch').placeholder = "Type keywords here to filter schedule...";
             
             displayConcerts(globalConcertsDataset);
 
         } catch (error) {
             console.error(error);
-            document.getElementById('statusAlert').innerText = "Syncing failed. Double check your spreadsheet share settings are set to 'Anyone with the link can view'.";
+            document.getElementById('statusAlert').innerText = "Data parsing error. Please check your columns layout.";
         }
+    };
+
+    // 2. Inject Data Request dynamically as a script tag to prevent browser CORS blockages
+    function initLiveFetch() {
+        const spreadsheetId = '1ewOnbKddBpx4YFSQpfvhOvmJCznhGzdcS2DyMFp7d08';
+        const gid = '1551264105';
+        
+        // This endpoint bypasses CORS and triggers handleGoogleSheetResponse directly
+        const jsonpUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=responseHandler:handleGoogleSheetResponse&gid=${gid}`;
+        
+        const scriptElement = document.createElement('script');
+        scriptElement.src = jsonpUrl;
+        scriptElement.onerror = function() {
+            document.getElementById('statusAlert').innerText = "Failed to communicate with Google Sheets. Confirm 'Anyone with the link can view' is set.";
+        };
+        document.body.appendChild(scriptElement);
     }
 
-    // Displays processed rows mapping layout blocks dynamically 
+    // Render Cards UI
     function displayConcerts(itemsList) {
         const listContainer = document.getElementById('concertsContainer');
         const statusAlert = document.getElementById('statusAlert');
-        
         listContainer.innerHTML = '';
 
         if (itemsList.length === 0) {
             statusAlert.style.display = 'block';
-            statusAlert.innerText = "No upcoming concert items found matching that term.";
+            statusAlert.innerText = "No concert items found matching that query.";
             return;
         } else {
             statusAlert.style.display = 'none';
@@ -277,27 +267,17 @@
             const cardNode = document.createElement('div');
             cardNode.className = 'concert-card';
 
-            // Split dynamic date formats gracefully (e.g. "2026-06-06" or formatted text variants)
             let year = '2026';
             let monthDayStr = item.Date;
             if (item.Date.includes('-')) {
                 const parts = item.Date.split('-');
                 year = parts[0];
                 monthDayStr = (parts[1] && parts[2]) ? `${parts[1]}/${parts[2]}` : item.Date;
-            } else if (item.Date.includes('/')) {
-                const parts = item.Date.split('/');
-                if (parts[0].length === 4) {
-                    year = parts[0];
-                    monthDayStr = `${parts[1]}/${parts[2]}`;
-                }
             }
             
             const timeDisplay = item.Time || 'TBA';
+            const descriptionContent = `Concert features a performance of <strong>"${item.Title}"</strong> arranged ${item.Instrumentation || ''}. Brought to stage by ${item.Performer || 'various artists'} at ${item.Venue || 'the designated venue'}. ${item['Occasion/Presenter'] ? 'Presented on the occasion of: ' + item['Occasion/Presenter'] + '.' : ''}`;
 
-            // Custom description string block concatenation 
-            const descriptionContent = `Concert presentation features a performance of <strong>"${item.Title}"</strong> arranged ${item.Instrumentation || ''}. Brought to stage by ${item.Performer || 'various artists'} located at ${item.Venue || 'the designated venue'}. ${item['Occasion/Presenter'] ? 'Presented on the occasion of: ' + item['Occasion/Presenter'] + '.' : ''}`;
-
-            // Handle badge assignments matching screenshot design specifications
             let badgesArr = [];
             if (item['Premiere/Performance']) badgesArr.push({ text: item['Premiere/Performance'], type: 'yellow' });
             if (item.Instrumentation) badgesArr.push({ text: item.Instrumentation.replace(/^for\s+/i, ''), type: 'yellow' });
@@ -308,7 +288,6 @@
                 return `<span class="tag ${modifierClass}">${badge.text}</span>`;
             }).join('');
 
-            // Assign structural hyperlink configurations conditionally to the Venue label
             const venueElement = item.Link 
                 ? `<a href="${item.Link}" target="_blank">${item.Venue || 'View Event Link'}</a>`
                 : (item.Venue || 'TBA');
@@ -321,32 +300,36 @@
                 </div>
                 <div class="card-right-content">
                     <h2 class="concert-title">${item.Title}</h2>
-                    
                     <div class="concert-meta">
                         <span class="meta-node location">${item.City || 'Osaka'}${item.Country ? ', ' + item.Country : ''}</span>
                         <span class="meta-node hall">${venueElement}</span>
                     </div>
-
-                    <div class="concert-desc">
-                        ${descriptionContent}
-                    </div>
-
-                    <div class="concert-tags">
-                        ${tagsHTML}
-                    </div>
+                    <div class="concert-desc">${descriptionContent}</div>
+                    <div class="concert-tags">${tagsHTML}</div>
                 </div>
             `;
             listContainer.appendChild(cardNode);
         });
     }
 
-    // Search query monitoring logic 
+    // Filter Logic
     document.getElementById('concertSearch').addEventListener('input', function(event) {
         const filterToken = event.target.value.toLowerCase().trim();
-        
         const matchingConcerts = globalConcertsDataset.filter(concert => {
             return (
                 (concert.Title && concert.Title.toLowerCase().includes(filterToken)) ||
                 (concert.Venue && concert.Venue.toLowerCase().includes(filterToken)) ||
                 (concert.Performer && concert.Performer.toLowerCase().includes(filterToken)) ||
-                (concert.Instrumentation && concert.Instrumentation.toLowerCase().
+                (concert.Instrumentation && concert.Instrumentation.toLowerCase().includes(filterToken)) ||
+                (concert.City && concert.City.toLowerCase().includes(filterToken))
+            );
+        });
+        displayConcerts(matchingConcerts);
+    });
+
+    // Start Live Sync Process on DOM Load
+    window.addEventListener('DOMContentLoaded', initLiveFetch);
+</script>
+
+</body>
+</html>
