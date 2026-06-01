@@ -123,12 +123,25 @@
             flex-grow: 1;
         }
 
+        .concert-title-container {
+            margin: 0 0 10px 0;
+            line-height: 1.3;
+        }
+
         .concert-title {
             font-size: 20px;
             font-weight: bold;
-            margin: 0 0 10px 0;
-            line-height: 1.3;
             color: var(--primary-purple);
+            display: inline;
+        }
+
+        /* Clean descriptive styling for inline instrumentations next to title */
+        .concert-instrumentation {
+            font-size: 16px;
+            font-weight: normal;
+            color: var(--text-secondary);
+            margin-left: 8px;
+            display: inline;
         }
 
         .concert-meta {
@@ -201,7 +214,6 @@
         try {
             const rows = dataObject.table.rows;
             
-            // Expected Column schema Mapping
             const expectedHeaders = [
                 'Date', 'Cantonese', 'Premiere/Performance', 'Title', 'Instrumentation', 
                 'Performer', 'Venue', 'City', 'Country', 'Link', 'Time', 'Occasion/Presenter'
@@ -218,8 +230,9 @@
                         val = String(cellValue.v).trim();
                     }
                     
+                    // Fixed: Specifically isolate and strip ONLY double quotes (""), leaving single quotes (') completely intact
                     if (header === 'Title') {
-                        val = val.replace(/^["'“”裝‘’]+|["'指標“”裝‘’]+$/g, '').replace(/["'“”‘’]/g, '');
+                        val = val.replace(/^["“”]+|["“”]+$/g, '').replace(/["“”]/g, '');
                     }
                     item[header] = val;
                 });
@@ -277,41 +290,41 @@
             
             const timeDisplay = item.Time || 'TBA';
 
-            let descriptionContent = item.Performer ? `Performers: ${item.Performer}.` : 'Performers: TBA.';
+            // Fixed: Removed the trailing period logic after the performers' names block
+            let descriptionContent = item.Performer ? `Performers: ${item.Performer}` : 'Performers: TBA';
             if (item['Occasion/Presenter']) {
-                descriptionContent += ` ${item['Occasion/Presenter']}.`;
+                descriptionContent += ` | ${item['Occasion/Presenter']}`;
             }
 
+            // Setup Badges (Strictly single layout elements remaining like Premiere types)
             let badgesArr = [];
             if (item['Premiere/Performance']) badgesArr.push(item['Premiere/Performance']);
-            if (item.Instrumentation) badgesArr.push(item.Instrumentation.replace(/^for\s+/i, ''));
 
             const tagsHTML = badgesArr.map(badgeText => {
                 return `<span class="tag gold-badge">${badgeText}</span>`;
             }).join('');
 
-            // Sanitizer logic: completely erases structural web URLs appended directly inside the cells
+            // Instrumentation inline component build logic
+            const instrumentationText = item.Instrumentation ? `(${item.Instrumentation.trim()})` : '';
+
+            // Clean internal link details hidden inside text strings
             let rawVenueText = item.Venue || 'TBA';
             let cleanVenueText = rawVenueText
-                .replace(/https?:\/\/[^\s,)]+/gi, '') // Strips out URL text structures
-                .replace(/,\s*$/, '')                // Drops hanging layout commas
-                .replace(/\(\s*\)/g, '')              // Normalizes remaining brackets
+                .replace(/https?:\/\/[^\s,)]+/gi, '')
+                .replace(/,\s*$/, '')
+                .replace(/\(\s*\)/g, '')
                 .trim();
 
-            // Explicit build sequence: Venue first, completely disregarding the original Link field index entirely
             let locationString = cleanVenueText;
             let geographicalDetails = [];
             if (item.City) geographicalDetails.push(item.City.replace(/https?:\/\/[^\s,)]+/gi, '').trim());
             if (item.Country) geographicalDetails.push(item.Country.replace(/https?:\/\/[^\s,)]+/gi, '').trim());
             
-            // Clean out leftovers inside parenthetical collections
             geographicalDetails = geographicalDetails.filter(detail => detail.length > 0);
 
             if (geographicalDetails.length > 0) {
                 locationString += ` (${geographicalDetails.join(', ')})`;
             }
-
-            // Polish trailing spaces or dual brackets safely
             locationString = locationString.replace(/\s+/g, ' ').replace(/\s+\)/g, ')').trim();
 
             cardNode.innerHTML = `
@@ -321,7 +334,10 @@
                     <span class="date-time">${timeDisplay}</span>
                 </div>
                 <div class="card-right-content">
-                    <h2 class="concert-title">${item.Title}</h2>
+                    <div class="concert-title-container">
+                        <h2 class="concert-title">${item.Title}</h2>
+                        ${instrumentationText ? `<span class="concert-instrumentation">${instrumentationText}</span>` : ''}
+                    </div>
                     <div class="concert-meta">
                         <span class="meta-node location">${locationString}</span>
                     </div>
