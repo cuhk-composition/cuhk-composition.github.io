@@ -6,20 +6,20 @@
     <title>Concerts Schedule Catalog</title>
     <style>
         :root {
-            --accent-orange: #d99b26;
+            --accent-gold: #d99b26;
+            --primary-purple: #4a154b;
             --text-main: #222222;
             --text-secondary: #555555;
             --border-gray: #e2e2e2;
-            --tag-yellow-bg: #fff9e6;
-            --tag-yellow-text: #b37d14;
-            --tag-gray-bg: #ffffff;
-            --tag-gray-border: #cccccc;
+            --tag-gold-bg: #fff9e6;
+            --tag-gold-text: #b37d14;
+            --bg-off-white: #fcfbfa;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: var(--text-main);
-            background-color: #ffffff;
+            background-color: var(--bg-off-white);
             margin: 0;
             padding: 30px 20px;
         }
@@ -27,11 +27,16 @@
         .wrapper {
             max-width: 900px;
             margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
         h1.section-title {
             font-size: 24px;
             font-weight: bold;
+            color: var(--primary-purple);
             margin: 0 0 24px 0;
             display: inline-block;
             position: relative;
@@ -45,7 +50,7 @@
             bottom: 0;
             width: 100%;
             height: 3px;
-            background-color: var(--accent-orange);
+            background-color: var(--accent-gold);
         }
 
         .search-block {
@@ -64,8 +69,8 @@
         }
 
         .search-bar:focus {
-            border-color: var(--accent-orange);
-            box-shadow: 0 0 0 2px rgba(217, 155, 38, 0.15);
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 2px rgba(74, 21, 75, 0.15);
         }
 
         .concerts-list {
@@ -78,6 +83,10 @@
             border-bottom: 1px solid var(--border-gray);
             padding: 24px 0;
             gap: 24px;
+        }
+
+        .concert-card:last-child {
+            border-bottom: none;
         }
 
         .card-left-date {
@@ -93,12 +102,14 @@
             font-size: 13px;
             color: var(--text-secondary);
             margin-bottom: 4px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .date-day {
             font-size: 22px;
             font-weight: bold;
-            color: var(--text-main);
+            color: var(--primary-purple);
             margin-bottom: 2px;
             white-space: nowrap;
         }
@@ -117,7 +128,7 @@
             font-weight: bold;
             margin: 0 0 10px 0;
             line-height: 1.3;
-            color: #111111;
+            color: var(--primary-purple);
         }
 
         .concert-meta {
@@ -135,11 +146,8 @@
             gap: 4px;
         }
 
-        /* Adjusted Icons matching the requested layout update */
         .meta-node.location::before { content: "📍"; font-size: 12px; }
         .meta-node.hall::before { content: "📍"; font-size: 12px; }
-        .meta-node a { color: var(--text-secondary); text-decoration: none; }
-        .meta-node a:hover { text-decoration: underline; color: #0066cc; }
 
         .concert-desc {
             font-size: 14px;
@@ -158,18 +166,12 @@
             font-size: 12px;
             padding: 4px 10px;
             border-radius: 4px;
+            font-weight: 500;
         }
 
-        .tag.yellow-badge {
-            background-color: var(--tag-yellow-bg);
-            color: var(--tag-yellow-text);
-        }
-
-        .tag.gray-badge {
-            background-color: transparent;
-            border: 1px solid var(--tag-gray-border);
-            color: var(--text-secondary);
-            padding: 3px 9px;
+        .tag.gold-badge {
+            background-color: var(--tag-gold-bg);
+            color: var(--tag-gold-text);
         }
 
         .status-message {
@@ -216,9 +218,8 @@
                         val = String(cellValue.v).trim();
                     }
                     
-                    // Strip nested quotation marks from the title field
                     if (header === 'Title') {
-                        val = val.replace(/^["'“”‘’]+|["'“”‘’]+$/g, '').replace(/["'指標“”‘’]/g, '');
+                        val = val.replace(/^["'“”裝‘’]+|["'“”裝‘’]+$/g, '').replace(/["'“”‘’]/g, '');
                     }
                     item[header] = val;
                 });
@@ -226,7 +227,7 @@
             }).filter(item => item.Date && item.Title);
 
             document.getElementById('concertSearch').disabled = false;
-            document.getElementById('concertSearch').placeholder = "Type keywords here to filter schedule...";
+            document.getElementById('concertSearch').placeholder = "Search by name, premiere type, performer, instrumentation, or location...";
             
             displayConcerts(globalConcertsDataset);
 
@@ -276,25 +277,19 @@
             
             const timeDisplay = item.Time || 'TBA';
 
-            // Revised Description Content: Clear out filler prose and show strictly the performer text block
             let descriptionContent = item.Performer ? `Performers: ${item.Performer}.` : 'Performers: TBA.';
             if (item['Occasion/Presenter']) {
                 descriptionContent += ` ${item['Occasion/Presenter']}.`;
             }
 
+            // Setup Badges (Removed Cantonese badge completely)
             let badgesArr = [];
-            if (item['Premiere/Performance']) badgesArr.push({ text: item['Premiere/Performance'], type: 'yellow' });
-            if (item.Instrumentation) badgesArr.push({ text: item.Instrumentation.replace(/^for\s+/i, ''), type: 'yellow' });
-            if (item.Cantonese === 'Y' || item.Cantonese === 'Yes') badgesArr.push({ text: 'Cantonese Repertoire', type: 'gray' });
+            if (item['Premiere/Performance']) badgesArr.push(item['Premiere/Performance']);
+            if (item.Instrumentation) badgesArr.push(item.Instrumentation.replace(/^for\s+/i, ''));
 
-            const tagsHTML = badgesArr.map(badge => {
-                const modifierClass = badge.type === "gray" ? "gray-badge" : "yellow-badge";
-                return `<span class="tag ${modifierClass}">${badge.text}</span>`;
+            const tagsHTML = badgesArr.map(badgeText => {
+                return `<span class="tag gold-badge">${badgeText}</span>`;
             }).join('');
-
-            const venueElement = item.Link 
-                ? `<a href="${item.Link}" target="_blank">${item.Venue || 'View Event Link'}</a>`
-                : (item.Venue || 'TBA');
 
             cardNode.innerHTML = `
                 <div class="card-left-date">
@@ -306,7 +301,7 @@
                     <h2 class="concert-title">${item.Title}</h2>
                     <div class="concert-meta">
                         <span class="meta-node location">${item.City || 'Osaka'}${item.Country ? ', ' + item.Country : ''}</span>
-                        <span class="meta-node hall">${venueElement}</span>
+                        <span class="meta-node hall">${item.Venue || 'TBA'}</span>
                     </div>
                     <div class="concert-desc">${descriptionContent}</div>
                     <div class="concert-tags">${tagsHTML}</div>
@@ -316,6 +311,7 @@
         });
     }
 
+    // Interactive Multi-Field Keyword Filter Match Engine
     document.getElementById('concertSearch').addEventListener('input', function(event) {
         const filterToken = event.target.value.toLowerCase().trim();
         const matchingConcerts = globalConcertsDataset.filter(concert => {
@@ -324,7 +320,9 @@
                 (concert.Venue && concert.Venue.toLowerCase().includes(filterToken)) ||
                 (concert.Performer && concert.Performer.toLowerCase().includes(filterToken)) ||
                 (concert.Instrumentation && concert.Instrumentation.toLowerCase().includes(filterToken)) ||
-                (concert.City && concert.City.toLowerCase().includes(filterToken))
+                (concert.City && concert.City.toLowerCase().includes(filterToken)) ||
+                // Added structural check for premiere classifications ("World premiere", "Local premiere", etc.)
+                (concert['Premiere/Performance'] && concert['Premiere/Performance'].toLowerCase().includes(filterToken))
             );
         });
         displayConcerts(matchingConcerts);
