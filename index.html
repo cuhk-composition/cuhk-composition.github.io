@@ -1,42 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>粵語藝術歌曲資料 Cantonese Art Song Database</title>
+    <title>Vocal & Choral Repertoire Directory | 聲樂與合唱曲目名錄</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        /* Applying traditional Songti (Serif) typography for a classical aesthetic */
+        body {
+            font-family: "Times New Roman", "Songti TC", "Noto Serif TC", "Playfair Display", serif;
+        }
+    </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-900 selection:bg-blue-500 selection:text-white">
+<body class="bg-[#FAF9F6] text-slate-900 selection:bg-[#D4AF37] selection:text-white">
 
-    <div class="h-2 bg-gradient-to-r from-blue-700 via-indigo-600 to-teal-500"></div>
+    <div class="h-2 bg-gradient-to-r from-[#B3923E] via-[#D4AF37] to-[#F3E5AB]"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 pb-8 mb-8 gap-4">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between border-b border-[#D4AF37]/30 pb-8 mb-8 gap-4">
             <div>
-                <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">Repertoire Directory</h1>
-                <p class="mt-2 text-base text-slate-500 flex items-center gap-2">
-                    <span class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    Brought to you by cantonesecomposition.com (粵語現代音樂研究 Cantonese Contemporary Music Research)
+                <h1 class="text-4xl font-bold text-[#4A2E80] tracking-wide">聲樂與合唱曲目名錄</h1>
+                <p class="text-xl font-medium text-[#B3923E] mt-1 tracking-wider">Vocal & Choral Repertoire Directory</p>
+                <p class="mt-3 text-xs text-slate-400 flex items-center gap-2">
+                    <span class="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Dynamically synced with Google Sheets
                 </p>
             </div>
-            <div class="bg-white px-5 py-3 rounded-xl border border-slate-200/80 shadow-xs flex items-center gap-3 w-fit">
+            <div class="bg-white px-5 py-3 rounded-xl border border-slate-200 shadow-xs flex items-center gap-3 w-fit">
                 <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Entries / 總數</span>
-                <span id="recordCount" class="text-2xl font-black text-blue-600">0</span>
+                <span id="recordCount" class="text-2xl font-bold text-[#4A2E80]">0</span>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-2xl shadow-xs border border-slate-200/80 mb-8 flex flex-col md:flex-row gap-4 items-end">
+        <div class="bg-white p-6 rounded-2xl shadow-xs border border-slate-200/60 mb-8 flex flex-col md:flex-row gap-4 items-end">
             <div class="w-full md:flex-1">
-                <label for="searchInput" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Search Catalog / 搜尋目錄</label>
+                <label for="searchInput" class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Search Catalog / 搜尋目錄</label>
                 <input type="text" id="searchInput" placeholder="Search title, composer, instrumentation, text type..." 
-                    class="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm font-medium">
+                    class="w-full px-4 py-3 bg-[#FAF9F6] border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-[#4A2E80] focus:border-[#4A2E80] transition-all text-sm font-medium">
             </div>
             
             <div class="w-full md:w-72">
-                <label for="sortDropdown" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Sort By / 排序方式</label>
-                <select id="sortDropdown" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-hidden focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                <label for="sortDropdown" class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Sort By / 排序方式</label>
+                <select id="sortDropdown" class="w-full bg-[#FAF9F6] border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-hidden focus:ring-2 focus:ring-[#4A2E80] cursor-pointer">
                     <option value="latest_entry">最新加入 Latest Entry First</option>
                     <option value="earliest_entry">最先加入 Earliest Entry First</option>
                     <option value="year_latest">年份最近 Year: Latest First</option>
@@ -50,7 +57,7 @@
         </div>
 
         <div id="loading" class="flex flex-col justify-center items-center py-24">
-            <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-blue-600"></div>
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-[#4A2E80]"></div>
             <span class="mt-4 text-sm font-semibold text-slate-500 tracking-wide">Streaming real-time entries...</span>
         </div>
 
@@ -81,14 +88,12 @@
     </div>
 
     <script>
-        // Mapped directly to your customized workspace data repository ID
         const sheetId = '1ClxNbtnTS94u7WqscJZcY3d5MaBYyJZTwvI5eWrtWZ8';
         const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
 
         let globalData = [];
         let headers = [];
 
-        // Selecting DOM elements
         const loadingEl = document.getElementById('loading');
         const errorEl = document.getElementById('error');
         const gridContainerEl = document.getElementById('gridContainer');
@@ -106,8 +111,6 @@
                 skipEmptyLines: true,
                 complete: function(results) {
                     headers = results.meta.fields;
-                    
-                    // Capture natural index tracking parameter rows 
                     globalData = results.data.map((row, index) => ({
                         ...row,
                         __naturalIndex: index
@@ -133,26 +136,17 @@
             errorEl.classList.remove('hidden');
         }
 
-        // Processing matching routines & active structural array shifts
         function processDashboardEngine() {
             const query = searchInput.value.toLowerCase().trim();
             const sortingType = sortDropdown.value;
 
-            // Omnisearch execution checking cross-column items
             let items = globalData.filter(row => {
                 return headers.some(h => String(row[h] || '').toLowerCase().includes(query));
             });
 
-            // Sorting logic engine mapping explicitly onto specified requirements
             items.sort((a, b) => {
-                if (sortingType === 'latest_entry') {
-                    return b.__naturalIndex - a.__naturalIndex; // Newest sheet row indexing first
-                }
-                if (sortingType === 'earliest_entry') {
-                    return a.__naturalIndex - b.__naturalIndex; // Earliest sheet row tracking first
-                }
-                
-                // Year string evaluation logic parameters
+                if (sortingType === 'latest_entry') return b.__naturalIndex - a.__naturalIndex;
+                if (sortingType === 'earliest_entry') return a.__naturalIndex - b.__naturalIndex;
                 if (sortingType === 'year_latest' || sortingType === 'year_oldest') {
                     const yearA = parseYearValue(a['Year']);
                     const yearB = parseYearValue(b['Year']);
@@ -164,7 +158,6 @@
             renderCatalogCards(items);
         }
 
-        // Helper string parser dealing with numeric variations like '2015/25' seamlessly
         function parseYearValue(yearStr) {
             if (!yearStr) return 0;
             const corePart = String(yearStr).split('/')[0];
@@ -172,7 +165,6 @@
             return isNaN(parsedInt) ? 0 : parsedInt;
         }
 
-        // Custom Layout Card Engine logic following strict item configurations 
         function renderCatalogCards(data) {
             cardsLayoutEl.innerHTML = '';
             recordCountEl.textContent = data.length;
@@ -184,42 +176,33 @@
             noResultsEl.classList.add('hidden');
 
             data.forEach(row => {
-                // Synthesizing title items cleanly 
                 const titleC = (row['Title (C)'] || '').trim();
                 const titleE = (row['Title (E)'] || '').trim();
-                let masterTitle = '';
-                if (titleC && titleE) masterTitle = `${titleC} (${titleE})`;
-                else masterTitle = titleC || titleE || 'Untitled Work';
 
-                // Synthesizing composer configurations
                 const compC = (row['Composer (C)'] || '').trim();
                 const compE = (row['Composer (E)'] || '').trim();
                 let masterComposer = '';
                 if (compC && compE) masterComposer = `${compC} ${compE}`;
                 else masterComposer = compC || compE || '';
 
-                // Synthesizing instrumental grouping profiles
                 const voice = (row['Voice Type'] || '').trim();
                 const instruments = (row['Instrument(s)'] || '').trim();
                 let masterInstrumentation = '';
                 if (voice && instruments) masterInstrumentation = `${voice}, ${instruments}`;
                 else masterInstrumentation = voice || instruments || '';
 
-                // Synthesizing Lyrics strings
                 const textC = (row['Text (C)'] || '').trim();
                 const textE = (row['Text (E)'] || '').trim();
                 let masterLyrics = '';
                 if (textC && textE) masterLyrics = `${textC} / ${textE}`;
                 else masterLyrics = textC || textE || '';
 
-                // Synthesizing textual composition types
                 const textType = (row['Text-type'] || '').trim();
                 const textFirst = (row['Text-first'] || '').trim();
                 let masterTextType = '';
                 if (textType && textFirst) masterTextType = `${textType} [${textFirst}]`;
                 else masterTextType = textType || textFirst || '';
 
-                // Extract operational links checking elements
                 const mediaLink = (row['Media Link'] || '').trim();
                 const year = (row['Year'] || '').trim();
                 const duration = (row['Duration'] || '').trim();
@@ -230,34 +213,54 @@
 
                 const hasMedia = mediaLink !== '';
 
-                // Conditional block elements array map parsing helper
-                let fieldsHtml = '';
-                if (year) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Year:</span> <span class="text-slate-700 font-medium">${year}</span></p>`;
-                if (masterComposer) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Composer:</span> <span class="text-slate-700 font-medium">${masterComposer}</span></p>`;
-                if (masterInstrumentation) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Instrumentation:</span> <span class="text-slate-700 font-medium">${masterInstrumentation}</span></p>`;
-                if (duration) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Duration:</span> <span class="text-slate-700 font-medium">${duration}</span></p>`;
-                if (masterLyrics) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Lyrics:</span> <span class="text-slate-700 font-medium">${masterLyrics}</span></p>`;
-                if (masterTextType) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Text Type:</span> <span class="text-slate-700 font-medium">${masterTextType}</span></p>`;
-                if (publisher) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Publisher:</span> <span class="text-slate-700 font-medium">${publisher}</span></p>`;
-                if (notes) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Notes:</span> <span class="text-slate-700 font-medium">${notes}</span></p>`;
-                if (premiere) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Premiere:</span> <span class="text-slate-700 font-medium">${premiere}</span></p>`;
-                if (perusal) fieldsHtml += `<p><span class="text-slate-400 font-semibold">Perusal Score:</span> <span class="text-slate-700 font-medium">${perusal}</span></p>`;
+                // Building clean modular table rows dynamically (Omit if cell blank)
+                let rowsArray = [];
+                if (year) rowsArray.push(['Year', year]);
+                if (masterComposer) rowsArray.push(['Composer', masterComposer]);
+                if (masterInstrumentation) rowsArray.push(['Instrumentation', masterInstrumentation]);
+                if (duration) rowsArray.push(['Duration', duration]);
+                if (masterLyrics) rowsArray.push(['Lyrics', masterLyrics]);
+                if (masterTextType) rowsArray.push(['Text Type', masterTextType]);
+                if (publisher) rowsArray.push(['Publisher', publisher]);
+                if (notes) rowsArray.push(['Notes', notes]);
+                if (premiere) rowsArray.push(['Premiere', premiere]);
+                if (perusal) rowsArray.push(['Perusal Score', perusal]);
 
-                // Create full interactive wrapper shells conditional on link availability
+                let tableRowsHtml = '';
+                rowsArray.forEach(([label, val]) => {
+                    tableRowsHtml += `
+                        <tr class="border-b border-slate-100 last:border-0">
+                            <td class="py-2 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top">${label}:</td>
+                            <td class="py-2 text-slate-700 font-medium text-sm align-top">${val}</td>
+                        </tr>
+                    `;
+                });
+
+                // Structured layouts optimized for standard link clicks
+                const baseClasses = "bg-white border border-slate-200 rounded-2xl p-6 shadow-xs transition-all duration-300 flex flex-col justify-between";
                 const wrapperStart = hasMedia 
-                    ? `<a href="${mediaLink}" target="_blank" rel="noopener noreferrer" class="group block bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs hover:shadow-md hover:border-blue-300 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
-                       <span class="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity text-blue-500">
-                           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    ? `<a href="${mediaLink}" target="_blank" rel="noopener noreferrer" class="${baseClasses} group hover:shadow-md hover:border-[#B3923E] hover:-translate-y-1 relative overflow-hidden">
+                       <span class="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity text-[#B3923E]">
+                           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                        </span>`
-                    : `<div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs transition-all duration-300">`;
+                    : `<div class="${baseClasses}">`;
                 
                 const wrapperEnd = hasMedia ? `</a>` : `</div>`;
 
                 let cardHtml = `
                     ${wrapperStart}
-                        <h3 class="text-xl font-bold text-slate-900 mb-4 pr-6 ${hasMedia ? 'group-hover:text-blue-600 transition-colors' : ''}">${masterTitle}</h3>
-                        <div class="space-y-2 text-sm border-t border-slate-100 pt-3">
-                            ${fieldsHtml}
+                        <div>
+                            <div class="mb-4">
+                                ${titleC ? `<h3 class="text-xl font-bold text-[#4A2E80] leading-snug">${titleC}</h3>` : ''}
+                                ${titleE ? `<p class="text-md font-medium text-[#B3923E] mt-0.5 leading-snug">${titleE}</p>` : ''}
+                                ${(!titleC && !titleE) ? `<h3 class="text-xl font-bold text-slate-400">Untitled Work</h3>` : ''}
+                            </div>
+                            
+                            <table class="w-full border-collapse mt-2">
+                                <tbody>
+                                    ${tableRowsHtml}
+                                </tbody>
+                            </table>
                         </div>
                     ${wrapperEnd}
                 `;
@@ -266,7 +269,6 @@
             });
         }
 
-        // Binds event listeners
         searchInput.addEventListener('input', processDashboardEngine);
         sortDropdown.addEventListener('change', processDashboardEngine);
         
@@ -276,7 +278,6 @@
             processDashboardEngine();
         });
 
-        // Initialize App
         init();
     </script>
 </body>
