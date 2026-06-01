@@ -194,7 +194,7 @@
                 const textC = (row['Text (C)'] || '').trim();
                 const textE = (row['Text (E)'] || '').trim();
                 let masterLyrics = '';
-                if (textC && textE) masterLyrics = `${textC} / ${textE}`;
+                if (textC && textE) masterLyrics = `${textC} ${textE}`;
                 else masterLyrics = textC || textE || '';
 
                 const textType = (row['Text-type'] || '').trim();
