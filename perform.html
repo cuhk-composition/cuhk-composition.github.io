@@ -29,7 +29,7 @@
             margin: 0 auto;
         }
 
-        /* Title layout exactly matching Screenshot 2026-06-02 at 12.39.01 AM.jpg */
+        /* Title layout matching Screenshot 2026-06-02 at 12.39.01 AM.jpg */
         h1.section-title {
             font-size: 24px;
             font-weight: bold;
@@ -76,7 +76,7 @@
             flex-direction: column;
         }
 
-        /* Layout structure mirroring Screenshot 2026-06-02 at 12.39.01 AM.jpg */
+        /* Layout structure mirroring Screenshot 2026-06-02 at 12.39.01 AM.jpg */
         .concert-card {
             display: flex;
             border-bottom: 1px solid var(--border-gray);
@@ -190,78 +190,63 @@
 <body>
 
 <div class="wrapper">
-    <!-- Header title component from template screenshot -->
     <h1 class="section-title">Concerts List</h1>
 
-    <!-- Real-time keyword filter element panel block -->
     <div class="search-block">
-        <input type="text" id="concertSearch" class="search-bar" placeholder="Search live by concert name, instrumentation, performer, city, or venue..." disabled>
+        <input type="text" id="concertSearch" class="search-bar" placeholder="Loading data..." disabled>
     </div>
 
-    <!-- Live layout insertion target node -->
     <div id="concertsContainer" class="concerts-list"></div>
     <div id="statusAlert" class="status-message">Loading live schedule data from Google Sheets...</div>
 </div>
 
 <script>
-    // Live Sheets CSV API export path URL configuration using your specific GID tab
-    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1ewOnbKddBpx4YFSQpfvhOvmJCznhGzdcS2DyMFp7d08/export?format=csv&gid=1551264105";
+    // Google Visualization API endpoint targeting your specific Spreadsheet ID and Tab GID
+    const SPREADSHEET_ID = '1ewOnbKddBpx4YFSQpfvhOvmJCznhGzdcS2DyMFp7d08';
+    const GID = '1551264105';
+    const JSON_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
 
     let globalConcertsDataset = [];
 
-    // Simple CSV parser implementation handling text quotes and commas safely
-    function parseCSV(text) {
-        let lines = [];
-        let row = [""];
-        let inQuotes = false;
-
-        for (let i = 0; i < text.length; i++) {
-            let c = text[i];
-            let next = text[i+1];
-            if (c === '"') {
-                if (inQuotes && next === '"') { row[row.length - 1] += '"'; i++; }
-                else { inQuotes = !inQuotes; }
-            } else if (c === ',' && !inQuotes) {
-                row.push('');
-            } else if ((c === '\r' || c === '\n') && !inQuotes) {
-                if (c === '\r' && next === '\n') { i++; }
-                lines.push(row);
-                row = [''];
-            } else {
-                row[row.length - 1] += c;
-            }
-        }
-        if (row.length > 1 || row[0] !== '') { lines.push(row); }
-        return lines;
-    }
-
-    // Dynamic asynchronous spreadsheet download engine
+    // Fetches and parses standard raw JSON response from open read-only spreadsheets
     async function loadLiveSpreadsheetData() {
         try {
-            const response = await fetch(SHEET_CSV_URL);
-            if (!response.ok) throw new Error("Failed to download sheet feed.");
+            const response = await fetch(JSON_URL);
+            if (!response.ok) throw new Error("Could not reach sheet endpoint.");
             
-            const rawCsvText = await response.text();
-            const csvRows = parseCSV(rawCsvText);
-
-            if (csvRows.length < 2) {
-                document.getElementById('statusAlert').innerText = "Spreadsheet tab appears to be empty.";
-                return;
-            }
-
-            // Map spreadsheet headers cleanly into an array of JSON objects
-            // Headers format: Date, Cantonese, Premiere/Performance, Title, Instrumentation, Performer, Venue, City, Country, Link, Time, Occasion/Presenter
-            const headers = csvRows[0].map(h => h.trim());
+            const rawText = await response.text();
             
-            globalConcertsDataset = csvRows.slice(1).map(row => {
-                let obj = {};
-                headers.forEach((header, index) => {
-                    obj[header] = row[index] ? row[index].trim() : '';
+            // Clean Google's standard protective JSON wrapper string block: "/*O_o*/ google.visualization.Query.setResponse({...});"
+            const jsonString = rawText.substring(rawText.indexOf("{"), rawText.lastIndexOf("}") + 1);
+            const dataObject = JSON.parse(jsonString);
+            
+            const rows = dataObject.table.rows;
+            const cols = dataObject.table.cols;
+
+            // Generate an index map based on column labels or systematic assignment
+            // Columns sequence: Date (A), Cantonese (B), Premiere/Performance (C), Title (D), Instrumentation (E), Performer (F), Venue (G), City (H), Country (I), Link (J), Time (K), Occasion/Presenter (L)
+            const expectedHeaders = [
+                'Date', 'Cantonese', 'Premiere/Performance', 'Title', 'Instrumentation', 
+                'Performer', 'Venue', 'City', 'Country', 'Link', 'Time', 'Occasion/Presenter'
+            ];
+
+            globalConcertsDataset = rows.map(row => {
+                let item = {};
+                expectedHeaders.forEach((header, index) => {
+                    const cellValue = row.c[index];
+                    // Handle complex cell format structures natively
+                    if (cellValue && cellValue.f) {
+                        item[header] = cellValue.f.trim();
+                    } else if (cellValue && cellValue.v !== null && cellValue.v !== undefined) {
+                        item[header] = String(cellValue.v).trim();
+                    } else {
+                        item[header] = '';
+                    }
                 });
-                return obj;
-            }).filter(item => item.Date && item.Title); // Only parse rows containing active concert markers
+                return item;
+            }).filter(item => item.Date && item.Title); // Render valid items with an entry date and title present
 
-            // Initialization clean step execution hook
+            // Enable interface components
             document.getElementById('concertSearch').disabled = false;
             document.getElementById('concertSearch').placeholder = "Type keywords here to filter schedule contents...";
             
@@ -269,11 +254,11 @@
 
         } catch (error) {
             console.error(error);
-            document.getElementById('statusAlert').innerText = "Error syncing with live data source: " + error.message;
+            document.getElementById('statusAlert').innerText = "Syncing failed. Double check your spreadsheet share settings are set to 'Anyone with the link can view'.";
         }
     }
 
-    // Function to render layout data structures mirroring Screenshot 2026-06-02 at 12.39.01 AM.jpg
+    // Displays processed rows mapping layout blocks dynamically 
     function displayConcerts(itemsList) {
         const listContainer = document.getElementById('concertsContainer');
         const statusAlert = document.getElementById('statusAlert');
@@ -292,31 +277,41 @@
             const cardNode = document.createElement('div');
             cardNode.className = 'concert-card';
 
-            // Split and format the date values dynamically
-            // Date format pattern from sheet: YYYY-MM-DD[cite: 1]
-            const dateParts = item.Date.split('-');[cite: 1]
-            const year = dateParts[0] || '2026';[cite: 1]
-            const monthDayStr = (dateParts[1] && dateParts[2]) ? `${dateParts[1]}/${dateParts[2]}` : item.Date;[cite: 1]
-            const timeDisplay = item.Time || 'TBA';[cite: 1]
+            // Split dynamic date formats gracefully (e.g. "2026-06-06" or formatted text variants)
+            let year = '2026';
+            let monthDayStr = item.Date;
+            if (item.Date.includes('-')) {
+                const parts = item.Date.split('-');
+                year = parts[0];
+                monthDayStr = (parts[1] && parts[2]) ? `${parts[1]}/${parts[2]}` : item.Date;
+            } else if (item.Date.includes('/')) {
+                const parts = item.Date.split('/');
+                if (parts[0].length === 4) {
+                    year = parts[0];
+                    monthDayStr = `${parts[1]}/${parts[2]}`;
+                }
+            }
+            
+            const timeDisplay = item.Time || 'TBA';
 
-            // Generate conditional interactive text body segments from parsed row parameters[cite: 1]
-            const descriptionContent = `Concert presentation features a performance of <strong>"${item.Title}"</strong> arranged ${item.Instrumentation || ''}. Brought to stage by ${item.Performer || 'various artists'} located at ${item.Venue || 'the designated auditorium'}. ${item['Occasion/Presenter'] ? 'Presented on the occasion of: ' + item['Occasion/Presenter'] + '.' : ''}`;[cite: 1]
+            // Custom description string block concatenation 
+            const descriptionContent = `Concert presentation features a performance of <strong>"${item.Title}"</strong> arranged ${item.Instrumentation || ''}. Brought to stage by ${item.Performer || 'various artists'} located at ${item.Venue || 'the designated venue'}. ${item['Occasion/Presenter'] ? 'Presented on the occasion of: ' + item['Occasion/Presenter'] + '.' : ''}`;
 
-            // Dynamic setup for badge tags block array matching template types
+            // Handle badge assignments matching screenshot design specifications
             let badgesArr = [];
-            if (item['Premiere/Performance']) badgesArr.push({ text: item['Premiere/Performance'], type: 'yellow' });[cite: 1]
-            if (item.Instrumentation) badgesArr.push({ text: item.Instrumentation.replace(/^for\s+/i, ''), type: 'yellow' });[cite: 1]
-            if (item.Cantonese === 'Y' || item.粵 === 'Y') badgesArr.push({ text: 'Cantonese Repertoire', type: 'gray' });[cite: 1]
+            if (item['Premiere/Performance']) badgesArr.push({ text: item['Premiere/Performance'], type: 'yellow' });
+            if (item.Instrumentation) badgesArr.push({ text: item.Instrumentation.replace(/^for\s+/i, ''), type: 'yellow' });
+            if (item.Cantonese === 'Y' || item.Cantonese === 'Yes') badgesArr.push({ text: 'Cantonese Repertoire', type: 'gray' });
 
             const tagsHTML = badgesArr.map(badge => {
                 const modifierClass = badge.type === "gray" ? "gray-badge" : "yellow-badge";
                 return `<span class="tag ${modifierClass}">${badge.text}</span>`;
             }).join('');
 
-            // Build structural location meta line dynamically[cite: 1]
+            // Assign structural hyperlink configurations conditionally to the Venue label
             const venueElement = item.Link 
-                ? `<a href="${item.Link}" target="_blank">${item.Venue || 'View Venue Link'}</a>`[cite: 1]
-                : (item.Venue || 'TBA');[cite: 1]
+                ? `<a href="${item.Link}" target="_blank">${item.Venue || 'View Event Link'}</a>`
+                : (item.Venue || 'TBA');
 
             cardNode.innerHTML = `
                 <div class="card-left-date">
@@ -328,7 +323,7 @@
                     <h2 class="concert-title">${item.Title}</h2>
                     
                     <div class="concert-meta">
-                        <span class="meta-node location">${item.City || 'Osaka'}, ${item.Country || 'Japan'}</span>
+                        <span class="meta-node location">${item.City || 'Osaka'}${item.Country ? ', ' + item.Country : ''}</span>
                         <span class="meta-node hall">${venueElement}</span>
                     </div>
 
@@ -345,7 +340,7 @@
         });
     }
 
-    // Real-time input query change handling filter listener setup
+    // Search query monitoring logic 
     document.getElementById('concertSearch').addEventListener('input', function(event) {
         const filterToken = event.target.value.toLowerCase().trim();
         
@@ -354,17 +349,4 @@
                 (concert.Title && concert.Title.toLowerCase().includes(filterToken)) ||
                 (concert.Venue && concert.Venue.toLowerCase().includes(filterToken)) ||
                 (concert.Performer && concert.Performer.toLowerCase().includes(filterToken)) ||
-                (concert.Instrumentation && concert.Instrumentation.toLowerCase().includes(filterToken)) ||
-                (concert.City && concert.City.toLowerCase().includes(filterToken))
-            );
-        });
-        
-        displayConcerts(matchingConcerts);
-    });
-
-    // Run basic initialization render on body lifecycle load
-    window.addEventListener('DOMContentLoaded', loadLiveSpreadsheetData);
-</script>
-
-</body>
-</html>
+                (concert.Instrumentation && concert.Instrumentation.toLowerCase().
