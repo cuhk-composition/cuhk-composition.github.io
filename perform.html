@@ -147,7 +147,6 @@
         }
 
         .meta-node.location::before { content: "📍"; font-size: 12px; }
-        .meta-node.hall::before { content: "📍"; font-size: 12px; }
 
         .concert-desc {
             font-size: 14px;
@@ -282,7 +281,6 @@
                 descriptionContent += ` ${item['Occasion/Presenter']}.`;
             }
 
-            // Setup Badges (Removed Cantonese badge completely)
             let badgesArr = [];
             if (item['Premiere/Performance']) badgesArr.push(item['Premiere/Performance']);
             if (item.Instrumentation) badgesArr.push(item.Instrumentation.replace(/^for\s+/i, ''));
@@ -290,6 +288,16 @@
             const tagsHTML = badgesArr.map(badgeText => {
                 return `<span class="tag gold-badge">${badgeText}</span>`;
             }).join('');
+
+            // Combine Venue, City, and Country dynamically (Venue first, no Link field used)
+            let locationString = item.Venue || 'TBA';
+            let geographicalDetails = [];
+            if (item.City) geographicalDetails.push(item.City);
+            if (item.Country) geographicalDetails.push(item.Country);
+            
+            if (geographicalDetails.length > 0) {
+                locationString += ` (${geographicalDetails.join(', ')})`;
+            }
 
             cardNode.innerHTML = `
                 <div class="card-left-date">
@@ -300,8 +308,7 @@
                 <div class="card-right-content">
                     <h2 class="concert-title">${item.Title}</h2>
                     <div class="concert-meta">
-                        <span class="meta-node location">${item.City || 'Osaka'}${item.Country ? ', ' + item.Country : ''}</span>
-                        <span class="meta-node hall">${item.Venue || 'TBA'}</span>
+                        <span class="meta-node location">${locationString}</span>
                     </div>
                     <div class="concert-desc">${descriptionContent}</div>
                     <div class="concert-tags">${tagsHTML}</div>
@@ -311,7 +318,6 @@
         });
     }
 
-    // Interactive Multi-Field Keyword Filter Match Engine
     document.getElementById('concertSearch').addEventListener('input', function(event) {
         const filterToken = event.target.value.toLowerCase().trim();
         const matchingConcerts = globalConcertsDataset.filter(concert => {
@@ -321,7 +327,7 @@
                 (concert.Performer && concert.Performer.toLowerCase().includes(filterToken)) ||
                 (concert.Instrumentation && concert.Instrumentation.toLowerCase().includes(filterToken)) ||
                 (concert.City && concert.City.toLowerCase().includes(filterToken)) ||
-                // Added structural check for premiere classifications ("World premiere", "Local premiere", etc.)
+                (concert.Country && concert.Country.toLowerCase().includes(filterToken)) ||
                 (concert['Premiere/Performance'] && concert['Premiere/Performance'].toLowerCase().includes(filterToken))
             );
         });
