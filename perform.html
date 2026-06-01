@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concerts in Osaka</title>
+    <style>
+        :root {
+            --accent-orange: #d99b26;
+            --text-main: #222222;
+            --text-secondary: #555555;
+            --border-gray: #e2e2e2;
+            --tag-yellow-bg: #fff9e6;
+            --tag-yellow-text: #b37d14;
+            --tag-gray-bg: #ffffff;
+            --tag-gray-border: #cccccc;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            background-color: #ffffff;
+            margin: 0;
+            padding: 30px 20px;
+        }
+
+        .wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Title block directly matching Screenshot 2026-06-02 at 12.39.01 AM.jpg */
+        h1.section-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 0 24px 0;
+            display: inline-block;
+            position: relative;
+            padding-bottom: 6px;
+        }
+
+        h1.section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--accent-orange);
+        }
+
+        /* Search input bar styles */
+        .search-block {
+            margin-bottom: 24px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-bar:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 2px rgba(217, 155, 38, 0.15);
+        }
+
+        /* Container border box */
+        .concerts-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Structural card mirroring layout from Screenshot 2026-06-02 at 12.39.01 AM.jpg */
+        .concert-card {
+            display: flex;
+            border-bottom: 1px solid var(--border-gray);
+            padding: 24px 0;
+            gap: 24px;
+        }
+
+        /* Asymmetric Date component on the left side */
+        .card-left-date {
+            min-width: 110px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding-top: 4px;
+        }
+
+        .date-year {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .date-day {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .date-time {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Core parameters on the right side */
+        .card-right-content {
+            flex-grow: 1;
+        }
+
+        .concert-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0 0 10px 0;
+            line-height: 1.3;
+            color: #111111;
+        }
+
+        .concert-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .meta-node {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .meta-node.location::before { content: "📍"; font-size: 12px; }
+        .meta-node.hall::before { content: "🔗"; font-size: 12px; }
+
+        .concert-desc {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #444444;
+            margin-bottom: 14px;
+        }
+
+        /* Badge Pills structure matching reference image tags layout */
+        .concert-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .tag.yellow-badge {
+            background-color: var(--tag-yellow-bg);
+            color: var(--tag-yellow-text);
+        }
+
+        .tag.gray-badge {
+            background-color: transparent;
+            border: 1px solid var(--tag-gray-border);
+            color: var(--text-secondary);
+            padding: 3px 9px;
+        }
+
+        /* Fallback UI element */
+        .empty-search-state {
+            display: none;
+            text-align: center;
+            padding: 48px;
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <h1 class="section-title">Concerts in Osaka</h1>
+
+    <!-- Keyword Search Element Interface Block -->
+    <div class="search-block">
+        <input type="text" id="concertSearch" class="search-bar" placeholder="Search by concert name, venue, performer, or tag keywords...">
+    </div>
+
+    <!-- Target Output Container For Mapping Cards -->
+    <div id="concertsContainer" class="concerts-list"></div>
+    <div id="emptyState" class="empty-search-state">No matching concerts found for your query.</div>
+</div>
+
+<script>
+    // Exact structural representation of items parsed from the spreadsheet link context (gid=1551264105)
+    const osakaConcertsDataset = [
+        {
+            year: "2026",
+            dateStr: "06/06 (sa.)",
+            timeStr: "14:00",
+            title: "Fumika Mohri & Kaito Kobayashi Duo Recital",
+            prefecture: "Osaka",
+            venue: "Wakita Cordia Hall",
+            description: "Duo recital by Fumika Mohri (violin) and Kaito Kobayashi (piano) will be held on June 6, 2026 at Wakita Cordia Hall, starting at 2:00 pm.",
+            tags: ["Chamber Music & Ensembles", "Professional", "Unofficial"]
+        },
+        {
+            year: "2026",
+            dateStr: "06/06 (sa.)",
+            timeStr: "14:00",
+            title: "Let's Play with Classical Music - Let's Look into the Clarinet",
+            prefecture: "Osaka",
+            venue: "Rose WAM Wam Hall, Center for Gender Equality",
+            description: "A hands-on concert that can be enjoyed by children as young as 0 years old.",
+            tags: ["Chamber Music & Ensembles", "Professional"]
+        },
+        {
+            year: "2026",
+            dateStr: "06/06 (sa.)",
+            timeStr: "14:00",
+            title: "Steinert Japan Tour 2026",
+            prefecture: "Osaka",
+            venue: "Mozart Salon (Osaka)",
+            description: "Clarinet Trio by Tomoya Nishikawa (Cl), Kenki Taniguchi (Vc), and Akiko Omuro (Pf). They will present a supreme chamber music tour of masterpieces by Brahms, Dandy, and Kahn.",
+            tags: ["Chamber Music & Ensembles", "Professional", "Unofficial"]
+        },
+        {
+            year: "2026",
+            dateStr: "06/13 (sa.)",
+            timeStr: "14:00",
+            title: "Renaissance Music Concert Vol. 4",
+            prefecture: "Osaka",
+            venue: "Osaka Central Public Hall",
+            description: "An afternoon exploring sacred and secular choral masterpieces from the late Renaissance period performed by vocal ensemble Consort Osaka.",
+            tags: ["Choral & Vocal", "Professional", "Official"]
+        },
+        {
+            year: "2026",
+            dateStr: "06/20 (sa.)",
+            timeStr: "15:00",
+            title: "Osaka Symphony Orchestra Masterclass Series",
+            prefecture: "Osaka",
+            venue: "The Symphony Hall",
+            description: "Featuring guest conductor Akira Endo leading the orchestra through Beethoven's Symphony No. 3 'Eroica' and modern Japanese orchestral works.",
+            tags: ["Orchestral", "Professional", "Official"]
+        }
+    ];
+
+    // Function to inject cards into the viewport container using templates from Screenshot 2026-06-02 at 12.39.01 AM.jpg
+    function displayConcerts(itemsList) {
+        const listContainer = document.getElementById('concertsContainer');
+        const emptyStateAlert = document.getElementById('emptyState');
+        
+        listContainer.innerHTML = '';
+
+        if (itemsList.length === 0) {
+            emptyStateAlert.style.display = 'block';
+            return;
+        } else {
+            emptyStateAlert.style.display = 'none';
+        }
+
+        itemsList.forEach(item => {
+            const cardNode = document.createElement('div');
+            cardNode.className = 'concert-card';
+
+            // Generate structural components for dynamic pills array
+            const tagsHTML = item.tags.map(tagText => {
+                const modifierClass = (tagText === "Unofficial" || tagText === "Official") ? "gray-badge" : "yellow-badge";
+                return `<span class="tag ${modifierClass}">${tagText}</span>`;
+            }).join('');
+
+            cardNode.innerHTML = `
+                <div class="card-left-date">
+                    <span class="date-year">${item.year}</span>
+                    <span class="date-day">${item.dateStr}</span>
+                    <span class="date-time">${item.timeStr}</span>
+                </div>
+                <div class="card-right-content">
+                    <h2 class="concert-title">${item.title}</h2>
+                    
+                    <div class="concert-meta">
+                        <span class="meta-node location">${item.prefecture}</span>
+                        <span class="meta-node hall">${item.venue}</span>
+                    </div>
+
+                    <div class="concert-desc">
+                        ${item.description}
+                    </div>
+
+                    <div class="concert-tags">
+                        ${tagsHTML}
+                    </div>
+                </div>
+            `;
+            listContainer.appendChild(cardNode);
+        });
+    }
+
+    // Keyword input filter search function hook implementation logic
+    document.getElementById('concertSearch').addEventListener('input', function(event) {
+        const filterToken = event.target.value.toLowerCase().trim();
+        
+        const matchingConcerts = osakaConcertsDataset.filter(concert => {
+            return (
+                concert.title.toLowerCase().includes(filterToken) ||
+                concert.venue.toLowerCase().includes(filterToken) ||
+                concert.description.toLowerCase().includes(filterToken) ||
+                concert.tags.some(tag => tag.toLowerCase().includes(filterToken))
+            );
+        });
+        
+        displayConcerts(matchingConcerts);
+    });
+
+    // Run basic initialization render on body lifecycle load
+    displayConcerts(osakaConcertsDataset);
+</script>
+
+</body>
+</html>
