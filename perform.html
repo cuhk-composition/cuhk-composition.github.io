@@ -218,7 +218,7 @@
                     }
                     
                     if (header === 'Title') {
-                        val = val.replace(/^["'“”裝‘’]+|["'“”裝‘’]+$/g, '').replace(/["'“”‘’]/g, '');
+                        val = val.replace(/^["'“”裝‘’]+|["'指標“”裝‘’]+$/g, '').replace(/["'“”‘’]/g, '');
                     }
                     item[header] = val;
                 });
@@ -289,8 +289,16 @@
                 return `<span class="tag gold-badge">${badgeText}</span>`;
             }).join('');
 
-            // Combine Venue, City, and Country dynamically (Venue first, no Link field used)
-            let locationString = item.Venue || 'TBA';
+            // Data sanitization regex: Cleans any raw text URLs or messy leftover trailing punctuation in the venue column
+            let rawVenueText = item.Venue || 'TBA';
+            let cleanVenueText = rawVenueText
+                .replace(/https?:\/\/[^\s,)]+/gi, '') // Remove web addresses inside the text
+                .replace(/,\s*$/, '')                // Remove trailing commas
+                .replace(/\(\s*\)/g, '')              // Clean up empty parentheses
+                .trim();
+
+            // Construct the geographical breakdown template: Venue (City, Country)
+            let locationString = cleanVenueText;
             let geographicalDetails = [];
             if (item.City) geographicalDetails.push(item.City);
             if (item.Country) geographicalDetails.push(item.Country);
