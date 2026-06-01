@@ -135,8 +135,9 @@
             gap: 4px;
         }
 
+        /* Adjusted Icons matching the requested layout update */
         .meta-node.location::before { content: "📍"; font-size: 12px; }
-        .meta-node.hall::before { content: "🔗"; font-size: 12px; }
+        .meta-node.hall::before { content: "📍"; font-size: 12px; }
         .meta-node a { color: var(--text-secondary); text-decoration: none; }
         .meta-node a:hover { text-decoration: underline; color: #0066cc; }
 
@@ -195,7 +196,6 @@
 <script>
     let globalConcertsDataset = [];
 
-    // JSONP callback function handling direct data streams from Google Sheets
     window.handleGoogleSheetResponse = function(dataObject) {
         try {
             const rows = dataObject.table.rows;
@@ -216,9 +216,9 @@
                         val = String(cellValue.v).trim();
                     }
                     
-                    // Specific Revision: Strip out any embedded or outer quote marks for the title field
+                    // Strip nested quotation marks from the title field
                     if (header === 'Title') {
-                        val = val.replace(/^["'“”‘’]+|["'“”‘’]+$/g, '').replace(/["'“”‘’]/g, '');
+                        val = val.replace(/^["'“”‘’]+|["'“”‘’]+$/g, '').replace(/["'指標“”‘’]/g, '');
                     }
                     item[header] = val;
                 });
@@ -266,7 +266,6 @@
             const cardNode = document.createElement('div');
             cardNode.className = 'concert-card';
 
-            // Parse Date fields cleanly
             let year = '2026';
             let monthDayStr = item.Date;
             if (item.Date.includes('-')) {
@@ -277,9 +276,11 @@
             
             const timeDisplay = item.Time || 'TBA';
 
-            // Specific Revision: Build standard layout explicitly displaying performers label without extra prose
-            const performersText = item.Performer ? `Performers: ${item.Performer}` : 'Performers: TBA';
-            const descriptionContent = item.Description || `Concert features a performance of ${item.Title} arranged ${item.Instrumentation || ''}. ${performersText}. ${item['Occasion/Presenter'] ? 'Presented on the occasion of: ' + item['Occasion/Presenter'] + '.' : ''}`;
+            // Revised Description Content: Clear out filler prose and show strictly the performer text block
+            let descriptionContent = item.Performer ? `Performers: ${item.Performer}.` : 'Performers: TBA.';
+            if (item['Occasion/Presenter']) {
+                descriptionContent += ` ${item['Occasion/Presenter']}.`;
+            }
 
             let badgesArr = [];
             if (item['Premiere/Performance']) badgesArr.push({ text: item['Premiere/Performance'], type: 'yellow' });
