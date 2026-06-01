@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantonese Choral Works Catalog</title>
+    <style>
+        :root {
+            --primary-color: #d99b26;
+            --text-dark: #222;
+            --text-muted: #555;
+            --bg-light: #f9f9f9;
+            --border-color: #eee;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-dark);
+            background-color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Header Style matching the attached image */
+        h1.page-title {
+            font-size: 24px;
+            font-weight: bold;
+            position: relative;
+            padding-bottom: 8px;
+            margin-bottom: 24px;
+            display: inline-block;
+        }
+
+        h1.page-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+
+        /* Search Box Wrapper */
+        .search-container {
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(217, 155, 38, 0.2);
+        }
+
+        /* Cards List container */
+        .cards-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Render Card Layout matching the attached screenshot */
+        .render-card {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            padding: 24px 0;
+            gap: 24px;
+        }
+
+        /* Left section: Date / Year metadata block */
+        .card-left {
+            min-width: 120px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding-top: 4px;
+        }
+
+        .card-year-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .card-year-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        .card-duration {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Right section: Main content fields */
+        .card-right {
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0 0 10px 0;
+            color: #1a1a1a;
+        }
+
+        .card-meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .meta-item a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .meta-item a:hover {
+            text-decoration: underline;
+        }
+
+        .card-description {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #444;
+            margin-bottom: 16px;
+        }
+
+        /* Badge/Tags Area */
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag-badge {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            background-color: var(--bg-light);
+            color: var(--text-muted);
+        }
+
+        .tag-badge.accent {
+            background-color: #fff9e6;
+            color: #b37d14;
+        }
+
+        /* Utilities */
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        /* Icon Placeholders matching UI icons */
+        .icon-composer::before { content: "👤 "; }
+        .icon-link::before { content: "🔗 "; }
+        .icon-text::before { content: "📝 "; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="page-title">Cantonese Choral Works</h1>
+
+    <div class="search-container">
+        <input type="text" id="keywordSearch" class="search-input" placeholder="Search by title, composer, author, tags...">
+    </div>
+
+    <div id="cardsContainer" class="cards-list"></div>
+    <div id="noResults" class="no-results">No pieces match your search terms.</div>
+</div>
+
+<script>
+    // Embedded structural dataset extracted directly from the spreadsheet source mapping
+    const catalogData = [
+        {
+            id: "001",
+            year: "2018",
+            composerC: "陳展廷",
+            composerE: "Chan Chin Ting",
+            titleC: "清明",
+            titleE: "Qing Ming",
+            voiceType: "SATB",
+            instrument: "Piano",
+            duration: "3'",
+            mediaLink: "",
+            textType: "古詩, 唐詩 (Tang poetry)",
+            textAuthorC: "杜牧",
+            remarks: ""
+        },
+        {
+            id: "002",
+            year: "2022",
+            composerC: "陳進庭",
+            composerE: "Chan Chun Ting Marco",
+            titleC: "龜兔",
+            titleE: "The Tortoise and the Hare",
+            voiceType: "SATB",
+            instrument: "A cappella",
+            duration: "4.5'",
+            mediaLink: "",
+            textType: "原創歌詞 (Original lyrics)",
+            textAuthorC: "陳卓楓",
+            remarks: "Choral Showcase Call-for-score submission; selected entry"
+        },
+        {
+            id: "004",
+            year: "2017",
+            composerC: "陳慶恩",
+            composerE: "Chan Hing Yan",
+            titleC: "弔文",
+            titleE: "Trauermusik: The Year 1911",
+            voiceType: "SATB",
+            instrument: "Zhonghu",
+            duration: "5'",
+            mediaLink: "https://vimeo.com/270966360",
+            textType: "新詩, 現代 (Contemporary)",
+            textAuthorC: "蔡炎培",
+            remarks: "Commissioned by Hong Kong Voices"
+        },
+        {
+            id: "005",
+            year: "2019",
+            composerC: "陳慶恩",
+            composerE: "Chan Hing Yan",
+            titleC: "辛詞四季",
+            titleE: "A Poet's Four Seasons",
+            voiceType: "SATB",
+            instrument: "Dizi, sheng, pipa, erhu",
+            duration: "15'",
+            mediaLink: "https://www.facebook.com/composer.chan/videos/2339444322768126",
+            textType: "古詩, 宋詞 (Song poetry)",
+            textAuthorC: "辛棄疾",
+            remarks: ""
+        },
+        {
+            id: "006",
+            year: "2023",
+            composerC: "陳浩貽",
+            composerE: "Chan Ho Yi David",
+            titleC: "今生今世",
+            titleE: "All Throughout This My Life",
+            voiceType: "SATB div./SSAA div./TTBB div.",
+            instrument: "Optional Piano",
+            duration: "6'",
+            mediaLink: "",
+            textType: "新詩, 現代 (Contemporary)",
+            textAuthorC: "余光中",
+            remarks: "Commissioned by Heep Yunn School Choir for the World Choir Games 2023"
+        },
+        {
+            id: "007",
+            year: "2022",
+            composerC: "陳浩貽",
+            composerE: "Chan Ho Yi David",
+            titleC: "啟應禱文：晚禱崇拜（第二式）",
+            titleE: "Cantonese Preces and Responses (Rite 2, Evensong)",
+            voiceType: "SATB and officiant solo",
+            instrument: "Organ",
+            duration: "7'",
+            mediaLink: "https://www.youtube.com/live/6qk-JSsF0qI",
+            textType: "基督教(Christian)",
+            textAuthorC: "香港聖公會公禱書",
+            remarks: "Commissioned by All Saints' Cathedral, Hong Kong"
+        },
+        {
+            id: "009",
+            year: "2015",
+            composerC: "陳啟揚",
+            composerE: "Chan Kai-Young",
+            titleC: "聲聲慢",
+            titleE: "Seeking, Searching",
+            voiceType: "SSAATTBB",
+            instrument: "A cappella",
+            duration: "8'30\"",
+            mediaLink: "https://www.youtube.com/watch?v=CJXD3SkCyjo",
+            textType: "古詩, 宋詞 (Song poetry)",
+            textAuthorC: "李清照",
+            remarks: "Published by Universal Edition"
+        },
+        {
+            id: "010",
+            year: "2024",
+            composerC: "陳啟揚",
+            composerE: "Chan Kai-Young",
+            titleC: "西江月．世事一場大夢",
+            titleE: "Moon over West River",
+            voiceType: "SSAATTBB",
+            instrument: "A cappella",
+            duration: "4'",
+            mediaLink: "https://www.youtube.com/watch?v=p06QHzXKZWk",
+            textType: "古詩, 宋詞 (Song poetry)",
+            textAuthorC: "蘇軾",
+            remarks: "Published by Universal Edition"
+        },
+        {
+            id: "011",
+            year: "2021",
+            composerC: "陳啟揚",
+            composerE: "Chan Kai-Young",
+            titleC: "也許",
+            titleE: "Maybe You Have Grown Weary of Weeping",
+            voiceType: "SSA/SATB/TBarB",
+            instrument: "Piano",
+            duration: "4'",
+            mediaLink: "https://www.youtube.com/watch?v=ivbrWF1dWVw",
+            textType: "新詩, 現代 (Contemporary)",
+            textAuthorC: "聞一多",
+            remarks: "Commissioned by John Winzenburg"
+        },
+        {
+            id: "120",
+            year: "2021",
+            composerC: "李梓諾",
+            composerE: "Li Tsz Nok Carlos",
+            titleC: "星空",
+            titleE: "Stars",
+            voiceType: "SATB or SATT",
+            instrument: "Piano",
+            duration: "6'30\"",
+            mediaLink: "https://youtu.be/oFPRofmvRdY",
+            textType: "原創歌詞 (Original lyrics)",
+            textAuthorC: "陳卓楓",
+            remarks: "CU Chorus Association publication"
+        },
+        {
+            id: "129",
+            year: "2018",
+            composerC: "廖梓丞",
+            composerE: "Liu Tsz Shing, Jason",
+            titleC: "聲聲慢",
+            titleE: "Forlorn",
+            voiceType: "SATB",
+            instrument: "Cello",
+            duration: "7'",
+            mediaLink: "https://www.youtube.com/watch?v=o1Y0JgFzPgI",
+            textType: "古詩, 宋詞 (Song poetry)",
+            textAuthorC: "李清照",
+            remarks: "Commissioned by St. Paul's Co-educational College"
+        }
+    ];
+
+    // Function to render layout UI cards interface elements HTML structure
+    function renderCards(data) {
+        const container = document.getElementById('cardsContainer');
+        container.innerHTML = '';
+
+        if(data.length === 0) {
+            document.getElementById('noResults').style.display = 'block';
+            return;
+        } else {
+            document.getElementById('noResults').style.display = 'none';
+        }
+
+        data.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'render-card';
+            
+            // Format dynamic descriptions block
+            let descriptionText = `A choral rendering setting of "${item.textType}" lyrics written by ${item.textAuthorC || 'the composer'}. `;
+            if(item.remarks) {
+                descriptionText += `${item.remarks}.`;
+            }
+
+            // Build dynamic link markup safely if link data exists
+            const linkMarkup = item.mediaLink 
+                ? `<span class="meta-item icon-link"><a href="${item.mediaLink}" target="_blank">Watch / Listen</a></span>` 
+                : '';
+
+            card.innerHTML = `
+                <div class="card-left">
+                    <span class="card-year-label">YEAR</span>
+                    <span class="card-year-value">${item.year}</span>
+                    <span class="card-duration">⏱ ${item.duration || 'N/A'}</span>
+                </div>
+                <div class="card-right">
+                    <h2 class="card-title">${item.titleC} <span style="font-weight:normal; font-size:16px; color:var(--text-muted); font-style:italic;">${item.titleE ? '- ' + item.titleE : ''}</span></h2>
+                    
+                    <div class="card-meta-row">
+                        <span class="meta-item icon-composer">${item.composerC} (${item.composerE})</span>
+                        <span class="meta-item icon-text">Text: ${item.textAuthorC || 'N/A'}</span>
+                        ${linkMarkup}
+                    </div>
+
+                    <div class="card-description">
+                        ${descriptionText}
+                    </div>
+
+                    <div class="card-tags">
+                        <span class="tag-badge accent">${item.voiceType}</span>
+                        <span class="tag-badge">${item.instrument}</span>
+                        <span class="tag-badge">${item.textType.split(',')[0]}</span>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // Dynamic keyup/input handler filter mechanism algorithm logic
+    document.getElementById('keywordSearch').addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase().trim();
+        
+        const filtered = catalogData.filter(item => {
+            return (
+                item.titleC.toLowerCase().includes(query) ||
+                (item.titleE && item.titleE.toLowerCase().includes(query)) ||
+                item.composerC.toLowerCase().includes(query) ||
+                item.composerE.toLowerCase().includes(query) ||
+                (item.textAuthorC && item.textAuthorC.toLowerCase().includes(query)) ||
+                item.voiceType.toLowerCase().includes(query) ||
+                item.instrument.toLowerCase().includes(query) ||
+                item.textType.toLowerCase().includes(query)
+            );
+        });
+        
+        renderCards(filtered);
+    });
+
+    // Initial render call invocation hook execution lifecycle logic stage
+    renderCards(catalogData);
+</script>
+
+</body>
+</html>
