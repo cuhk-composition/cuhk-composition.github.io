@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Concerts in Osaka</title>
+    <title>Concerts Schedule Catalog</title>
     <style>
         :root {
             --accent-orange: #d99b26;
@@ -29,7 +29,7 @@
             margin: 0 auto;
         }
 
-        /* Title block directly matching Screenshot 2026-06-02 at 12.39.01 AM.jpg */
+        /* Title layout exactly matching Screenshot 2026-06-02 at 12.39.01 AM.jpg */
         h1.section-title {
             font-size: 24px;
             font-weight: bold;
@@ -49,7 +49,7 @@
             background-color: var(--accent-orange);
         }
 
-        /* Search input bar styles */
+        /* Search input bar wrapper styles */
         .search-block {
             margin-bottom: 24px;
         }
@@ -70,13 +70,13 @@
             box-shadow: 0 0 0 2px rgba(217, 155, 38, 0.15);
         }
 
-        /* Container border box */
+        /* Cards List container structure */
         .concerts-list {
             display: flex;
             flex-direction: column;
         }
 
-        /* Structural card mirroring layout from Screenshot 2026-06-02 at 12.39.01 AM.jpg */
+        /* Layout structure mirroring Screenshot 2026-06-02 at 12.39.01 AM.jpg */
         .concert-card {
             display: flex;
             border-bottom: 1px solid var(--border-gray);
@@ -84,7 +84,7 @@
             gap: 24px;
         }
 
-        /* Asymmetric Date component on the left side */
+        /* Left-side Date block layout */
         .card-left-date {
             min-width: 110px;
             text-align: center;
@@ -105,6 +105,7 @@
             font-weight: bold;
             color: var(--text-main);
             margin-bottom: 2px;
+            white-space: nowrap;
         }
 
         .date-time {
@@ -112,7 +113,7 @@
             color: var(--text-secondary);
         }
 
-        /* Core parameters on the right side */
+        /* Right-side dynamic parameters container */
         .card-right-content {
             flex-grow: 1;
         }
@@ -142,6 +143,8 @@
 
         .meta-node.location::before { content: "📍"; font-size: 12px; }
         .meta-node.hall::before { content: "🔗"; font-size: 12px; }
+        .meta-node a { color: var(--text-secondary); text-decoration: none; }
+        .meta-node a:hover { text-decoration: underline; color: #0066cc; }
 
         .concert-desc {
             font-size: 14px;
@@ -150,7 +153,7 @@
             margin-bottom: 14px;
         }
 
-        /* Badge Pills structure matching reference image tags layout */
+        /* Badge/Tags configuration styles */
         .concert-tags {
             display: flex;
             flex-wrap: wrap;
@@ -175,126 +178,162 @@
             padding: 3px 9px;
         }
 
-        /* Fallback UI element */
-        .empty-search-state {
-            display: none;
+        /* Dynamic Feedback system element states */
+        .status-message {
             text-align: center;
             padding: 48px;
             color: var(--text-secondary);
-            font-size: 15px;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
 
 <div class="wrapper">
-    <h1 class="section-title">Concerts in Osaka</h1>
+    <!-- Header title component from template screenshot -->
+    <h1 class="section-title">Concerts List</h1>
 
-    <!-- Keyword Search Element Interface Block -->
+    <!-- Real-time keyword filter element panel block -->
     <div class="search-block">
-        <input type="text" id="concertSearch" class="search-bar" placeholder="Search by concert name, venue, performer, or tag keywords...">
+        <input type="text" id="concertSearch" class="search-bar" placeholder="Search live by concert name, instrumentation, performer, city, or venue..." disabled>
     </div>
 
-    <!-- Target Output Container For Mapping Cards -->
+    <!-- Live layout insertion target node -->
     <div id="concertsContainer" class="concerts-list"></div>
-    <div id="emptyState" class="empty-search-state">No matching concerts found for your query.</div>
+    <div id="statusAlert" class="status-message">Loading live schedule data from Google Sheets...</div>
 </div>
 
 <script>
-    // Exact structural representation of items parsed from the spreadsheet link context (gid=1551264105)
-    const osakaConcertsDataset = [
-        {
-            year: "2026",
-            dateStr: "06/06 (sa.)",
-            timeStr: "14:00",
-            title: "Fumika Mohri & Kaito Kobayashi Duo Recital",
-            prefecture: "Osaka",
-            venue: "Wakita Cordia Hall",
-            description: "Duo recital by Fumika Mohri (violin) and Kaito Kobayashi (piano) will be held on June 6, 2026 at Wakita Cordia Hall, starting at 2:00 pm.",
-            tags: ["Chamber Music & Ensembles", "Professional", "Unofficial"]
-        },
-        {
-            year: "2026",
-            dateStr: "06/06 (sa.)",
-            timeStr: "14:00",
-            title: "Let's Play with Classical Music - Let's Look into the Clarinet",
-            prefecture: "Osaka",
-            venue: "Rose WAM Wam Hall, Center for Gender Equality",
-            description: "A hands-on concert that can be enjoyed by children as young as 0 years old.",
-            tags: ["Chamber Music & Ensembles", "Professional"]
-        },
-        {
-            year: "2026",
-            dateStr: "06/06 (sa.)",
-            timeStr: "14:00",
-            title: "Steinert Japan Tour 2026",
-            prefecture: "Osaka",
-            venue: "Mozart Salon (Osaka)",
-            description: "Clarinet Trio by Tomoya Nishikawa (Cl), Kenki Taniguchi (Vc), and Akiko Omuro (Pf). They will present a supreme chamber music tour of masterpieces by Brahms, Dandy, and Kahn.",
-            tags: ["Chamber Music & Ensembles", "Professional", "Unofficial"]
-        },
-        {
-            year: "2026",
-            dateStr: "06/13 (sa.)",
-            timeStr: "14:00",
-            title: "Renaissance Music Concert Vol. 4",
-            prefecture: "Osaka",
-            venue: "Osaka Central Public Hall",
-            description: "An afternoon exploring sacred and secular choral masterpieces from the late Renaissance period performed by vocal ensemble Consort Osaka.",
-            tags: ["Choral & Vocal", "Professional", "Official"]
-        },
-        {
-            year: "2026",
-            dateStr: "06/20 (sa.)",
-            timeStr: "15:00",
-            title: "Osaka Symphony Orchestra Masterclass Series",
-            prefecture: "Osaka",
-            venue: "The Symphony Hall",
-            description: "Featuring guest conductor Akira Endo leading the orchestra through Beethoven's Symphony No. 3 'Eroica' and modern Japanese orchestral works.",
-            tags: ["Orchestral", "Professional", "Official"]
-        }
-    ];
+    // Live Sheets CSV API export path URL configuration using your specific GID tab
+    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1ewOnbKddBpx4YFSQpfvhOvmJCznhGzdcS2DyMFp7d08/export?format=csv&gid=1551264105";
 
-    // Function to inject cards into the viewport container using templates from Screenshot 2026-06-02 at 12.39.01 AM.jpg
+    let globalConcertsDataset = [];
+
+    // Simple CSV parser implementation handling text quotes and commas safely
+    function parseCSV(text) {
+        let lines = [];
+        let row = [""];
+        let inQuotes = false;
+
+        for (let i = 0; i < text.length; i++) {
+            let c = text[i];
+            let next = text[i+1];
+            if (c === '"') {
+                if (inQuotes && next === '"') { row[row.length - 1] += '"'; i++; }
+                else { inQuotes = !inQuotes; }
+            } else if (c === ',' && !inQuotes) {
+                row.push('');
+            } else if ((c === '\r' || c === '\n') && !inQuotes) {
+                if (c === '\r' && next === '\n') { i++; }
+                lines.push(row);
+                row = [''];
+            } else {
+                row[row.length - 1] += c;
+            }
+        }
+        if (row.length > 1 || row[0] !== '') { lines.push(row); }
+        return lines;
+    }
+
+    // Dynamic asynchronous spreadsheet download engine
+    async function loadLiveSpreadsheetData() {
+        try {
+            const response = await fetch(SHEET_CSV_URL);
+            if (!response.ok) throw new Error("Failed to download sheet feed.");
+            
+            const rawCsvText = await response.text();
+            const csvRows = parseCSV(rawCsvText);
+
+            if (csvRows.length < 2) {
+                document.getElementById('statusAlert').innerText = "Spreadsheet tab appears to be empty.";
+                return;
+            }
+
+            // Map spreadsheet headers cleanly into an array of JSON objects
+            // Headers format: Date, Cantonese, Premiere/Performance, Title, Instrumentation, Performer, Venue, City, Country, Link, Time, Occasion/Presenter
+            const headers = csvRows[0].map(h => h.trim());
+            
+            globalConcertsDataset = csvRows.slice(1).map(row => {
+                let obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = row[index] ? row[index].trim() : '';
+                });
+                return obj;
+            }).filter(item => item.Date && item.Title); // Only parse rows containing active concert markers
+
+            // Initialization clean step execution hook
+            document.getElementById('concertSearch').disabled = false;
+            document.getElementById('concertSearch').placeholder = "Type keywords here to filter schedule contents...";
+            
+            displayConcerts(globalConcertsDataset);
+
+        } catch (error) {
+            console.error(error);
+            document.getElementById('statusAlert').innerText = "Error syncing with live data source: " + error.message;
+        }
+    }
+
+    // Function to render layout data structures mirroring Screenshot 2026-06-02 at 12.39.01 AM.jpg
     function displayConcerts(itemsList) {
         const listContainer = document.getElementById('concertsContainer');
-        const emptyStateAlert = document.getElementById('emptyState');
+        const statusAlert = document.getElementById('statusAlert');
         
         listContainer.innerHTML = '';
 
         if (itemsList.length === 0) {
-            emptyStateAlert.style.display = 'block';
+            statusAlert.style.display = 'block';
+            statusAlert.innerText = "No upcoming concert items found matching that term.";
             return;
         } else {
-            emptyStateAlert.style.display = 'none';
+            statusAlert.style.display = 'none';
         }
 
         itemsList.forEach(item => {
             const cardNode = document.createElement('div');
             cardNode.className = 'concert-card';
 
-            // Generate structural components for dynamic pills array
-            const tagsHTML = item.tags.map(tagText => {
-                const modifierClass = (tagText === "Unofficial" || tagText === "Official") ? "gray-badge" : "yellow-badge";
-                return `<span class="tag ${modifierClass}">${tagText}</span>`;
+            // Split and format the date values dynamically
+            // Date format pattern from sheet: YYYY-MM-DD[cite: 1]
+            const dateParts = item.Date.split('-');[cite: 1]
+            const year = dateParts[0] || '2026';[cite: 1]
+            const monthDayStr = (dateParts[1] && dateParts[2]) ? `${dateParts[1]}/${dateParts[2]}` : item.Date;[cite: 1]
+            const timeDisplay = item.Time || 'TBA';[cite: 1]
+
+            // Generate conditional interactive text body segments from parsed row parameters[cite: 1]
+            const descriptionContent = `Concert presentation features a performance of <strong>"${item.Title}"</strong> arranged ${item.Instrumentation || ''}. Brought to stage by ${item.Performer || 'various artists'} located at ${item.Venue || 'the designated auditorium'}. ${item['Occasion/Presenter'] ? 'Presented on the occasion of: ' + item['Occasion/Presenter'] + '.' : ''}`;[cite: 1]
+
+            // Dynamic setup for badge tags block array matching template types
+            let badgesArr = [];
+            if (item['Premiere/Performance']) badgesArr.push({ text: item['Premiere/Performance'], type: 'yellow' });[cite: 1]
+            if (item.Instrumentation) badgesArr.push({ text: item.Instrumentation.replace(/^for\s+/i, ''), type: 'yellow' });[cite: 1]
+            if (item.Cantonese === 'Y' || item.粵 === 'Y') badgesArr.push({ text: 'Cantonese Repertoire', type: 'gray' });[cite: 1]
+
+            const tagsHTML = badgesArr.map(badge => {
+                const modifierClass = badge.type === "gray" ? "gray-badge" : "yellow-badge";
+                return `<span class="tag ${modifierClass}">${badge.text}</span>`;
             }).join('');
+
+            // Build structural location meta line dynamically[cite: 1]
+            const venueElement = item.Link 
+                ? `<a href="${item.Link}" target="_blank">${item.Venue || 'View Venue Link'}</a>`[cite: 1]
+                : (item.Venue || 'TBA');[cite: 1]
 
             cardNode.innerHTML = `
                 <div class="card-left-date">
-                    <span class="date-year">${item.year}</span>
-                    <span class="date-day">${item.dateStr}</span>
-                    <span class="date-time">${item.timeStr}</span>
+                    <span class="date-year">${year}</span>
+                    <span class="date-day">${monthDayStr}</span>
+                    <span class="date-time">${timeDisplay}</span>
                 </div>
                 <div class="card-right-content">
-                    <h2 class="concert-title">${item.title}</h2>
+                    <h2 class="concert-title">${item.Title}</h2>
                     
                     <div class="concert-meta">
-                        <span class="meta-node location">${item.prefecture}</span>
-                        <span class="meta-node hall">${item.venue}</span>
+                        <span class="meta-node location">${item.City || 'Osaka'}, ${item.Country || 'Japan'}</span>
+                        <span class="meta-node hall">${venueElement}</span>
                     </div>
 
                     <div class="concert-desc">
-                        ${item.description}
+                        ${descriptionContent}
                     </div>
 
                     <div class="concert-tags">
@@ -306,16 +345,17 @@
         });
     }
 
-    // Keyword input filter search function hook implementation logic
+    // Real-time input query change handling filter listener setup
     document.getElementById('concertSearch').addEventListener('input', function(event) {
         const filterToken = event.target.value.toLowerCase().trim();
         
-        const matchingConcerts = osakaConcertsDataset.filter(concert => {
+        const matchingConcerts = globalConcertsDataset.filter(concert => {
             return (
-                concert.title.toLowerCase().includes(filterToken) ||
-                concert.venue.toLowerCase().includes(filterToken) ||
-                concert.description.toLowerCase().includes(filterToken) ||
-                concert.tags.some(tag => tag.toLowerCase().includes(filterToken))
+                (concert.Title && concert.Title.toLowerCase().includes(filterToken)) ||
+                (concert.Venue && concert.Venue.toLowerCase().includes(filterToken)) ||
+                (concert.Performer && concert.Performer.toLowerCase().includes(filterToken)) ||
+                (concert.Instrumentation && concert.Instrumentation.toLowerCase().includes(filterToken)) ||
+                (concert.City && concert.City.toLowerCase().includes(filterToken))
             );
         });
         
@@ -323,7 +363,7 @@
     });
 
     // Run basic initialization render on body lifecycle load
-    displayConcerts(osakaConcertsDataset);
+    window.addEventListener('DOMContentLoaded', loadLiveSpreadsheetData);
 </script>
 
 </body>
