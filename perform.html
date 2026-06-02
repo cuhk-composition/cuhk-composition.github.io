@@ -170,7 +170,6 @@
             color: #444444;
         }
 
-        /* Repositioned layout styling parameters for the premiere tags placed directly under the time framework column */
         .tag {
             font-size: 11px;
             padding: 4px 8px;
@@ -288,9 +287,9 @@
                 monthDayStr = (parts[1] && parts[2]) ? `${parts[1]}/${parts[2]}` : item.Date;
             }
             
-            // Adjusted layout rules: if the field is empty or matching 'tba', render a completely empty element layout
+            // Fixed validation: Checks if Time field exists, is not whitespace, and is not explicitly "TBA"
             let timeDisplay = '';
-            if (item.Time && item.Time.toLowerCase() !== 'tba') {
+            if (item.Time && item.Time.trim() !== '' && item.Time.toLowerCase() !== 'tba') {
                 timeDisplay = item.Time.trim();
             }
 
@@ -299,7 +298,6 @@
                 descriptionContent += ` | ${item['Occasion/Presenter']}`;
             }
 
-            // Repositioning layout criteria: Isolate tag to render on left meta rail block instead of content block
             let tagsHTML = '';
             const premiereField = item['Premiere/Performance'];
             if (premiereField && premiereField.toLowerCase().includes('premiere')) {
