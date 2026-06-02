@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Concerts Schedule Catalog</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'><circle cx='120' cy='120' r='110' fill='none'/><path d='M90 20 L90 220' stroke='%23ffffff' stroke-width='16' stroke-linecap='round'/><path d='M90 120 L170 40' stroke='%23a2b79a' stroke-width='16' stroke-linecap='round'/><path d='M170 40 A 110 110 0 0 1 200 170 Z' fill='%23bcae97' opacity='0.75'/><path d='M90 120 L180 210' stroke='%23ffffff' stroke-width='16' stroke-linecap='round'/><path d='M90 120 L180 210 A 110 110 0 0 1 90 230 Z' fill='%23b29c95' opacity='0.85'/><path d='M90 20 A 110 110 0 0 1 170 40 L 90 120 Z' fill='%23a2b79a' opacity='0.85'/><path d='M90 20 A 110 110 0 0 0 20 170 L 90 120 Z' fill='%23bcae97' opacity='0.6'/></svg>">
     <style>
         :root {
             --accent-gold: #d99b26;
@@ -90,11 +91,12 @@
         }
 
         .card-left-date {
-            min-width: 110px;
+            min-width: 120px;
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
+            align-items: center;
             padding-top: 4px;
         }
 
@@ -117,6 +119,8 @@
         .date-time {
             font-size: 13px;
             color: var(--text-secondary);
+            margin-bottom: 10px;
+            min-height: 15px;
         }
 
         .card-right-content {
@@ -137,7 +141,6 @@
             margin: 0;
         }
 
-        /* Styling for the new line instrumentation block */
         .concert-instrumentation {
             font-size: 16px;
             font-weight: 500;
@@ -165,25 +168,23 @@
             font-size: 14px;
             line-height: 1.5;
             color: #444444;
-            margin-bottom: 14px;
         }
 
-        .concert-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
+        /* Repositioned layout styling parameters for the premiere tags placed directly under the time framework column */
         .tag {
-            font-size: 12px;
-            padding: 4px 10px;
+            font-size: 11px;
+            padding: 4px 8px;
             border-radius: 4px;
-            font-weight: 500;
+            font-weight: 600;
+            display: inline-block;
+            text-align: center;
+            white-space: nowrap;
         }
 
         .tag.gold-badge {
             background-color: var(--tag-gold-bg);
             color: var(--tag-gold-text);
+            border: 1px solid rgba(217, 155, 38, 0.2);
         }
 
         .status-message {
@@ -287,20 +288,24 @@
                 monthDayStr = (parts[1] && parts[2]) ? `${parts[1]}/${parts[2]}` : item.Date;
             }
             
-            const timeDisplay = item.Time || 'TBA';
+            // Adjusted layout rules: if the field is empty or matching 'tba', render a completely empty element layout
+            let timeDisplay = '';
+            if (item.Time && item.Time.toLowerCase() !== 'tba') {
+                timeDisplay = item.Time.trim();
+            }
 
             let descriptionContent = item.Performer ? `Performers: ${item.Performer}` : 'Performers: TBA';
             if (item['Occasion/Presenter']) {
                 descriptionContent += ` | ${item['Occasion/Presenter']}`;
             }
 
+            // Repositioning layout criteria: Isolate tag to render on left meta rail block instead of content block
             let tagsHTML = '';
             const premiereField = item['Premiere/Performance'];
             if (premiereField && premiereField.toLowerCase().includes('premiere')) {
                 tagsHTML = `<span class="tag gold-badge">${premiereField}</span>`;
             }
 
-            // Sanitized instrumentation text block with no surrounding brackets
             const instrumentationText = item.Instrumentation ? item.Instrumentation.trim() : '';
 
             let rawVenueText = item.Venue || 'TBA';
@@ -327,6 +332,7 @@
                     <span class="date-year">${year}</span>
                     <span class="date-day">${monthDayStr}</span>
                     <span class="date-time">${timeDisplay}</span>
+                    ${tagsHTML}
                 </div>
                 <div class="card-right-content">
                     <div class="concert-title-container">
@@ -337,7 +343,6 @@
                         <span class="meta-node location">${locationString}</span>
                     </div>
                     <div class="concert-desc">${descriptionContent}</div>
-                    <div class="concert-tags">${tagsHTML}</div>
                 </div>
             `;
             listContainer.appendChild(cardNode);
