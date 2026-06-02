@@ -132,3 +132,237 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
+        }
+
+        .concert-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary-purple);
+            margin: 0;
+        }
+
+        .concert-instrumentation {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .concert-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .meta-node {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .meta-node.location::before { content: "📍"; font-size: 12px; }
+
+        .concert-desc {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #444444;
+        }
+
+        .tag {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            display: inline-block;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .tag.gold-badge {
+            background-color: var(--tag-gold-bg);
+            color: var(--tag-gold-text);
+            border: 1px solid rgba(217, 155, 38, 0.2);
+        }
+
+        .status-message {
+            text-align: center;
+            padding: 48px;
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <h1 class="section-title">Concerts List</h1>
+
+    <div class="search-block">
+        <input type="text" id="concertSearch" class="search-bar" placeholder="Loading dynamic feed..." disabled>
+    </div>
+
+    <div id="concertsContainer" class="concerts-list"></div>
+    <div id="statusAlert" class="status-message">Loading live schedule data from Google Sheets...</div>
+</div>
+
+<script>
+    let globalConcertsDataset = [];
+
+    window.handleGoogleSheetResponse = function(dataObject) {
+        try {
+            const rows = dataObject.table.rows;
+            
+            const expectedHeaders = [
+                'Date', 'Cantonese', 'Premiere/Performance', 'Title', 'Instrumentation', 
+                'Performer', 'Venue', 'City', 'Country', 'Link', 'Time', 'Occasion/Presenter'
+            ];
+
+            globalConcertsDataset = rows.map(row => {
+                let item = {};
+                expectedHeaders.forEach((header, index) => {
+                    const cellValue = row.c[index];
+                    let val = '';
+                    
+                    if (cellValue && cellValue.f) {
+                        val = cellValue.f.trim();
+                    } else if (cellValue && cellValue.v !== null && cellValue.v !== undefined) {
+                        val = String(cellValue.v).trim();
+                    }
+                    
+                    if (header === 'Title') {
+                        val = val.replace(/^["开口“”]+|["开口“”]+$/g, '').replace(/["示意“”]/g, '');
+                    }
+                    item[header] = val;
+                });
+                return item;
+            }).filter(item => item.Date && item.Title);
+
+            document.getElementById('concertSearch').disabled = false;
+            document.getElementById('concertSearch').placeholder = "Search by name, premiere type, performer, instrumentation, or location...";
+            
+            displayConcerts(globalConcertsDataset);
+
+        } catch (error) {
+            console.error(error);
+            document.getElementById('statusAlert').innerText = "Data parsing error.";
+        }
+    };
+
+    function initLiveFetch() {
+        const spreadsheetId = '1ewOnbKddBpx4YFSQpfvhOvmJCznhGzdcS2DyMFp7d08';
+        const gid = '1551264105';
+        const jsonpUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=responseHandler:handleGoogleSheetResponse&gid=${gid}`;
+        
+        const scriptElement = document.createElement('script');
+        scriptElement.src = jsonpUrl;
+        scriptElement.onerror = function() {
+            document.getElementById('statusAlert').innerText = "Failed to communicate with Google Sheets.";
+        };
+        document.body.appendChild(scriptElement);
+    }
+
+    function displayConcerts(itemsList) {
+        const listContainer = document.getElementById('concertsContainer');
+        const statusAlert = document.getElementById('statusAlert');
+        listContainer.innerHTML = '';
+
+        if (itemsList.length === 0) {
+            statusAlert.style.display = 'block';
+            statusAlert.innerText = "No concert items found matching that query.";
+            return;
+        } else {
+            statusAlert.style.display = 'none';
+        }
+
+        itemsList.forEach(item => {
+            const cardNode = document.createElement('div');
+            cardNode.className = 'concert-card';
+
+            let year = '2026';
+            let monthDayStr = item.Date;
+            if (item.Date.includes('-')) {
+                const parts = item.Date.split('-');
+                year = parts[0];
+                monthDayStr = (parts[1] && parts[2]) ? `${parts[1]}/${parts[2]}` : item.Date;
+            }
+            
+            // Displays all data from the column exactly as retrieved
+            let timeDisplay = item.Time ? item.Time.trim() : '';
+
+            let descriptionContent = item.Performer ? `Performers: ${item.Performer}` : 'Performers: TBA';
+            if (item['Occasion/Presenter']) {
+                descriptionContent += ` | ${item['Occasion/Presenter']}`;
+            }
+
+            let tagsHTML = '';
+            const premiereField = item['Premiere/Performance'];
+            if (premiereField && premiereField.toLowerCase().includes('premiere')) {
+                tagsHTML = `<span class="tag gold-badge">${premiereField}</span>`;
+            }
+
+            const instrumentationText = item.Instrumentation ? item.Instrumentation.trim() : '';
+
+            let rawVenueText = item.Venue || 'TBA';
+            let cleanVenueText = rawVenueText
+                .replace(/https?:\/\/[^\s,)]+/gi, '')
+                .replace(/,\s*$/, '')
+                .replace(/\(\s*\)/g, '')
+                .trim();
+
+            let locationString = cleanVenueText;
+            let geographicalDetails = [];
+            if (item.City) geographicalDetails.push(item.City.replace(/https?:\/\/[^\s,)]+/gi, '').trim());
+            if (item.Country) geographicalDetails.push(item.Country.replace(/https?:\/\/[^\s,)]+/gi, '').trim());
+            
+            geographicalDetails = geographicalDetails.filter(detail => detail.length > 0);
+
+            if (geographicalDetails.length > 0) {
+                locationString += ` (${geographicalDetails.join(', ')})`;
+            }
+            locationString = locationString.replace(/\s+/g, ' ').replace(/\s+\)/g, ')').trim();
+
+            cardNode.innerHTML = `
+                <div class="card-left-date">
+                    <span class="date-year">${year}</span>
+                    <span class="date-day">${monthDayStr}</span>
+                    <span class="date-time">${timeDisplay}</span>
+                    ${tagsHTML}
+                </div>
+                <div class="card-right-content">
+                    <div class="concert-title-container">
+                        <h2 class="concert-title">${item.Title}</h2>
+                        ${instrumentationText ? `<div class="concert-instrumentation">${instrumentationText}</div>` : ''}
+                    </div>
+                    <div class="concert-meta">
+                        <span class="meta-node location">${locationString}</span>
+                    </div>
+                    <div class="concert-desc">${descriptionContent}</div>
+                </div>
+            `;
+            listContainer.appendChild(cardNode);
+        });
+    }
+
+    document.getElementById('concertSearch').addEventListener('input', function(event) {
+        const filterToken = event.target.value.toLowerCase().trim();
+        const matchingConcerts = globalConcertsDataset.filter(concert => {
+            return (
+                (concert.Title && concert.Title.toLowerCase().includes(filterToken)) ||
+                (concert.Venue && concert.Venue.toLowerCase().includes(filterToken)) ||
+                (concert.Performer && concert.Performer.toLowerCase().includes(filterToken)) ||
+                (concert.Instrumentation && concert.Instrumentation.toLowerCase().includes(filterToken)) ||
+                (concert.City && concert.City.toLowerCase().includes(filterToken)) ||
+                (concert.Country && concert.Country.toLowerCase().includes(filterToken)) ||
+                (concert['Premiere/Performance'] && concert['Premiere/Performance'].toLowerCase().includes(filterToken))
+            );
+        });
+        displayConcerts(matchingConcerts);
+    });
+
+    window.addEventListener('DOMContentLoaded', initLiveFetch);
+</script>
+
+</body>
+</html>
