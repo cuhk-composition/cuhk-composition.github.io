@@ -117,7 +117,8 @@
         }
 
         .date-time {
-            font-size: 13px;
+            font-size: 14px;
+            font-weight: 600;
             color: var(--text-secondary);
             margin-bottom: 10px;
             min-height: 15px;
@@ -226,9 +227,15 @@
                     let val = '';
                     
                     if (cellValue) {
-                        // Crucial fix: Prioritize formatted text value (.f) because Google Sheets 
-                        // returns time cells as specialized numeric values or time objects under .v
-                        if (cellValue.f !== null && cellValue.f !== undefined) {
+                        // Crucial Time Object Parser Fix
+                        // Google sheets natively parses hours/minutes columns into a specialized array structure [H, M, S]
+                        if (header === 'Time' && cellValue.v && Array.isArray(cellValue.v)) {
+                            let hrs = String(cellValue.v[0]).padStart(2, '0');
+                            let mins = String(cellValue.v[1]).padStart(2, '0');
+                            val = `${hrs}:${mins}`;
+                        } 
+                        // Fallbacks to reading explicit formatted text strings (.f) or absolute string expressions (.v)
+                        else if (cellValue.f !== null && cellValue.f !== undefined) {
                             val = String(cellValue.f).trim();
                         } else if (cellValue.v !== null && cellValue.v !== undefined) {
                             val = String(cellValue.v).trim();
@@ -292,7 +299,7 @@
                 monthDayStr = (parts[1] && parts[2]) ? `${parts[1]}/${parts[2]}` : item.Date;
             }
             
-            // Fixed validation string check to correctly print string outputs matching time schemas
+            // Evaluates and isolates valid time values, leaving them empty if "TBA" or blank
             let timeDisplay = '';
             if (item.Time && item.Time.trim() !== '' && item.Time.toLowerCase() !== 'tba') {
                 timeDisplay = item.Time.trim();
