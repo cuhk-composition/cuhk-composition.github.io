@@ -117,10 +117,11 @@
         }
 
         .date-time {
-            font-size: 13px;
+            font-size: 14px;
+            font-weight: bold;
             color: var(--text-secondary);
             margin-bottom: 10px;
-            min-height: 15px;
+            min-height: 18px;
         }
 
         .card-right-content {
@@ -232,7 +233,7 @@
                     }
                     
                     if (header === 'Title') {
-                        val = val.replace(/^["开口“”]+|["开口“”]+$/g, '').replace(/["示意“”]/g, '');
+                        val = val.replace(/^["开口“”]+|["开口“”]+$/g, '').replace(/["“”]/g, '');
                     }
                     item[header] = val;
                 });
@@ -280,15 +281,16 @@
             const cardNode = document.createElement('div');
             cardNode.className = 'concert-card';
 
+            // Safe Date Formatting Logic: Prevents failures regardless of sheet data structure variations
             let year = '2026';
-            let monthDayStr = item.Date;
-            if (item.Date.includes('-')) {
-                const parts = item.Date.split('-');
+            let monthDayStr = item.Date || '';
+            if (monthDayStr.includes('-')) {
+                const parts = monthDayStr.split('-');
                 year = parts[0];
-                monthDayStr = (parts[1] && parts[2]) ? `${parts[1]}/${parts[2]}` : item.Date;
+                monthDayStr = (parts[1] && parts[2]) ? `${parts[1]}/${parts[2]}` : monthDayStr;
             }
             
-            // Displays all data from the column exactly as retrieved
+            // Clean extraction of Time column data
             let timeDisplay = item.Time ? item.Time.trim() : '';
 
             let descriptionContent = item.Performer ? `Performers: ${item.Performer}` : 'Performers: TBA';
