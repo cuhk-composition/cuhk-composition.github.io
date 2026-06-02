@@ -119,6 +119,7 @@
             font-size: 13px;
             color: var(--text-secondary);
             margin-bottom: 8px;
+            font-weight: 500;
         }
 
         .card-right-content {
@@ -209,14 +210,23 @@
 <script>
     let globalConcertsDataset = [];
 
-    // Helper utility to parse Google Sheet time values into reliable HH:MM format
     function parseGoogleSheetTime(cellValue) {
         if (!cellValue) return 'TBA';
         if (cellValue.f) return cellValue.f.trim();
         
         let rawVal = String(cellValue.v).trim();
         
-        // Handle Google Sheet Date/Time object strings: Date(1899,11,30,19,30,0)
+        // 1. Handle standard time strings (e.g., "15:00:00" or "15:00")
+        if (rawVal.includes(':')) {
+            const timeParts = rawVal.split(':');
+            if (timeParts.length >= 2) {
+                let hrs = timeParts[0].padStart(2, '0');
+                let mins = timeParts[1].padStart(2, '0');
+                return `${hrs}:${mins}`;
+            }
+        }
+
+        // 2. Handle Google Sheet Date/Time object strings: Date(1899,11,30,15,0,0)
         if (rawVal.includes('Date(')) {
             const matches = rawVal.match(/Date\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*(\d+)\s*,\s*(\d+)/);
             if (matches && matches.length >= 3) {
@@ -226,7 +236,7 @@
             }
         }
         
-        // Handle numeric fraction timestamps (e.g., 0.8125 -> 19:30)
+        // 3. Handle numeric fraction timestamps (e.g., 0.625 -> 15:00)
         if (!isNaN(rawVal) && rawVal !== '') {
             let totalMinutes = Math.round(parseFloat(rawVal) * 24 * 60);
             let hours = Math.floor(totalMinutes / 60);
@@ -326,7 +336,6 @@
                 descriptionContent += ` | ${item['Occasion/Presenter']}`;
             }
 
-            // Generate tag layout if it includes premiere details
             let tagsHTML = '';
             const premiereField = item['Premiere/Performance'];
             if (premiereField && premiereField.toLowerCase().includes('premiere')) {
