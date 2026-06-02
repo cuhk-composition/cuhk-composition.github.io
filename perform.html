@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Concerts Schedule Catalog</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'><circle cx='120' cy='120' r='110' fill='none'/><path d='M90 20 L90 220' stroke='%23ffffff' stroke-width='16' stroke-linecap='round'/><path d='M90 120 L170 40' stroke='%23a2b79a' stroke-width='16' stroke-linecap='round'/><path d='M170 40 A 110 110 0 0 1 200 170 Z' fill='%23bcae97' opacity='0.75'/><path d='M90 120 L180 210' stroke='%23ffffff' stroke-width='16' stroke-linecap='round'/><path d='M90 120 L180 210 A 110 110 0 0 1 90 230 Z' fill='%23b29c95' opacity='0.85'/><path d='M90 20 A 110 110 0 0 1 170 40 L 90 120 Z' fill='%23a2b79a' opacity='0.85'/><path d='M90 20 A 110 110 0 0 0 20 170 L 90 120 Z' fill='%23bcae97' opacity='0.6'/></svg>">
     <style>
         :root {
             --accent-gold: #d99b26;
@@ -91,7 +90,7 @@
         }
 
         .card-left-date {
-            min-width: 120px;
+            min-width: 110px;
             text-align: center;
             display: flex;
             flex-direction: column;
@@ -112,17 +111,14 @@
             font-size: 22px;
             font-weight: bold;
             color: var(--primary-purple);
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             white-space: nowrap;
-            display: block;
         }
 
         .date-time {
             font-size: 13px;
             color: var(--text-secondary);
             margin-bottom: 8px;
-            display: block;
-            font-weight: 500;
         }
 
         .card-right-content {
@@ -174,13 +170,13 @@
 
         .tag {
             font-size: 11px;
-            padding: 4px 8px;
+            padding: 3px 8px;
             border-radius: 4px;
             font-weight: 600;
-            display: inline-block;
             text-align: center;
-            white-space: nowrap;
-            margin-top: 4px;
+            display: inline-block;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         .tag.gold-badge {
@@ -213,56 +209,65 @@
 <script>
     let globalConcertsDataset = [];
 
+    // Helper utility to parse Google Sheet time values into reliable HH:MM format
+    function parseGoogleSheetTime(cellValue) {
+        if (!cellValue) return 'TBA';
+        if (cellValue.f) return cellValue.f.trim();
+        
+        let rawVal = String(cellValue.v).trim();
+        
+        // Handle Google Sheet Date/Time object strings: Date(1899,11,30,19,30,0)
+        if (rawVal.includes('Date(')) {
+            const matches = rawVal.match(/Date\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*(\d+)\s*,\s*(\d+)/);
+            if (matches && matches.length >= 3) {
+                let hrs = matches[1].padStart(2, '0');
+                let mins = matches[2].padStart(2, '0');
+                return `${hrs}:${mins}`;
+            }
+        }
+        
+        // Handle numeric fraction timestamps (e.g., 0.8125 -> 19:30)
+        if (!isNaN(rawVal) && rawVal !== '') {
+            let totalMinutes = Math.round(parseFloat(rawVal) * 24 * 60);
+            let hours = Math.floor(totalMinutes / 60);
+            let minutes = totalMinutes % 60;
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+        }
+        
+        return rawVal || 'TBA';
+    }
+
     window.handleGoogleSheetResponse = function(dataObject) {
         try {
             const rows = dataObject.table.rows;
             
-            // Map columns by matching labels dynamically instead of rigid array positions
-            const sheetHeaders = dataObject.table.cols.map(col => col.label ? col.label.toLowerCase().trim() : '');
-            const getIndex = (labelName) => sheetHeaders.indexOf(labelName.toLowerCase().trim());
-            
-            const idxDate = getIndex('Date');
-            const idxPremiere = getIndex('Premiere/Performance');
-            const idxTitle = getIndex('Title');
-            const idxInstr = getIndex('Instrumentation');
-            const idxPerformer = getIndex('Performer');
-            const idxVenue = getIndex('Venue');
-            const idxCity = getIndex('City');
-            const idxCountry = getIndex('Country');
-            const idxTime = getIndex('Time');
-            const idxOccasion = getIndex('Occasion/Presenter');
+            const expectedHeaders = [
+                'Date', 'Cantonese', 'Premiere/Performance', 'Title', 'Instrumentation', 
+                'Performer', 'Venue', 'City', 'Country', 'Link', 'Time', 'Occasion/Presenter'
+            ];
 
             globalConcertsDataset = rows.map(row => {
-                const readCell = (index) => {
-                    if (index === -1 || !row.c[index]) return '';
-                    const cell = row.c[index];
+                let item = {};
+                expectedHeaders.forEach((header, index) => {
+                    const cellValue = row.c[index];
                     
-                    // Safely reconstruct raw array types from time-formatted cells
-                    if (cell.v && Array.isArray(cell.v)) {
-                        let hours = String(cell.v[0]).padStart(2, '0');
-                        let minutes = String(cell.v[1]).padStart(2, '0');
-                        return `${hours}:${minutes}`;
+                    if (header === 'Time') {
+                        item[header] = parseGoogleSheetTime(cellValue);
+                    } else {
+                        let val = '';
+                        if (cellValue && cellValue.f) {
+                            val = cellValue.f.trim();
+                        } else if (cellValue && cellValue.v !== null && cellValue.v !== undefined) {
+                            val = String(cellValue.v).trim();
+                        }
+                        
+                        if (header === 'Title') {
+                            val = val.replace(/^["开口“”]+|["开口“”]+$/g, '').replace(/["“”]/g, '');
+                        }
+                        item[header] = val;
                     }
-                    if (cell.f !== null && cell.f !== undefined) return String(cell.f).trim();
-                    if (cell.v !== null && cell.v !== undefined) return String(cell.v).trim();
-                    return '';
-                };
-
-                let rawTitle = readCell(idxTitle);
-                rawTitle = rawTitle.replace(/^["开口“”]+|["开口“”]+$/g, '').replace(/["“”]/g, '');
-
-                return {
-                    Date: readCell(idxDate),
-                    PremiereField: readCell(idxPremiere),
-                    Title: rawTitle,
-                    Instrumentation: readCell(idxInstr),
-                    Performer: readCell(idxPerformer),
-                    Venue: readCell(idxVenue),
-                    City: readCell(idxCity),
-                    Country: readCell(idxCountry),
-                    Time: readCell(idxTime),
-                    Occasion: readCell(idxOccasion)
-                };
+                });
+                return item;
             }).filter(item => item.Date && item.Title);
 
             document.getElementById('concertSearch').disabled = false;
@@ -307,24 +312,25 @@
             cardNode.className = 'concert-card';
 
             let year = '2026';
-            let monthDayStr = item.Date || '';
-            if (monthDayStr.includes('-')) {
-                const parts = monthDayStr.split('-');
+            let monthDayStr = item.Date;
+            if (item.Date.includes('-')) {
+                const parts = item.Date.split('-');
                 year = parts[0];
-                monthDayStr = (parts[1] && parts[2]) ? `${parts[1]}/${parts[2]}` : monthDayStr;
+                monthDayStr = (parts[1] && parts[2]) ? `${parts[1]}/${parts[2]}` : item.Date;
             }
             
-            // Extract and display data cleanly from the dynamically matched column 
-            let timeDisplay = item.Time ? item.Time.trim() : '';
+            const timeDisplay = item.Time || 'TBA';
 
             let descriptionContent = item.Performer ? `Performers: ${item.Performer}` : 'Performers: TBA';
-            if (item.Occasion) {
-                descriptionContent += ` | ${item.Occasion}`;
+            if (item['Occasion/Presenter']) {
+                descriptionContent += ` | ${item['Occasion/Presenter']}`;
             }
 
+            // Generate tag layout if it includes premiere details
             let tagsHTML = '';
-            if (item.PremiereField && item.PremiereField.toLowerCase().includes('premiere')) {
-                tagsHTML = `<span class="tag gold-badge">${item.PremiereField}</span>`;
+            const premiereField = item['Premiere/Performance'];
+            if (premiereField && premiereField.toLowerCase().includes('premiere')) {
+                tagsHTML = `<span class="tag gold-badge">${premiereField}</span>`;
             }
 
             const instrumentationText = item.Instrumentation ? item.Instrumentation.trim() : '';
@@ -352,7 +358,7 @@
                 <div class="card-left-date">
                     <span class="date-year">${year}</span>
                     <span class="date-day">${monthDayStr}</span>
-                    ${timeDisplay ? `<span class="date-time">${timeDisplay}</span>` : ''}
+                    <span class="date-time">${timeDisplay}</span>
                     ${tagsHTML}
                 </div>
                 <div class="card-right-content">
@@ -380,7 +386,7 @@
                 (concert.Instrumentation && concert.Instrumentation.toLowerCase().includes(filterToken)) ||
                 (concert.City && concert.City.toLowerCase().includes(filterToken)) ||
                 (concert.Country && concert.Country.toLowerCase().includes(filterToken)) ||
-                (concert.PremiereField && concert.PremiereField.toLowerCase().includes(filterToken))
+                (concert['Premiere/Performance'] && concert['Premiere/Performance'].toLowerCase().includes(filterToken))
             );
         });
         displayConcerts(matchingConcerts);
