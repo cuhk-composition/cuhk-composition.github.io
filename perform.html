@@ -112,16 +112,19 @@
             font-size: 22px;
             font-weight: bold;
             color: var(--primary-purple);
-            margin-bottom: 2px;
+            margin-bottom: 4px;
             white-space: nowrap;
+            display: block;
         }
 
+        /* Improved layout definition ensuring text can't collapse */
         .date-time {
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 600;
             color: var(--text-secondary);
-            margin-bottom: 10px;
-            min-height: 18px;
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
         }
 
         .card-right-content {
@@ -179,6 +182,7 @@
             display: inline-block;
             text-align: center;
             white-space: nowrap;
+            margin-top: 4px;
         }
 
         .tag.gold-badge {
@@ -226,10 +230,12 @@
                     const cellValue = row.c[index];
                     let val = '';
                     
-                    if (cellValue && cellValue.f) {
-                        val = cellValue.f.trim();
-                    } else if (cellValue && cellValue.v !== null && cellValue.v !== undefined) {
-                        val = String(cellValue.v).trim();
+                    if (cellValue) {
+                        if (cellValue.f !== null && cellValue.f !== undefined) {
+                            val = String(cellValue.f).trim();
+                        } else if (cellValue.v !== null && cellValue.v !== undefined) {
+                            val = String(cellValue.v).trim();
+                        }
                     }
                     
                     if (header === 'Title') {
@@ -281,7 +287,6 @@
             const cardNode = document.createElement('div');
             cardNode.className = 'concert-card';
 
-            // Safe Date Formatting Logic: Prevents failures regardless of sheet data structure variations
             let year = '2026';
             let monthDayStr = item.Date || '';
             if (monthDayStr.includes('-')) {
@@ -290,7 +295,7 @@
                 monthDayStr = (parts[1] && parts[2]) ? `${parts[1]}/${parts[2]}` : monthDayStr;
             }
             
-            // Clean extraction of Time column data
+            // Forces raw, uninterrupted rendering of the text string fetched from your Time column
             let timeDisplay = item.Time ? item.Time.trim() : '';
 
             let descriptionContent = item.Performer ? `Performers: ${item.Performer}` : 'Performers: TBA';
@@ -329,7 +334,7 @@
                 <div class="card-left-date">
                     <span class="date-year">${year}</span>
                     <span class="date-day">${monthDayStr}</span>
-                    <span class="date-time">${timeDisplay}</span>
+                    ${timeDisplay ? `<span class="date-time">${timeDisplay}</span>` : ''}
                     ${tagsHTML}
                 </div>
                 <div class="card-right-content">
