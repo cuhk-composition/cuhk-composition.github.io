@@ -224,10 +224,15 @@
                 expectedHeaders.forEach((header, index) => {
                     const cellValue = row.c[index];
                     let val = '';
-                    if (cellValue && cellValue.f) {
-                        val = cellValue.f.trim();
-                    } else if (cellValue && cellValue.v !== null && cellValue.v !== undefined) {
-                        val = String(cellValue.v).trim();
+                    
+                    if (cellValue) {
+                        // Crucial fix: Prioritize formatted text value (.f) because Google Sheets 
+                        // returns time cells as specialized numeric values or time objects under .v
+                        if (cellValue.f !== null && cellValue.f !== undefined) {
+                            val = String(cellValue.f).trim();
+                        } else if (cellValue.v !== null && cellValue.v !== undefined) {
+                            val = String(cellValue.v).trim();
+                        }
                     }
                     
                     if (header === 'Title') {
@@ -287,7 +292,7 @@
                 monthDayStr = (parts[1] && parts[2]) ? `${parts[1]}/${parts[2]}` : item.Date;
             }
             
-            // Fixed validation: Checks if Time field exists, is not whitespace, and is not explicitly "TBA"
+            // Fixed validation string check to correctly print string outputs matching time schemas
             let timeDisplay = '';
             if (item.Time && item.Time.trim() !== '' && item.Time.toLowerCase() !== 'tba') {
                 timeDisplay = item.Time.trim();
