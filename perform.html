@@ -117,14 +117,12 @@
             display: block;
         }
 
-        /* Improved layout definition ensuring text can't collapse */
         .date-time {
             font-size: 14px;
-            font-weight: 600;
+            font-weight: bold;
             color: var(--text-secondary);
             margin-bottom: 8px;
             display: block;
-            text-transform: uppercase;
         }
 
         .card-right-content {
@@ -219,31 +217,54 @@
         try {
             const rows = dataObject.table.rows;
             
-            const expectedHeaders = [
-                'Date', 'Cantonese', 'Premiere/Performance', 'Title', 'Instrumentation', 
-                'Performer', 'Venue', 'City', 'Country', 'Link', 'Time', 'Occasion/Presenter'
-            ];
+            // Build absolute column indexes dynamically directly from Google's response object
+            // This safeguards against cases where headers have trailing spaces or shifting columns.
+            const googleHeaders = dataObject.table.cols.map(col => col.label ? col.label.toLowerCase().trim() : '');
+            
+            const findIndex = (name) => googleHeaders.indexOf(name.toLowerCase().trim());
+            
+            const idxDate = findIndex('Date');
+            const idxPremiere = findIndex('Premiere/Performance');
+            const idxTitle = findIndex('Title');
+            const idxInstr = findIndex('Instrumentation');
+            const idxPerformer = findIndex('Performer');
+            const idxVenue = findIndex('Venue');
+            const idxCity = findIndex('City');
+            const idxCountry = findIndex('Country');
+            const idxTime = findIndex('Time');
+            const idxOccasion = findIndex('Occasion/Presenter');
 
             globalConcertsDataset = rows.map(row => {
-                let item = {};
-                expectedHeaders.forEach((header, index) => {
-                    const cellValue = row.c[index];
-                    let val = '';
+                const getCellVal = (index) => {
+                    if (index === -1 || !row.c[index]) return '';
+                    const cell = row.c[index];
                     
-                    if (cellValue) {
-                        if (cellValue.f !== null && cellValue.f !== undefined) {
-                            val = String(cellValue.f).trim();
-                        } else if (cellValue.v !== null && cellValue.v !== undefined) {
-                            val = String(cellValue.v).trim();
-                        }
+                    // Direct safeguard: handle Google's time-of-day array format [hours, minutes, seconds] safely
+                    if (cell.v && Array.isArray(cell.v)) {
+                        let hrs = String(cell.v[0]).padStart(2, '0');
+                        let mins = String(cell.v[1]).padStart(2, '0');
+                        return `${hrs}:${mins}`;
                     }
-                    
-                    if (header === 'Title') {
-                        val = val.replace(/^["开口“”]+|["开口“”]+$/g, '').replace(/["“”]/g, '');
-                    }
-                    item[header] = val;
-                });
-                return item;
+                    if (cell.f !== null && cell.f !== undefined) return String(cell.f).trim();
+                    if (cell.v !== null && cell.v !== undefined) return String(cell.v).trim();
+                    return '';
+                };
+
+                let titleClean = getCellVal(idxTitle);
+                titleClean = titleClean.replace(/^["开口“”]+|["开口“”]+$/g, '').replace(/["“”]/g, '');
+
+                return {
+                    Date: getCellVal(idxDate),
+                    PremiereField: getCellVal(idxPremiere),
+                    Title: titleClean,
+                    Instrumentation: getCellVal(idxInstr),
+                    Performer: getCellVal(idxPerformer),
+                    Venue: getCellVal(idxVenue),
+                    City: getCellVal(idxCity),
+                    Country: getCellVal(idxCountry),
+                    Time: getCellVal(idxTime),
+                    Occasion: getCellVal(idxOccasion)
+                };
             }).filter(item => item.Date && item.Title);
 
             document.getElementById('concertSearch').disabled = false;
@@ -295,18 +316,17 @@
                 monthDayStr = (parts[1] && parts[2]) ? `${parts[1]}/${parts[2]}` : monthDayStr;
             }
             
-            // Forces raw, uninterrupted rendering of the text string fetched from your Time column
+            // Raw extraction: prints any exact text drawn from the Time column straight onto the page.
             let timeDisplay = item.Time ? item.Time.trim() : '';
 
             let descriptionContent = item.Performer ? `Performers: ${item.Performer}` : 'Performers: TBA';
-            if (item['Occasion/Presenter']) {
-                descriptionContent += ` | ${item['Occasion/Presenter']}`;
+            if (item.Occasion) {
+                descriptionContent += ` | ${item.Occasion}`;
             }
 
             let tagsHTML = '';
-            const premiereField = item['Premiere/Performance'];
-            if (premiereField && premiereField.toLowerCase().includes('premiere')) {
-                tagsHTML = `<span class="tag gold-badge">${premiereField}</span>`;
+            if (item.PremiereField && item.PremiereField.toLowerCase().includes('premiere')) {
+                tagsHTML = `<span class="tag gold-badge">${item.PremiereField}</span>`;
             }
 
             const instrumentationText = item.Instrumentation ? item.Instrumentation.trim() : '';
@@ -362,7 +382,7 @@
                 (concert.Instrumentation && concert.Instrumentation.toLowerCase().includes(filterToken)) ||
                 (concert.City && concert.City.toLowerCase().includes(filterToken)) ||
                 (concert.Country && concert.Country.toLowerCase().includes(filterToken)) ||
-                (concert['Premiere/Performance'] && concert['Premiere/Performance'].toLowerCase().includes(filterToken))
+                (concert.PremiereField && concert.PremiereField.toLowerCase().includes(filterToken))
             );
         });
         displayConcerts(matchingConcerts);
