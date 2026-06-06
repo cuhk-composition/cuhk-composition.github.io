@@ -10,7 +10,8 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- NOĒMA-Inspired Font Package: High-Contrast Playfair Serif + Archival Space Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -35,14 +36,16 @@
         }
 
         body {
+            /* NOĒMA-inspired core layout typography: high-readability sans-serif text */
             font-family: 'Inter', -apple-system, sans-serif;
             background-color: var(--bg-color);
             color: var(--teal-deep);
-            line-height: 1.7;
+            line-height: 1.75;
             padding-top: 80px;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Nav Header styling - Kept clean Sans-Serif */
+        /* Nav Header styling - Minimalist Sans-Serif with High Tracking */
         header {
             position: fixed;
             top: 0;
@@ -57,7 +60,7 @@
         .nav-container {
             max-width: var(--max-width);
             margin: 0 auto;
-            padding: 20px;
+            padding: 24px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -65,22 +68,22 @@
         }
 
         .logo a {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Space Mono', monospace;
             font-weight: 700;
-            font-size: 1.1rem;
-            letter-spacing: 2px;
+            font-size: 1rem;
+            letter-spacing: 3px;
             text-decoration: none;
             color: var(--teal-deep);
             z-index: 1001;
         }
 
-        /* Responsive Navbar Layout - Kept Sans-Serif */
+        /* Responsive Navbar Layout */
         .menu-toggle {
-            display: none; /* Hidden on desktop viewports */
+            display: none;
             flex-direction: column;
             justify-content: space-between;
             width: 24px;
-            height: 18px;
+            height: 16px;
             background: transparent;
             border: none;
             cursor: pointer;
@@ -89,7 +92,7 @@
 
         .menu-toggle span {
             width: 100%;
-            height: 2px;
+            height: 1.5px;
             background-color: var(--teal-deep);
             transition: all 0.3s ease;
             transform-origin: left center;
@@ -103,16 +106,16 @@
             display: flex;
             flex-direction: row;
             list-style: none;
-            gap: 25px;
+            gap: 30px;
         }
 
         nav a {
             text-decoration: none;
             color: var(--teal-muted);
             font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 500;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             text-transform: uppercase;
             transition: color 0.2s ease;
             display: inline-block;
@@ -126,7 +129,7 @@
         section {
             max-width: var(--max-width);
             margin: 0 auto;
-            padding: 50px 20px 90px 20px;
+            padding: 60px 20px 100px 20px;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -134,14 +137,14 @@
             border-bottom: none;
         }
 
-        /* Standardized Section Headings - Reconfigured to Gold, Bold, and All-Caps */
+        /* Standardized Section Headings - All-Caps, Muted Gold, High Letter-Spacing */
         .section-title {
-            font-family: 'Inter', sans-serif;
-            font-size: 1.6rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 1.25rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
             color: var(--gold-satin);
-            margin-bottom: 40px;
+            margin-bottom: 50px;
             font-weight: 700;
             position: relative;
         }
@@ -149,17 +152,17 @@
         .section-title::after {
             content: '';
             display: block;
-            width: 40px;
-            height: 2px;
-            background-color: var(--teal-deep);
-            margin-top: 12px;
+            width: 30px;
+            height: 1px;
+            background-color: var(--gold-satin);
+            margin-top: 16px;
         }
 
         /* Layout Grids */
         .grid-2 {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 80px;
             align-items: center;
         }
 
@@ -167,23 +170,23 @@
         .events-container {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 10px;
             width: 100%;
         }
 
         .event-card {
             display: grid;
-            grid-template-columns: 180px 1fr;
+            grid-template-columns: 200px 1fr;
             gap: 40px;
             align-items: start;
-            padding: 20px;
+            padding: 24px 20px;
             background-color: transparent;
             border-bottom: 1px solid var(--border-color);
             border-radius: 4px;
             transition: background-color 0.3s ease;
         }
 
-        /* Dynamic hover color feedback for performance slots */
+        /* Premium hover backdrop animation */
         .event-card:hover {
             background-color: var(--gold-light);
             border-bottom-color: transparent;
@@ -193,55 +196,56 @@
             border-bottom: none;
         }
 
-        /* Left Block layout - Temporal Metrics + Underneath Details Action Button */
+        /* Left Block layout - Editorial Monospace System */
         .event-date-block {
             text-align: left;
             display: flex;
             flex-direction: column;
             border-right: 1px solid var(--border-color);
             padding-right: 20px;
+            font-family: 'Space Mono', monospace;
             transition: border-color 0.3s ease;
         }
 
         .event-card:hover .event-date-block {
-            border-right-color: rgba(14, 58, 64, 0.2);
+            border-right-color: rgba(14, 58, 64, 0.15);
         }
 
-        /* Enhanced Date Typography Metrics */
         .event-date-display {
-            font-size: 1.4rem;
+            font-size: 1.05rem;
             font-weight: 700;
             color: var(--teal-deep);
             letter-spacing: -0.5px;
-            line-height: 1.2;
-            margin-bottom: 6px;
+            line-height: 1.3;
+            margin-bottom: 4px;
         }
 
         .event-time-display {
-            font-size: 0.85rem;
-            font-weight: 600;
+            font-size: 0.75rem;
+            font-weight: 400;
             color: var(--teal-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 18px;
+            margin-bottom: 24px;
         }
 
-        /* Elongating & Interactive Hover Link Button Design for Details */
+        /* Interactive Hover Action Button Design for Details */
         .event-link-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             align-self: flex-start;
-            font-size: 0.75rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            font-weight: 600;
+            font-weight: 400;
             color: var(--teal-deep);
             text-decoration: none;
             background-color: transparent;
             border: 1px solid var(--teal-deep);
-            padding: 6px 16px;
-            min-width: 100px;
+            padding: 5px 14px;
+            min-width: 90px;
             border-radius: 2px;
             transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
@@ -249,8 +253,8 @@
         .event-link-btn:hover {
             color: var(--bg-color);
             background-color: var(--teal-deep);
-            min-width: 135px; /* Elongating smooth width transformation */
-            padding: 6px 22px; /* Smooth side padding scaling */
+            min-width: 120px;
+            padding: 5px 18px;
             letter-spacing: 1.5px;
         }
 
@@ -258,20 +262,20 @@
         .event-details-block {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
-        /* Distinct Performance Title Formatting style - Elegant Serif Accent */
+        /* Fine-Art Editorial Headings - Classical Serif */
         .event-title-h3 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 1.45rem;
+            font-weight: 500;
             color: var(--teal-deep);
-            line-height: 1.3;
+            line-height: 1.25;
         }
 
-        /* Dedicated Structural Placement Row layout for Instrumentation */
         .event-instrumentation-row {
+            font-family: 'Playfair Display', serif;
             font-size: 1.05rem;
             font-weight: 400;
             color: var(--teal-muted);
@@ -279,7 +283,8 @@
         }
 
         .event-location-row {
-            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
             color: var(--gold-satin);
             font-weight: 500;
             display: flex;
@@ -289,33 +294,36 @@
         }
 
         .event-presenter-row {
-            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
             color: var(--teal-muted);
             font-weight: 500;
         }
 
         .event-performer-row {
-            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
             color: var(--teal-muted);
             font-weight: 400;
         }
 
         /* Worklist Architecture Styles */
         .works-header-block {
-            margin-bottom: 50px;
+            margin-bottom: 60px;
         }
         
         .works-subtitle {
-            font-size: 0.9rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
             color: var(--teal-muted);
-            margin-top: -25px;
+            margin-top: -30px;
             font-style: italic;
         }
 
         .works-container-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 50px;
+            gap: 60px;
             align-items: start;
         }
 
@@ -325,14 +333,14 @@
         }
 
         .category-title {
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem; 
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem; 
             text-transform: uppercase; 
-            margin-bottom: 15px; 
-            letter-spacing: 1px;
+            margin-bottom: 20px; 
+            letter-spacing: 2px;
             color: var(--teal-deep);
-            border-bottom: 2px solid var(--gold-satin);
-            padding-bottom: 5px;
+            border-bottom: 1px solid var(--gold-satin);
+            padding-bottom: 6px;
             display: inline-block;
         }
 
@@ -345,7 +353,6 @@
             transition: background-color 0.3s ease;
         }
 
-        /* Dynamic background shifting for individual work pieces */
         .work-item-container:hover {
             background-color: var(--gold-light);
             border-bottom-color: transparent;
@@ -363,8 +370,8 @@
 
         .work-title {
             font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.15rem;
+            font-weight: 500;
             color: var(--teal-deep);
             margin-bottom: 4px;
             transition: color 0.2s ease;
@@ -372,21 +379,29 @@
 
         .chinese-char {
             font-family: "PingFang HK", "Microsoft JhengHei", sans-serif;
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 400;
-            margin-left: 4px;
+            margin-left: 6px;
+            font-style: normal;
         }
 
         .work-meta-info {
-            font-size: 0.85rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
             color: var(--teal-muted);
             font-weight: 400;
+            letter-spacing: -0.2px;
         }
 
         .work-item-container:hover .work-title {
             color: var(--gold-satin);
-            text-decoration: underline;
-            text-underline-offset: 4px;
+        }
+
+        /* Sub-sections & Text Embed Layouts */
+        .biography-text p {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
         }
 
         .media-embed {
@@ -394,19 +409,39 @@
             border: 1px solid var(--border-color);
             padding: 20px;
             border-radius: 4px;
-            min-height: 200px;
+            min-height: 220px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--teal-muted);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            text-align: center;
         }
 
         .highlight-box {
-            border-left: 2px solid var(--gold-satin); 
-            padding-left: 20px;
-            background: var(--gold-light);
-            padding: 20px;
-            border-radius: 0 4px 4px 0;
+            border-left: 1px solid var(--gold-satin); 
+            padding-left: 24px;
+            background: transparent;
+        }
+
+        .publication-item {
+            margin-bottom: 24px;
+        }
+
+        .publication-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            font-weight: 500;
+            color: var(--teal-deep);
+            line-height: 1.4;
+        }
+
+        .publication-meta {
+            font-family: 'Space Mono', monospace;
+            color: var(--teal-muted);
+            font-size: 0.75rem;
+            margin-top: 4px;
         }
 
         .contact-box {
@@ -415,22 +450,27 @@
         }
 
         .contact-box p { 
-            margin-bottom: 25px; 
+            margin-bottom: 30px; 
             color: var(--teal-muted); 
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-style: italic;
         }
 
         .btn-email {
             display: inline-block;
-            padding: 12px 35px;
+            padding: 12px 40px;
             border: 1px solid var(--teal-deep);
             color: var(--teal-deep);
             text-decoration: none;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            font-weight: 600;
+            font-weight: 400;
             transition: all 0.3s ease;
             background: transparent;
+            border-radius: 2px;
         }
 
         .btn-email:hover {
@@ -439,9 +479,10 @@
         }
 
         .loading-text {
+            font-family: 'Space Mono', monospace;
             color: var(--teal-muted);
             font-style: italic;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         }
 
         .image-placeholder {
@@ -453,28 +494,29 @@
             align-items: center;
             justify-content: center;
             color: var(--teal-muted);
-            font-size: 0.9rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
             letter-spacing: 1px;
-            font-weight: 500;
         }
 
         footer {
             text-align: center;
-            padding: 40px 20px;
-            font-size: 0.8rem;
+            padding: 50px 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
             color: var(--teal-muted);
             border-top: 1px solid var(--border-color);
             max-width: var(--max-width);
             margin: 0 auto;
         }
 
-        /* MOBILE MEDIA QUERIES - Triggered strictly under 768px viewport widths */
+        /* MOBILE MEDIA QUERIES */
         @media (max-width: 768px) {
             section {
-                padding: 40px 20px 60px 20px;
+                padding: 50px 20px 70px 20px;
             }
 
-            /* Transform Navbar Layout to an Overlay Slider Menu */
             .menu-toggle {
                 display: flex; 
             }
@@ -483,11 +525,11 @@
                 position: fixed;
                 top: 0;
                 right: -100%;
-                width: 300px;
+                width: 280px;
                 height: 100vh;
                 background: var(--bg-color);
-                box-shadow: -5px 0 25px rgba(0,0,0,0.05);
-                padding: 100px 40px 40px 40px;
+                box-shadow: -5px 0 25px rgba(0,0,0,0.03);
+                padding: 120px 40px 40px 40px;
                 transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
                 z-index: 1000;
                 border-left: 1px solid var(--border-color);
@@ -499,41 +541,36 @@
 
             nav ul {
                 flex-direction: column;
-                gap: 30px;
+                gap: 24px;
             }
 
             nav a {
-                font-size: 0.95rem;
+                font-size: 0.85rem;
                 display: block;
             }
 
-            /* Toggle Animated Transforms */
             .menu-toggle.open span:nth-child(1) { transform: rotate(45deg); }
             .menu-toggle.open span:nth-child(2) { width: 0%; opacity: 0; }
             .menu-toggle.open span:nth-child(3) { transform: rotate(-45deg); }
 
-            /* Grid Resets to Single Column Content Streams */
             .grid-2, .works-container-layout {
                 grid-template-columns: 1fr;
-                gap: 40px;
+                gap: 50px;
             }
 
             .event-card {
                 grid-template-columns: 1fr;
-                gap: 16px;
-                text-align: left;
-                padding: 15px;
+                gap: 14px;
+                padding: 16px 12px;
             }
 
-            /* --- Mobile Left Block Alignment & Sizing --- */
+            /* Mobile Left Block Alignment & Sizing Re-adjustment */
             .event-date-block {
                 flex-direction: row;
                 flex-wrap: wrap;
                 align-items: center;
-                gap: 14px; 
+                gap: 12px; 
                 border-right: none;
-                border-left: none;
-                padding-left: 0;
                 padding-right: 0;
             }
 
@@ -541,67 +578,44 @@
                 border-right-color: transparent;
             }
 
-            /* Increased and standardized font sizing across details metadata elements */
             .event-date-display {
-                font-size: 1.05rem; 
-                font-weight: 600;
-                color: var(--teal-deep);
-                letter-spacing: -0.2px;
+                font-size: 0.95rem; 
+                font-weight: 700;
                 margin-bottom: 0;
                 display: inline-block;
             }
 
             .event-time-display {
-                font-size: 1.05rem; 
-                font-weight: 500;
-                color: var(--teal-deep);
-                letter-spacing: -0.2px;
+                font-size: 0.75rem; 
                 margin-bottom: 0;
-                text-transform: none;
                 display: inline-block;
             }
 
-            /* Scaled-down dynamic action button behavior customized for Mobile viewports */
+            /* Compact Details Action Button optimized for Mobile */
             .event-link-btn {
                 font-size: 0.65rem; 
-                text-transform: uppercase;
                 letter-spacing: 0.5px;
-                font-weight: 600;
-                display: inline-flex;
-                margin-top: 0;
-                border: 1px solid var(--teal-deep);
-                padding: 4px 10px;
+                padding: 3px 10px;
                 min-width: 75px;
-                border-radius: 2px;
-                background-color: transparent;
-                color: var(--teal-deep);
+                margin-top: 0;
             }
             
             .event-link-btn:hover {
-                color: var(--bg-color);
-                background-color: var(--teal-deep);
-                min-width: 95px; /* Proportional expansion configuration on mobile devices */
-                padding: 4px 14px;
+                min-width: 90px;
+                padding: 3px 12px;
                 letter-spacing: 1px;
             }
 
-            /* Mobile Right Block Content Adjustments */
             .event-details-block {
                 gap: 4px;
             }
 
             .event-title-h3 {
-                font-size: 1.35rem; 
+                font-size: 1.3rem; 
             }
 
             .event-instrumentation-row {
                 font-size: 0.95rem; 
-            }
-
-            .event-location-row,
-            .event-presenter-row,
-            .event-performer-row {
-                font-size: 0.85rem; 
             }
         }
     </style>
@@ -613,14 +627,12 @@
         <div class="nav-container">
             <div class="logo"><a href="#home">KAI-YOUNG CHAN</a></div>
             
-            <!-- Hamburger button visible ONLY on mobile/tablet viewports -->
             <button class="menu-toggle" id="menu-btn" aria-label="Toggle Navigation Layout">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
 
-            <!-- Menu links: Inline rows on desktop, slide-out drawer on mobile screens -->
             <nav id="nav-menu">
                 <ul>
                     <li><a href="#home">Home</a></li>
@@ -634,7 +646,7 @@
         </div>
     </header>
 
-    <!-- 1. DYNAMIC PERFORMANCE SCHEDULING FRAMEWORK -->
+    <!-- 1. LIVE PERFORMANCE ARCHIVE FRAMEWORK -->
     <section id="home">
         <h2 class="section-title">Performances</h2>
         <div id="live-events" class="events-container">
@@ -642,12 +654,12 @@
         </div>
     </section>
 
-    <!-- 2. ABOUT ME ZONE -->
+    <!-- 2. BIOGRAPHY ZONE -->
     <section id="about" class="grid-2">
-        <div>
+        <div class="biography-text">
             <h2 class="section-title">Biography</h2>
-            <p style="margin-bottom: 15px;"><strong>Kai-Young Chan</strong> is an Associate Professor of music composition and an academic scholar whose work sits at the vital intersection of linguistic nuance, cultural heritage, and contemporary art music.</p>
-            <p style="margin-bottom: 15px; color: var(--teal-muted);">His creative practice focus centers on turning linguistic rules into innovative creative assets, transforming structural text-setting boundaries into expressive melodic tools. He is a recipient of the prestigious <strong>CASH Golden Sail Music Award</strong>, and his compositions are regularly performed globally by ensembles including the Pittsburgh Symphony Orchestra and the Hong Kong Philharmonic.</p>
+            <p><strong>Kai-Young Chan</strong> is an Associate Professor of music composition and an academic scholar whose work sits at the vital intersection of linguistic nuance, cultural heritage, and contemporary art music.</p>
+            <p style="color: var(--teal-muted);">His creative practice focus centers on turning linguistic rules into innovative creative assets, transforming structural text-setting boundaries into expressive melodic tools. He is a recipient of the prestigious <strong>CASH Golden Sail Music Award</strong>, and his compositions are regularly performed globally by ensembles including the Pittsburgh Symphony Orchestra and the Hong Kong Philharmonic.</p>
             <p style="color: var(--teal-muted);">His scores are published internationally by <strong>Universal Edition (Vienna)</strong>, Edition Peters (London), and Edition ICOT (Japan).</p>
         </div>
         <div class="image-placeholder">
@@ -722,13 +734,13 @@
         <h2 class="section-title">Audio & Video Feature</h2>
         <div class="grid-2">
             <div>
-                <h3 style="font-size: 0.9rem; margin-bottom: 15px; font-weight: 500; color: var(--teal-deep);">Featured Portrait Album</h3>
+                <h3 style="font-family: 'Space Mono', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; font-weight: 700; color: var(--teal-deep);">Featured Portrait Album</h3>
                 <div class="media-embed">
                     <span>[ Embedded Spotify Player: <br><em>Constraints/Creativity (Navona Records)</em> ]</span>
                 </div>
             </div>
             <div>
-                <h3 style="font-size: 0.9rem; margin-bottom: 15px; font-weight: 500; color: var(--teal-deep);">Performance Video Showcase</h3>
+                <h3 style="font-family: 'Space Mono', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; font-weight: 700; color: var(--teal-deep);">Performance Video Showcase</h3>
                 <div class="media-embed">
                     <span>[ Embedded YouTube Player ]</span>
                 </div>
@@ -740,15 +752,21 @@
     <section id="research" class="grid-2">
         <div>
             <h2 class="section-title">Research Projects</h2>
-            <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; color: var(--teal-deep);">From Constraints to Creativity</h3>
-            <p style="color: var(--teal-muted); margin-bottom: 15px;">Serving as Principal Investigator, this ongoing project investigates how Hong Kong composers navigate linguistic speech-tone structures to yield highly clear, expressive vocal music frameworks.</p>
-            <p style="color: var(--teal-muted);">This research infrastructure led to the development of the open-access interactive platform <a href="https://www.cantonesecomposition.com" target="_blank" style="color:var(--teal-deep); font-weight:500;">Cantonese Melody Generator</a>.</p>
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 500; margin-bottom: 15px; color: var(--teal-deep);">From Constraints to Creativity</h3>
+            <p style="color: var(--teal-muted); margin-bottom: 15px; font-size: 0.95rem;">Serving as Principal Investigator, this ongoing project investigates how Hong Kong composers navigate linguistic speech-tone structures to yield highly clear, expressive vocal music frameworks.</p>
+            <p style="color: var(--teal-muted); font-size: 0.95rem;">This research infrastructure led to the development of the open-access interactive platform <a href="https://www.cantonesecomposition.com" target="_blank" style="color:var(--teal-deep); font-weight:500;">Cantonese Melody Generator</a>.</p>
         </div>
         <div>
-            <h2 class="section-title">Selected Sheet Music Publications</h2>
+            <h2 class="section-title">Sheet Music Publications</h2>
             <div class="highlight-box">
-                <p style="margin-bottom: 12px; font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600;">Constraints/Creativity: Cantonese Choral Works (2024)<br><span style="font-family: 'Inter', sans-serif; color: var(--teal-muted); font-size: 0.9rem; font-weight: 400;">Vienna: Universal Edition</span></p>
-                <p style="font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600;">Canto: Works for Violin (2024)<br><span style="font-family: 'Inter', sans-serif; color: var(--teal-muted); font-size: 0.9rem; font-weight: 400;">Vienna: Universal Edition</span></p>
+                <div class="publication-item">
+                    <p class="publication-title">Constraints/Creativity: Cantonese Choral Works (2024)</p>
+                    <p class="publication-meta">Vienna: Universal Edition</p>
+                </div>
+                <div class="publication-item">
+                    <p class="publication-title">Canto: Works for Violin (2024)</p>
+                    <p class="publication-meta">Vienna: Universal Edition</p>
+                </div>
             </div>
         </div>
     </section>
@@ -763,12 +781,11 @@
     </section>
 
     <footer>
-        <p>&copy; 2026 Kai-Young Chan. All Rights Reserved. Designed in compliance with minimalist portfolio frameworks.</p>
+        <p>&copy; 2026 Kai-Young Chan. All Rights Reserved. Curated with fine art editorial frameworks.</p>
     </footer>
 
     <!-- INTERACTIVE DOM SCRIPTS -->
     <script>
-        // Hamburger Menu Overlay Interaction Logistics
         const menuBtn = document.getElementById('menu-btn');
         const navMenu = document.getElementById('nav-menu');
         const navLinks = document.querySelectorAll('#nav-menu a');
@@ -778,7 +795,6 @@
             navMenu.classList.toggle('active');
         });
 
-        // Auto-close overlay drawer once a specific anchor point is selected
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
                 menuBtn.classList.remove('open');
@@ -786,7 +802,6 @@
             });
         });
 
-        // TSV GOOGLE SHEET RENDERING UTILITY
         async function fetchPerformanceLog() {
             const sheetUrl = 'https://docs.google.com/spreadsheets/d/1ewOnbKddBpx4YFSQpfvhOvmJCznhGzdcS2DyMFp7d08/gviz/tq?tqx=out:csv&sheet=Website';
             const container = document.getElementById('live-events');
@@ -822,7 +837,6 @@
 
                 const rows = parseCSV(text);
                 let htmlOutput = '';
-                
                 const entriesToRender = rows.slice(2, 7); 
 
                 entriesToRender.forEach(columns => {
