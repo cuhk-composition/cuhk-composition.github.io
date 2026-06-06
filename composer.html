@@ -37,7 +37,7 @@
             padding-top: 80px;
         }
 
-        /* Nav Header styling inspired by joycewctang.com */
+        /* Nav Header styling */
         header {
             position: fixed;
             top: 0;
@@ -115,7 +115,7 @@
             align-items: center;
         }
 
-        /* Dynamic Performance Card System (Reference: Screenshot 2026-06-06 at 5.32.41 PM.png) */
+        /* Dynamic Performance Card System */
         .events-container {
             display: flex;
             flex-direction: column;
@@ -125,8 +125,8 @@
 
         .event-card {
             display: grid;
-            grid-template-columns: 120px 1fr;
-            gap: 30px;
+            grid-template-columns: 140px 1fr;
+            gap: 40px;
             align-items: start;
             padding-bottom: 30px;
             border-bottom: 1px solid var(--border-color);
@@ -142,6 +142,8 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            border-right: 1px solid var(--border-color);
+            padding-right: 20px;
         }
 
         .event-year {
@@ -156,32 +158,33 @@
             font-weight: 700;
             color: var(--teal-deep);
             line-height: 1.2;
-            margin: 4px 0;
+            margin: 6px 0;
         }
 
         .event-time {
-            font-size: 0.85rem;
-            font-weight: 500;
+            font-size: 0.8rem;
+            font-weight: 600;
             color: var(--teal-muted);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
         .event-details-block h3 {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 600;
             color: var(--teal-deep);
-            margin-bottom: 4px;
-            line-height: 1.4;
+            margin-top: 2px;
+            margin-bottom: 6px;
+            line-height: 1.3;
         }
 
         .event-occasion {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--gold-satin);
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 6px;
+            letter-spacing: 1.5px;
+            margin-bottom: 4px;
         }
 
         .event-venue {
@@ -191,6 +194,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            font-weight: 400;
         }
 
         .event-performers {
@@ -331,6 +335,21 @@
             font-size: 0.95rem;
         }
 
+        /* Image Frame placeholder */
+        .image-placeholder {
+            background: var(--gold-light);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            aspect-ratio: 4/5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--teal-muted);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
         footer {
             text-align: center;
             padding: 40px 20px;
@@ -354,8 +373,10 @@
             .event-date-block {
                 text-align: left;
                 align-items: flex-start;
+                border-right: none;
                 border-left: 2px solid var(--gold-satin);
                 padding-left: 15px;
+                padding-right: 0;
             }
             body { padding-top: 120px; }
             .nav-container { flex-direction: column; gap: 15px; }
@@ -381,11 +402,11 @@
         </div>
     </header>
 
-    <!-- 1. DYNAMIC LIVE PERFORMANCE LOG (REPLACES HERO SPOTLIGHT) -->
+    <!-- 1. DYNAMIC LIVE PERFORMANCE LOG -->
     <section id="home">
         <h2 class="section-title">Upcoming & Recent Performances</h2>
         <div id="live-events" class="events-container">
-            <p class="loading-text">Loading latest schedule from schedule framework...</p>
+            <p class="loading-text">Loading performance schedule...</p>
         </div>
     </section>
 
@@ -509,47 +530,50 @@
         </div>
     </section>
 
-    <!-- FOOTER CREDITS -->
     <footer>
         <p>&copy; 2026 Kai-Young Chan. All Rights Reserved. Designed in compliance with minimalist portfolio frameworks.</p>
     </footer>
 
-    <!-- LIVE DATA FETCH SCRIPT FOR PERFORMANCE LOGS -->
+    <!-- REALIGNED GOOGLE SHEETS PARSER FRAMEWORK -->
     <script>
         async function fetchPerformanceLog() {
-            // Public TSV export link derived from your Google Sheet URL
             const sheetUrl = 'https://docs.google.com/spreadsheets/d/1ewOnbKddBpx4YFSQpfvhOvmJCznhGzdcS2DyMFp7d08/export?format=tsv&gid=1551264105';
             const container = document.getElementById('live-events');
 
             try {
                 const response = await fetch(sheetUrl);
-                if (!response.ok) throw new Error('Network response failure.');
+                if (!response.ok) throw new Error('Network issue fetching data.');
                 const text = await response.text();
                 
-                // Parse rows into clean TSV arrays
                 const rows = text.split('\n').map(row => row.split('\t'));
-                
-                // Row 0 is the column headers. Rows 1 through 5 provide the 5 items.
                 let htmlOutput = '';
+                
+                // Select rows 1 to 5 from spreadsheet data
                 const entriesToRender = rows.slice(1, 6); 
 
                 entriesToRender.forEach(columns => {
                     if (columns.length < 5) return;
 
-                    // Map array indexes according to spreadsheet positioning
-                    const pieceTitle  = columns[0] ? columns[0].trim() : 'Untitled';
+                    // Exact structural remapping of columns
+                    const pieceTitle  = columns[0] ? columns[0].trim() : 'Untitled Work';
                     const dateRaw     = columns[1] ? columns[1].trim() : 'TBA';
-                    const timeRaw     = columns[2] ? columns[2].trim() : 'TBA';
-                    const performer   = columns[3] ? columns[3].trim() : 'Unknown Performer';
+                    const timeRaw     = columns[2] ? columns[2].trim() : '';
+                    const performer   = columns[3] ? columns[3].trim() : 'TBA Performer';
                     const venue       = columns[4] ? columns[4].trim() : 'TBA Venue';
                     const country     = columns[5] ? columns[5].trim() : '';
-                    const occasion    = columns[6] ? columns[6].trim() : '';
+                    const occasion    = columns[6] ? columns[6].trim() : 'Performance';
 
-                    // Basic Date Parser to isolate Year and Month/Day pairs for layout rendering
+                    // Parse the date to construct layout requirements
                     let displayYear = "2026";
                     let displayDay = dateRaw;
                     
-                    if (dateRaw.includes('/')) {
+                    if (dateRaw.includes('-')) {
+                        const dateParts = dateRaw.split('-');
+                        if (dateParts.length === 3) {
+                            displayYear = dateParts[0];
+                            displayDay = `${dateParts[1]}/${dateParts[2]}`;
+                        }
+                    } else if (dateRaw.includes('/')) {
                         const dateParts = dateRaw.split('/');
                         if (dateParts.length === 3) {
                             displayYear = dateParts[0];
@@ -557,36 +581,38 @@
                         }
                     }
 
-                    // Render markup layout card matching screenshot formatting structural styling
+                    // Build markup matching structure requested
                     htmlOutput += `
                         <div class="event-card">
+                            <!-- Date on the Left Side -->
                             <div class="event-date-block">
                                 <span class="event-year">${displayYear}</span>
                                 <span class="event-day">${displayDay}</span>
-                                <span class="event-time">${timeRaw}</span>
+                                <span class="event-time">${occasion.toUpperCase()}</span>
                             </div>
+                            
+                            <!-- Information Details Blocks -->
                             <div class="event-details-block">
-                                ${occasion ? `<div class="event-occasion">${occasion}</div>` : ''}
-                                <h3>${pieceTitle}</h3>
+                                <div class="event-occasion">${venue.toUpperCase()}</div>
+                                <h3>${displayYear}-${displayDay.replace('/', '-')}</h3>
                                 <div class="event-venue">
-                                    📍 ${venue}${country ? ` (${country.trim()})` : ''}
+                                    📍 ${timeRaw} (${performer})
                                 </div>
                                 <div class="event-performers">
-                                    Performers: ${performer}
+                                    Performers: "${pieceTitle}"
                                 </div>
                             </div>
                         </div>
                     `;
                 });
 
-                container.innerHTML = htmlOutput || '<p class="loading-text">No recent entries found.</p>';
+                container.innerHTML = htmlOutput || '<p class="loading-text">No performance schedule logged.</p>';
             } catch (error) {
-                console.error('Error fetching sheet data:', error);
-                container.innerHTML = '<p class="loading-text" style="color: #a00;">Failed to load live performance schedule. Please check connection status.</p>';
+                console.error('Data error:', error);
+                container.innerHTML = '<p class="loading-text" style="color: #a00;">Failed to link live scheduling updates.</p>';
             }
         }
 
-        // Initialize script trigger upon initial page construction loading loop
         document.addEventListener('DOMContentLoaded', fetchPerformanceLog);
     </script>
 </body>
