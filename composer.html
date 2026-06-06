@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kai-Young Chan | Composer & Scholar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Premium Academic & Contemporary Palette */
+            --bg-color: #fcfbfa;       /* Luxurious warm off-white */
+            --teal-deep: #0e3a40;      /* Dark velvet teal for primary text and headers */
+            --teal-muted: #2d5b60;     /* Soft teal for secondary labels and descriptions */
+            --gold-satin: #bda26b;     /* Muted gold for accents and highlights */
+            --gold-light: #f4eee1;     /* Tinted off-white for cards and containers */
+            --border-color: #e6e2db;   /* Soft warm border lines */
+            --max-width: 1100px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--teal-deep);
+            line-height: 1.7;
+            padding-top: 80px;
+        }
+
+        /* Nav Header styling inspired by joycewctang.com */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(252, 251, 250, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo a {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            text-decoration: none;
+            color: var(--teal-deep);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--teal-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.2s ease;
+        }
+
+        nav a:hover {
+            color: var(--gold-satin);
+        }
+
+        /* Structural Framework Sections */
+        section {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 90px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--gold-satin);
+            margin-bottom: 40px;
+            font-weight: 600;
+        }
+
+        /* Layout Grids */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        /* Dynamic Performance Card System (Reference: Screenshot 2026-06-06 at 5.32.41 PM.png) */
+        .events-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            width: 100%;
+        }
+
+        .event-card {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 30px;
+            align-items: start;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .event-card:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .event-date-block {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .event-year {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--teal-muted);
+            letter-spacing: 1px;
+        }
+
+        .event-day {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--teal-deep);
+            line-height: 1.2;
+            margin: 4px 0;
+        }
+
+        .event-time {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--teal-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .event-details-block h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--teal-deep);
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .event-occasion {
+            font-size: 0.9rem;
+            color: var(--gold-satin);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .event-venue {
+            font-size: 0.95rem;
+            color: var(--teal-deep);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .event-performers {
+            font-size: 0.95rem;
+            color: var(--teal-muted);
+        }
+
+        /* Joyce Tang Worklist Architecture Styles */
+        .works-header-block {
+            margin-bottom: 50px;
+        }
+        
+        .works-subtitle {
+            font-size: 0.9rem;
+            color: var(--teal-muted);
+            margin-top: -25px;
+            font-style: italic;
+        }
+
+        .works-container-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        .genre-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .category-title {
+            font-size: 1rem; 
+            text-transform: uppercase; 
+            margin-bottom: 15px; 
+            letter-spacing: 1px;
+            color: var(--teal-deep);
+            border-bottom: 2px solid var(--gold-satin);
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+
+        .work-item-container {
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 0;
+            transition: background-color 0.2s ease;
+        }
+
+        .work-item-container:last-child {
+            border-bottom: none;
+        }
+
+        .work-link-wrapper {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+        }
+
+        .work-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--teal-deep);
+            margin-bottom: 4px;
+            transition: color 0.2s ease;
+        }
+
+        .chinese-char {
+            font-family: "PingFang HK", "Microsoft JhengHei", sans-serif;
+            font-size: 0.95rem;
+            font-weight: 400;
+            margin-left: 4px;
+        }
+
+        .work-meta-info {
+            font-size: 0.85rem;
+            color: var(--teal-muted);
+            font-weight: 400;
+        }
+
+        .work-item-container:hover .work-title {
+            color: var(--gold-satin);
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        .media-embed {
+            background: var(--gold-light);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 4px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--teal-muted);
+        }
+
+        .highlight-box {
+            border-left: 2px solid var(--gold-satin); 
+            padding-left: 20px;
+            background: var(--gold-light);
+            padding: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .contact-box {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .contact-box p { 
+            margin-bottom: 25px; 
+            color: var(--teal-muted); 
+        }
+
+        .btn-email {
+            display: inline-block;
+            padding: 12px 35px;
+            border: 1px solid var(--teal-deep);
+            color: var(--teal-deep);
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+
+        .btn-email:hover {
+            background: var(--teal-deep);
+            color: var(--bg-color);
+        }
+
+        .loading-text {
+            color: var(--teal-muted);
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 0.8rem;
+            color: var(--teal-muted);
+            border-top: 1px solid var(--border-color);
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .works-container-layout {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .event-card {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                text-align: left;
+            }
+            .event-date-block {
+                text-align: left;
+                align-items: flex-start;
+                border-left: 2px solid var(--gold-satin);
+                padding-left: 15px;
+            }
+            body { padding-top: 120px; }
+            .nav-container { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- STICKY HEADER NAVIGATION -->
+    <header>
+        <div class="nav-container">
+            <div class="logo"><a href="#home">KAI-YOUNG CHAN</a></div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#works">Works</a></li>
+                    <li><a href="#audio">Audio/Visual</a></li>
+                    <li><a href="#research">Research</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 1. DYNAMIC LIVE PERFORMANCE LOG (REPLACES HERO SPOTLIGHT) -->
+    <section id="home">
+        <h2 class="section-title">Upcoming & Recent Performances</h2>
+        <div id="live-events" class="events-container">
+            <p class="loading-text">Loading latest schedule from schedule framework...</p>
+        </div>
+    </section>
+
+    <!-- 2. ABOUT ME ZONE -->
+    <section id="about" class="grid-2">
+        <div>
+            <h2 class="section-title">Biography</h2>
+            <p style="margin-bottom: 15px;"><strong>Kai-Young Chan</strong> is an Associate Professor of music composition and an academic scholar whose work sits at the vital intersection of linguistic nuance, cultural heritage, and contemporary art music.</p>
+            <p style="margin-bottom: 15px; color: var(--teal-muted);">His creative practice focus centers on turning linguistic rules into innovative creative assets, transforming structural text-setting boundaries into expressive melodic tools. He is a recipient of the prestigious <strong>CASH Golden Sail Music Award</strong>, and his compositions are regularly performed globally by ensembles including the Pittsburgh Symphony Orchestra and the Hong Kong Philharmonic.</p>
+            <p style="color: var(--teal-muted);">His scores are published internationally by <strong>Universal Edition (Vienna)</strong>, Edition Peters (London), and Edition ICOT (Japan).</p>
+        </div>
+        <div class="image-placeholder">
+            <span>[ PORTRAIT PHOTO ]</span>
+        </div>
+    </section>
+
+    <!-- 3. SELECTED WORKS CATALOG -->
+    <section id="works">
+        <div class="works-header-block">
+            <h2 class="section-title">Work List</h2>
+            <p class="works-subtitle">Click on individual works to view complete instrumentation, project notes, and score distribution details.</p>
+        </div>
+        
+        <div class="works-container-layout">
+            <div class="genre-column">
+                <h3 class="category-title">Vocal / Choral</h3>
+                
+                <div class="work-item-container">
+                    <a href="/worklist/finale" class="work-link-wrapper">
+                        <span class="work-title">終曲 Finale <span class="chinese-char">《終曲》</span></span>
+                        <span class="work-meta-info">for mixed choir and piano (4') — 2026</span>
+                    </a>
+                </div>
+                <div class="work-item-container">
+                    <a href="/worklist/withered-blossoms" class="work-link-wrapper">
+                        <span class="work-title">Withered Blossoms, Fading Scent <span class="chinese-char">《落花飛芳歇》</span></span>
+                        <span class="work-meta-info">for mixed choir and piano (7'26") — 2026</span>
+                    </a>
+                </div>
+                <div class="work-item-container">
+                    <a href="/worklist/chrysalis-tale" class="work-link-wrapper">
+                        <span class="work-title">A Chrysalis Tale <span class="chinese-char">《化蝶誌》</span></span>
+                        <span class="work-meta-info">for mixed choir (Published by Edition ICOT) — 2024</span>
+                    </a>
+                </div>
+                <div class="work-item-container">
+                    <a href="/worklist/psalm-23" class="work-link-wrapper">
+                        <span class="work-title">Psalm 23 <span class="chinese-char">《詩篇二十三篇》</span></span>
+                        <span class="work-meta-info">for treble choir and piano (4') — 2015</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="genre-column">
+                <h3 class="category-title">Orchestral / Chamber</h3>
+                
+                <div class="work-item-container">
+                    <a href="/worklist/glimmering-lights" class="work-link-wrapper">
+                        <span class="work-title">Glimmering Lights, Cascading Heights <span class="chinese-char">《華燈流瀲》</span></span>
+                        <span class="work-meta-info">for full orchestra (Commissioned by HK Phil) (5'30") — 2021</span>
+                    </a>
+                </div>
+                <div class="work-item-container">
+                    <a href="/worklist/spiralling-dreamscape" class="work-link-wrapper">
+                        <span class="work-title">Spiralling Dreamscape <span class="chinese-char">《迴旋夢境》</span></span>
+                        <span class="work-meta-info">for full orchestra (Commissioned by HK Phil) (5') — 2019</span>
+                    </a>
+                </div>
+                <div class="work-item-container">
+                    <a href="/worklist/canto-violin" class="work-link-wrapper">
+                        <span class="work-title">Canto: Works for Violin <span class="chinese-char">《詠：小提琴作品集》</span></span>
+                        <span class="work-meta-info">Violin collection (Published by Universal Edition) — 2024</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. AUDIO / VISUAL SHOWCASE ZONE -->
+    <section id="audio">
+        <h2 class="section-title">Audio & Video Feature</h2>
+        <div class="grid-2">
+            <div>
+                <h3 style="font-size: 0.9rem; margin-bottom: 15px; font-weight: 500; color: var(--teal-deep);">Featured Portrait Album</h3>
+                <div class="media-embed">
+                    <span>[ Embedded Spotify Player: <br><em>Constraints/Creativity (Navona Records)</em> ]</span>
+                </div>
+            </div>
+            <div>
+                <h3 style="font-size: 0.9rem; margin-bottom: 15px; font-weight: 500; color: var(--teal-deep);">Performance Video Showcase</h3>
+                <div class="media-embed">
+                    <span>[ Embedded YouTube Player ]</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. RESEARCH & PUBLICATIONS ZONE -->
+    <section id="research" class="grid-2">
+        <div>
+            <h2 class="section-title">Research Projects</h2>
+            <h3 style="font-size: 1.2rem; font-weight: 400; margin-bottom: 15px; color: var(--teal-deep);">From Constraints to Creativity</h3>
+            <p style="color: var(--teal-muted); margin-bottom: 15px;">Serving as Principal Investigator, this ongoing project investigates how Hong Kong composers navigate linguistic speech-tone structures to yield highly clear, expressive vocal music frameworks.</p>
+            <p style="color: var(--teal-muted);">This research infrastructure led to the development of the open-access interactive platform <a href="https://www.cantonesecomposition.com" target="_blank" style="color:var(--teal-deep); font-weight:500;">Cantonese Melody Generator</a>.</p>
+        </div>
+        <div>
+            <h2 class="section-title">Selected Sheet Music Publications</h2>
+            <div class="highlight-box">
+                <p style="margin-bottom: 12px;"><strong>Constraints/Creativity: Cantonese Choral Works (2024)</strong><br><span style="color: var(--teal-muted); font-size: 0.9rem;">Vienna: Universal Edition</span></p>
+                <p><strong>Canto: Works for Violin (2024)</strong><br><span style="color: var(--teal-muted); font-size: 0.9rem;">Vienna: Universal Edition</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. CONTACT ZONE -->
+    <section id="contact">
+        <div class="contact-box">
+            <h2 class="section-title">Get In Touch</h2>
+            <p>For score commissions, academic research collaborations, or lecture engagements.</p>
+            <a href="mailto:chan.kaiyoung@cuhk.edu.hk" class="btn-email">Contact Composer</a>
+        </div>
+    </section>
+
+    <!-- FOOTER CREDITS -->
+    <footer>
+        <p>&copy; 2026 Kai-Young Chan. All Rights Reserved. Designed in compliance with minimalist portfolio frameworks.</p>
+    </footer>
+
+    <!-- LIVE DATA FETCH SCRIPT FOR PERFORMANCE LOGS -->
+    <script>
+        async function fetchPerformanceLog() {
+            // Public TSV export link derived from your Google Sheet URL
+            const sheetUrl = 'https://docs.google.com/spreadsheets/d/1ewOnbKddBpx4YFSQpfvhOvmJCznhGzdcS2DyMFp7d08/export?format=tsv&gid=1551264105';
+            const container = document.getElementById('live-events');
+
+            try {
+                const response = await fetch(sheetUrl);
+                if (!response.ok) throw new Error('Network response failure.');
+                const text = await response.text();
+                
+                // Parse rows into clean TSV arrays
+                const rows = text.split('\n').map(row => row.split('\t'));
+                
+                // Row 0 is the column headers. Rows 1 through 5 provide the 5 items.
+                let htmlOutput = '';
+                const entriesToRender = rows.slice(1, 6); 
+
+                entriesToRender.forEach(columns => {
+                    if (columns.length < 5) return;
+
+                    // Map array indexes according to spreadsheet positioning
+                    const pieceTitle  = columns[0] ? columns[0].trim() : 'Untitled';
+                    const dateRaw     = columns[1] ? columns[1].trim() : 'TBA';
+                    const timeRaw     = columns[2] ? columns[2].trim() : 'TBA';
+                    const performer   = columns[3] ? columns[3].trim() : 'Unknown Performer';
+                    const venue       = columns[4] ? columns[4].trim() : 'TBA Venue';
+                    const country     = columns[5] ? columns[5].trim() : '';
+                    const occasion    = columns[6] ? columns[6].trim() : '';
+
+                    // Basic Date Parser to isolate Year and Month/Day pairs for layout rendering
+                    let displayYear = "2026";
+                    let displayDay = dateRaw;
+                    
+                    if (dateRaw.includes('/')) {
+                        const dateParts = dateRaw.split('/');
+                        if (dateParts.length === 3) {
+                            displayYear = dateParts[0];
+                            displayDay = `${dateParts[1]}/${dateParts[2]}`;
+                        }
+                    }
+
+                    // Render markup layout card matching screenshot formatting structural styling
+                    htmlOutput += `
+                        <div class="event-card">
+                            <div class="event-date-block">
+                                <span class="event-year">${displayYear}</span>
+                                <span class="event-day">${displayDay}</span>
+                                <span class="event-time">${timeRaw}</span>
+                            </div>
+                            <div class="event-details-block">
+                                ${occasion ? `<div class="event-occasion">${occasion}</div>` : ''}
+                                <h3>${pieceTitle}</h3>
+                                <div class="event-venue">
+                                    📍 ${venue}${country ? ` (${country.trim()})` : ''}
+                                </div>
+                                <div class="event-performers">
+                                    Performers: ${performer}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = htmlOutput || '<p class="loading-text">No recent entries found.</p>';
+            } catch (error) {
+                console.error('Error fetching sheet data:', error);
+                container.innerHTML = '<p class="loading-text" style="color: #a00;">Failed to load live performance schedule. Please check connection status.</p>';
+            }
+        }
+
+        // Initialize script trigger upon initial page construction loading loop
+        document.addEventListener('DOMContentLoaded', fetchPerformanceLog);
+    </script>
+</body>
+</html>
