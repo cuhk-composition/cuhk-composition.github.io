@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kai-Young Chan | Composer & Scholar</title>
+    
+    <!-- Integrated Favicon Reference -->
+    <link rel="icon" type="image/png" href="Screenshot 2026-06-02 at 12.37.27 PM.png">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -482,27 +486,29 @@
 
             .event-card {
                 grid-template-columns: 1fr;
-                gap: 12px;
+                gap: 10px;
                 text-align: left;
             }
 
-            /* Mobile Redesign: Unified Single-Line Layout with Small Uniform Font */
+            /* --- Proportionately scaled typography for mobile blocks --- */
+
+            /* Mobile Left Block Design: Unified Single Line with Uniform Muted Text Size */
             .event-date-block {
                 flex-direction: row;
                 flex-wrap: wrap;
                 align-items: center;
-                gap: 8px;
+                gap: 6px;
                 border-right: none;
                 border-left: none;
                 padding-left: 0;
                 padding-right: 0;
-                font-size: 0.85rem;
+                font-size: 0.75rem; /* Proportionately smaller base */
                 color: var(--teal-muted);
                 font-weight: 500;
             }
 
             .event-date-display {
-                font-size: 0.85rem;
+                font-size: 0.75rem; /* Matched base metadata size */
                 font-weight: 600;
                 color: var(--teal-muted);
                 letter-spacing: 0;
@@ -511,12 +517,13 @@
             }
 
             .event-date-display::after {
-                content: ' •';
-                margin-left: 4px;
+                content: '  •  ';
+                font-weight: 400;
+                opacity: 0.7;
             }
 
             .event-time-display {
-                font-size: 0.85rem;
+                font-size: 0.75rem; /* Matched base metadata size */
                 font-weight: 500;
                 color: var(--teal-muted);
                 letter-spacing: 0;
@@ -526,17 +533,37 @@
             }
 
             .event-time-display::after {
-                content: ' • ';
-                margin-left: 4px;
+                content: '  •  ';
+                font-weight: 400;
+                opacity: 0.7;
             }
 
             .event-link-btn {
-                font-size: 0.85rem;
+                font-size: 0.75rem; /* Matched base metadata size */
                 text-transform: none;
                 letter-spacing: 0;
-                font-weight: 500;
+                font-weight: 600;
                 display: inline;
                 margin-top: 0;
+            }
+
+            /* Mobile Right Block Content adjustments */
+            .event-details-block {
+                gap: 4px;
+            }
+
+            .event-title-h3 {
+                font-size: 1.15rem; /* Downscaled from 1.35rem */
+            }
+
+            .event-instrumentation-row {
+                font-size: 0.9rem; /* Downscaled from 1.05rem */
+            }
+
+            .event-location-row,
+            .event-presenter-row,
+            .event-performer-row {
+                font-size: 0.8rem; /* Downscaled from 0.95rem */
             }
         }
     </style>
