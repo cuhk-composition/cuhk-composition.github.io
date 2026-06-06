@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Relying strictly on the clean sans-serif system used in the menu -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -41,20 +41,23 @@
             background-color: var(--bg-color);
             color: var(--teal-deep);
             line-height: 1.75;
-            padding-top: 80px;
+            padding-top: 90px;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Nav Header styling - Minimalist Sans-Serif with High Tracking */
+        /* Nav Header styling - Light Gold Half-Transparent Background with Backdrop Filter */
         header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            background: rgba(252, 251, 250, 0.95);
-            border-bottom: 1px solid var(--border-color);
+            /* 65% Alpha transparency overlay using the brand gold palette */
+            background: rgba(189, 162, 107, 0.65);
+            border-bottom: 1px solid rgba(14, 58, 64, 0.15);
             z-index: 1000;
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: background-color 0.3s ease;
         }
 
         .nav-container {
@@ -67,14 +70,20 @@
             position: relative;
         }
 
+        /* Logo Upgraded Scale, Weights, and Wording */
         .logo a {
             font-family: 'Inter', sans-serif;
-            font-weight: 700;
-            font-size: 0.95rem;
+            font-weight: 800;
+            font-size: 1.2rem;
             letter-spacing: 3px;
             text-decoration: none;
             color: var(--teal-deep);
             z-index: 1001;
+            transition: opacity 0.2s ease;
+        }
+
+        .logo a:hover {
+            opacity: 0.85;
         }
 
         /* Responsive Navbar Layout */
@@ -92,7 +101,7 @@
 
         .menu-toggle span {
             width: 100%;
-            height: 1.5px;
+            height: 2px;
             background-color: var(--teal-deep);
             transition: all 0.3s ease;
             transform-origin: left center;
@@ -109,20 +118,23 @@
             gap: 30px;
         }
 
+        /* Optimized Text Color Contrast over the Gold Background */
         nav a {
             text-decoration: none;
-            color: var(--teal-muted);
+            color: var(--teal-deep);
             font-family: 'Inter', sans-serif;
             font-size: 0.8rem;
-            font-weight: 500;
+            font-weight: 600;
             letter-spacing: 2px;
             text-transform: uppercase;
-            transition: color 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
             display: inline-block;
         }
 
+        /* Hover response: Transitions into pure crisp white with micro-scale accentuation */
         nav a:hover {
-            color: var(--gold-satin);
+            color: #ffffff;
+            transform: translateY(-1px);
         }
 
         /* Structural Framework Sections */
@@ -513,8 +525,16 @@
 
         /* MOBILE MEDIA QUERIES */
         @media (max-width: 768px) {
+            body {
+                padding-top: 110px;
+            }
+
             section {
                 padding: 50px 20px 70px 20px;
+            }
+
+            .logo a {
+                font-size: 0.95rem;
             }
 
             .menu-toggle {
@@ -527,12 +547,12 @@
                 right: -100%;
                 width: 280px;
                 height: 100vh;
-                background: var(--bg-color);
-                box-shadow: -5px 0 25px rgba(0,0,0,0.03);
+                background: #bda26b; /* Solid fallback brand gold for mobile tray */
+                box-shadow: -5px 0 25px rgba(0,0,0,0.08);
                 padding: 120px 40px 40px 40px;
                 transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
                 z-index: 1000;
-                border-left: 1px solid var(--border-color);
+                border-left: 1px solid rgba(14, 58, 64, 0.1);
             }
 
             nav.active {
@@ -625,7 +645,8 @@
     <!-- STICKY HEADER NAVIGATION -->
     <header>
         <div class="nav-container">
-            <div class="logo"><a href="#home">KAI-YOUNG CHAN</a></div>
+            <!-- Expanded Brand Signifier Statement -->
+            <div class="logo"><a href="#home">KAI-YOUNG CHAN | COMPOSER</a></div>
             
             <button class="menu-toggle" id="menu-btn" aria-label="Toggle Navigation Layout">
                 <span></span>
