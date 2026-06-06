@@ -56,6 +56,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
         }
 
         .logo a {
@@ -64,26 +65,83 @@
             letter-spacing: 2px;
             text-decoration: none;
             color: var(--teal-deep);
+            z-index: 1001;
+        }
+
+        /* Responsive Hamburger Menu Framework */
+        .menu-toggle {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .menu-toggle span {
+            width: 100%;
+            height: 2px;
+            background-color: var(--teal-deep);
+            transition: all 0.3s ease;
+            transform-origin: left center;
+        }
+
+        /* Navigation Drawer Overlay */
+        nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 300px;
+            height: 100vh;
+            background: var(--bg-color);
+            box-shadow: -5px 0 25px rgba(0,0,0,0.05);
+            padding: 100px 40px 40px 40px;
+            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000;
+            border-left: 1px solid var(--border-color);
+        }
+
+        nav.active {
+            right: 0;
         }
 
         nav ul {
             display: flex;
+            flex-direction: column;
             list-style: none;
-            gap: 25px;
+            gap: 30px;
         }
 
         nav a {
             text-decoration: none;
             color: var(--teal-muted);
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             font-weight: 500;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
             transition: color 0.2s ease;
+            display: block;
         }
 
         nav a:hover {
             color: var(--gold-satin);
+        }
+
+        /* Hamburger Animation Transforms */
+        .menu-toggle.open span:nth-child(1) {
+            transform: rotate(45deg);
+        }
+
+        .menu-toggle.open span:nth-child(2) {
+            width: 0%;
+            opacity: 0;
+        }
+
+        .menu-toggle.open span:nth-child(3) {
+            transform: rotate(-45deg);
         }
 
         /* Structural Framework Sections */
@@ -402,8 +460,9 @@
                 padding-left: 15px;
                 padding-right: 0;
             }
-            body { padding-top: 120px; }
-            .nav-container { flex-direction: column; gap: 15px; }
+            nav {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -413,7 +472,16 @@
     <header>
         <div class="nav-container">
             <div class="logo"><a href="#home">KAI-YOUNG CHAN</a></div>
-            <nav>
+            
+            <!-- Hamburger Toggle Trigger Button -->
+            <button class="menu-toggle" id="menu-btn" aria-label="Toggle Navigation Layout">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <!-- Slide-out Menu Links -->
+            <nav id="nav-menu">
                 <ul>
                     <li><a href="#home">Home</a></li>
                     <li><a href="#about">About</a></li>
@@ -558,10 +626,28 @@
         <p>&copy; 2026 Kai-Young Chan. All Rights Reserved. Designed in compliance with minimalist portfolio frameworks.</p>
     </footer>
 
-    <!-- TSV GOOGLE SHEET RENDERING UTILITY -->
+    <!-- INTERACTIVE DOM SCRIPTS -->
     <script>
+        // Hamburger Menu Overlay Interaction Logistics
+        const menuBtn = document.getElementById('menu-btn');
+        const navMenu = document.getElementById('nav-menu');
+        const navLinks = document.querySelectorAll('#nav-menu a');
+
+        menuBtn.addEventListener('click', () => {
+            menuBtn.classList.toggle('open');
+            navMenu.classList.toggle('active');
+        });
+
+        // Auto-close overlay drawer once a specific anchor point targets a view scroll
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menuBtn.classList.remove('open');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // TSV GOOGLE SHEET RENDERING UTILITY
         async function fetchPerformanceLog() {
-            // Updated pipeline query targeting the "Website" sheet/tab explicitly by name
             const sheetUrl = 'https://docs.google.com/spreadsheets/d/1ewOnbKddBpx4YFSQpfvhOvmJCznhGzdcS2DyMFp7d08/gviz/tq?tqx=out:csv&sheet=Website';
             const container = document.getElementById('live-events');
 
@@ -570,7 +656,6 @@
                 if (!response.ok) throw new Error('Data pipeline issue.');
                 const text = await response.text();
                 
-                // Helper function to safely parse CSV rows considering quoted strings containing commas
                 function parseCSV(text) {
                     let p = '', r = [];
                     let q = false;
@@ -598,13 +683,11 @@
                 const rows = parseCSV(text);
                 let htmlOutput = '';
                 
-                // Read rows 3 through 7 (skipping headers to fetch the first 5 log events)
                 const entriesToRender = rows.slice(2, 7); 
 
                 entriesToRender.forEach(columns => {
                     if (columns.length < 8) return;
 
-                    // Absolute Mapping Schema from the targeted Google Sheet layout
                     const dateValue     = columns[0] ? columns[0].trim() : 'TBA';
                     const pieceTitle    = columns[3] ? columns[3].trim() : 'Untitled';
                     const instrument    = columns[4] ? columns[4].trim() : '';
@@ -617,30 +700,25 @@
 
                     if (!dateValue || pieceTitle === 'Untitled') return;
 
-                    // Generate contextual Details link element layout targeting positioning under the Time element
                     let linkElementHtml = '';
                     if (hyperlinkUrl && hyperlinkUrl.startsWith('http')) {
                         linkElementHtml = `<a href="${hyperlinkUrl}" target="_blank" class="event-link-btn">Details →</a>`;
                     }
 
-                    // Clean layout row structure for the Presenter line item above Performer
                     let presenterHtml = '';
                     if (presenter) {
                         presenterHtml = `<div class="event-presenter-row">${presenter}</div>`;
                     }
 
-                    // Form the optimized custom performance tracking cards
                     htmlOutput += `
                         <div>
                             <div class="event-card">
-                                <!-- Left Block: Date, Time & Underlying Action Link Metrics -->
                                 <div class="event-date-block">
                                     <span class="event-date-display">${dateValue}</span>
                                     <span class="event-time-display">${eventTime}</span>
                                     ${linkElementHtml}
                                 </div>
                                 
-                                <!-- Right Block: Composition Details & Layout Stream -->
                                 <div class="event-details-block">
                                     <div class="event-title-h3">
                                         ${pieceTitle} <span class="event-instrumentation-span">${instrument}</span>
