@@ -115,11 +115,11 @@
             color: var(--gold-satin);
         }
 
-        /* Structural Framework Sections */
+        /* Structural Framework Sections - Reduced Padding Top for Titles */
         section {
             max-width: var(--max-width);
             margin: 0 auto;
-            padding: 90px 20px;
+            padding: 50px 20px 90px 20px;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -430,6 +430,11 @@
 
         /* MOBILE MEDIA QUERIES - Triggered strictly under 768px viewport widths */
         @media (max-width: 768px) {
+            /* Adjust overall section top spacing for mobile layouts */
+            section {
+                padding: 40px 20px 60px 20px;
+            }
+
             /* Transform Navbar Layout to an Overlay Slider Menu */
             .menu-toggle {
                 display: flex; 
@@ -474,18 +479,64 @@
                 grid-template-columns: 1fr;
                 gap: 40px;
             }
+
             .event-card {
                 grid-template-columns: 1fr;
-                gap: 15px;
+                gap: 12px;
                 text-align: left;
             }
+
+            /* Mobile Redesign: Unified Single-Line Layout with Small Uniform Font */
             .event-date-block {
-                text-align: left;
-                align-items: flex-start;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 8px;
                 border-right: none;
-                border-left: 2px solid var(--gold-satin);
-                padding-left: 15px;
+                border-left: none;
+                padding-left: 0;
                 padding-right: 0;
+                font-size: 0.85rem;
+                color: var(--teal-muted);
+                font-weight: 500;
+            }
+
+            .event-date-display {
+                font-size: 0.85rem;
+                font-weight: 600;
+                color: var(--teal-muted);
+                letter-spacing: 0;
+                margin-bottom: 0;
+                display: inline;
+            }
+
+            .event-date-display::after {
+                content: ' •';
+                margin-left: 4px;
+            }
+
+            .event-time-display {
+                font-size: 0.85rem;
+                font-weight: 500;
+                color: var(--teal-muted);
+                letter-spacing: 0;
+                margin-bottom: 0;
+                text-transform: none;
+                display: inline;
+            }
+
+            .event-time-display::after {
+                content: ' • ';
+                margin-left: 4px;
+            }
+
+            .event-link-btn {
+                font-size: 0.85rem;
+                text-transform: none;
+                letter-spacing: 0;
+                font-weight: 500;
+                display: inline;
+                margin-top: 0;
             }
         }
     </style>
