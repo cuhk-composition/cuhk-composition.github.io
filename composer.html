@@ -486,84 +486,74 @@
 
             .event-card {
                 grid-template-columns: 1fr;
-                gap: 10px;
+                gap: 12px;
                 text-align: left;
             }
 
-            /* --- Proportionately scaled typography for mobile blocks --- */
-
-            /* Mobile Left Block Design: Unified Single Line with Uniform Muted Text Size */
+            /* --- Mobile Left Block Design Optimization --- */
             .event-date-block {
                 flex-direction: row;
                 flex-wrap: wrap;
                 align-items: center;
-                gap: 6px;
+                gap: 14px; /* Clean gap spacing instead of strict string dots */
                 border-right: none;
                 border-left: none;
                 padding-left: 0;
                 padding-right: 0;
-                font-size: 0.75rem; /* Proportionately smaller base */
-                color: var(--teal-muted);
-                font-weight: 500;
             }
 
+            /* Removed all dot pseudo-elements */
+            .event-date-display::after,
+            .event-time-display::after {
+                content: none !important;
+            }
+
+            /* Increased font sizes for the 3 metadata timeline elements */
             .event-date-display {
-                font-size: 0.75rem; /* Matched base metadata size */
+                font-size: 1.05rem; 
                 font-weight: 600;
-                color: var(--teal-muted);
-                letter-spacing: 0;
+                color: var(--teal-deep);
+                letter-spacing: -0.2px;
                 margin-bottom: 0;
-                display: inline;
-            }
-
-            .event-date-display::after {
-                content: '  •  ';
-                font-weight: 400;
-                opacity: 0.7;
+                display: inline-block;
             }
 
             .event-time-display {
-                font-size: 0.75rem; /* Matched base metadata size */
+                font-size: 1.05rem; 
                 font-weight: 500;
-                color: var(--teal-muted);
-                letter-spacing: 0;
+                color: var(--teal-deep);
+                letter-spacing: -0.2px;
                 margin-bottom: 0;
                 text-transform: none;
-                display: inline;
-            }
-
-            .event-time-display::after {
-                content: '  •  ';
-                font-weight: 400;
-                opacity: 0.7;
+                display: inline-block;
             }
 
             .event-link-btn {
-                font-size: 0.75rem; /* Matched base metadata size */
+                font-size: 1.05rem; 
                 text-transform: none;
-                letter-spacing: 0;
+                letter-spacing: -0.2px;
                 font-weight: 600;
-                display: inline;
+                display: inline-block;
                 margin-top: 0;
             }
 
-            /* Mobile Right Block Content adjustments */
+            /* Mobile Right Block Content Adjustments */
             .event-details-block {
                 gap: 4px;
             }
 
             .event-title-h3 {
-                font-size: 1.15rem; /* Downscaled from 1.35rem */
+                font-size: 1.25rem; 
             }
 
             .event-instrumentation-row {
-                font-size: 0.9rem; /* Downscaled from 1.05rem */
+                font-size: 0.95rem; 
             }
 
             .event-location-row,
             .event-presenter-row,
             .event-performer-row {
-                font-size: 0.8rem; /* Downscaled from 0.95rem */
+                font-size: 0.85rem; 
             }
         }
     </style>
