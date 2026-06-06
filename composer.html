@@ -68,9 +68,9 @@
             z-index: 1001;
         }
 
-        /* Responsive Hamburger Menu Framework */
+        /* Responsive Navbar Layout - Default Desktop Configuration (Horizontal Bar) */
         .menu-toggle {
-            display: flex;
+            display: none; /* Hidden on desktop viewports */
             flex-direction: column;
             justify-content: space-between;
             width: 24px;
@@ -89,59 +89,30 @@
             transform-origin: left center;
         }
 
-        /* Navigation Drawer Overlay */
         nav {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 300px;
-            height: 100vh;
-            background: var(--bg-color);
-            box-shadow: -5px 0 25px rgba(0,0,0,0.05);
-            padding: 100px 40px 40px 40px;
-            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 1000;
-            border-left: 1px solid var(--border-color);
-        }
-
-        nav.active {
-            right: 0;
+            display: block;
         }
 
         nav ul {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             list-style: none;
-            gap: 30px;
+            gap: 25px;
         }
 
         nav a {
             text-decoration: none;
             color: var(--teal-muted);
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 500;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             text-transform: uppercase;
             transition: color 0.2s ease;
-            display: block;
+            display: inline-block;
         }
 
         nav a:hover {
             color: var(--gold-satin);
-        }
-
-        /* Hamburger Animation Transforms */
-        .menu-toggle.open span:nth-child(1) {
-            transform: rotate(45deg);
-        }
-
-        .menu-toggle.open span:nth-child(2) {
-            width: 0%;
-            opacity: 0;
-        }
-
-        .menu-toggle.open span:nth-child(3) {
-            transform: rotate(-45deg);
         }
 
         /* Structural Framework Sections */
@@ -442,7 +413,48 @@
             margin: 0 auto;
         }
 
+        /* MOBILE MEDIA QUERIES - Triggered strictly under 768px viewport widths */
         @media (max-width: 768px) {
+            /* Transform Navbar Layout to an Overlay Slider Menu */
+            .menu-toggle {
+                display: flex; 
+            }
+
+            nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 300px;
+                height: 100vh;
+                background: var(--bg-color);
+                box-shadow: -5px 0 25px rgba(0,0,0,0.05);
+                padding: 100px 40px 40px 40px;
+                transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                z-index: 1000;
+                border-left: 1px solid var(--border-color);
+            }
+
+            nav.active {
+                right: 0;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            nav a {
+                font-size: 0.95rem;
+                letter-spacing: 1.5px;
+                display: block;
+            }
+
+            /* Toggle Animated Transforms */
+            .menu-toggle.open span:nth-child(1) { transform: rotate(45deg); }
+            .menu-toggle.open span:nth-child(2) { width: 0%; opacity: 0; }
+            .menu-toggle.open span:nth-child(3) { transform: rotate(-45deg); }
+
+            /* Grid Resets to Single Column Content Streams */
             .grid-2, .works-container-layout {
                 grid-template-columns: 1fr;
                 gap: 40px;
@@ -460,27 +472,21 @@
                 padding-left: 15px;
                 padding-right: 0;
             }
-            nav {
-                width: 100%;
-            }
         }
     </style>
 </head>
 <body>
 
-    <!-- STICKY HEADER NAVIGATION -->
     <header>
         <div class="nav-container">
             <div class="logo"><a href="#home">KAI-YOUNG CHAN</a></div>
             
-            <!-- Hamburger Toggle Trigger Button -->
             <button class="menu-toggle" id="menu-btn" aria-label="Toggle Navigation Layout">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
 
-            <!-- Slide-out Menu Links -->
             <nav id="nav-menu">
                 <ul>
                     <li><a href="#home">Home</a></li>
@@ -494,7 +500,6 @@
         </div>
     </header>
 
-    <!-- 1. DYNAMIC PERFORMANCE SCHEDULING FRAMEWORK -->
     <section id="home">
         <h2 class="section-title">Upcoming & Recent Performances</h2>
         <div id="live-events" class="events-container">
@@ -502,7 +507,6 @@
         </div>
     </section>
 
-    <!-- 2. ABOUT ME ZONE -->
     <section id="about" class="grid-2">
         <div>
             <h2 class="section-title">Biography</h2>
@@ -515,7 +519,6 @@
         </div>
     </section>
 
-    <!-- 3. SELECTED WORKS CATALOG -->
     <section id="works">
         <div class="works-header-block">
             <h2 class="section-title">Work List</h2>
@@ -577,7 +580,6 @@
         </div>
     </section>
 
-    <!-- 4. AUDIO / VISUAL SHOWCASE ZONE -->
     <section id="audio">
         <h2 class="section-title">Audio & Video Feature</h2>
         <div class="grid-2">
@@ -596,7 +598,6 @@
         </div>
     </section>
 
-    <!-- 5. RESEARCH & PUBLICATIONS ZONE -->
     <section id="research" class="grid-2">
         <div>
             <h2 class="section-title">Research Projects</h2>
@@ -613,7 +614,6 @@
         </div>
     </section>
 
-    <!-- 6. CONTACT ZONE -->
     <section id="contact">
         <div class="contact-box">
             <h2 class="section-title">Get In Touch</h2>
@@ -626,7 +626,6 @@
         <p>&copy; 2026 Kai-Young Chan. All Rights Reserved. Designed in compliance with minimalist portfolio frameworks.</p>
     </footer>
 
-    <!-- INTERACTIVE DOM SCRIPTS -->
     <script>
         // Hamburger Menu Overlay Interaction Logistics
         const menuBtn = document.getElementById('menu-btn');
@@ -638,7 +637,7 @@
             navMenu.classList.toggle('active');
         });
 
-        // Auto-close overlay drawer once a specific anchor point targets a view scroll
+        // Auto-close overlay drawer once a specific anchor point is selected
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
                 menuBtn.classList.remove('open');
