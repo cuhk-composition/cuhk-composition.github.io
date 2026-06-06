@@ -115,7 +115,7 @@
             align-items: center;
         }
 
-        /* Dynamic Performance Card System */
+        /* Dynamic Performance Card Layout Architecture */
         .events-container {
             display: flex;
             flex-direction: column;
@@ -123,22 +123,35 @@
             width: 100%;
         }
 
+        .event-card-wrapper {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        a.event-card-wrapper:hover .event-title-h3 {
+            color: var(--gold-satin);
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
         .event-card {
             display: grid;
-            grid-template-columns: 140px 1fr;
+            grid-template-columns: 150px 1fr;
             gap: 40px;
             align-items: start;
             padding-bottom: 30px;
             border-bottom: 1px solid var(--border-color);
         }
 
-        .event-card:last-child {
+        .event-card-wrapper:last-child .event-card {
             border-bottom: none;
             padding-bottom: 0;
         }
 
+        /* Left Block layout - Purely Temporal Metrics */
         .event-date-block {
-            text-align: center;
+            text-align: left;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -146,60 +159,58 @@
             padding-right: 20px;
         }
 
-        .event-year {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--teal-muted);
-            letter-spacing: 1px;
-        }
-
-        .event-day {
-            font-size: 1.8rem;
+        .event-date-display {
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--teal-deep);
-            line-height: 1.2;
-            margin: 6px 0;
-        }
-
-        .event-time {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--teal-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .event-details-block h3 {
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: var(--teal-deep);
-            margin-top: 2px;
-            margin-bottom: 6px;
+            letter-spacing: -0.2px;
             line-height: 1.3;
-        }
-
-        .event-occasion {
-            font-size: 0.85rem;
-            color: var(--gold-satin);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
             margin-bottom: 4px;
         }
 
-        .event-venue {
-            font-size: 0.95rem;
+        .event-time-display {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--teal-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Right Block Layout Content Stream ordering structure */
+        .event-details-block {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .event-title-h3 {
+            font-size: 1.35rem;
+            font-weight: 600;
             color: var(--teal-deep);
-            margin-bottom: 6px;
+            line-height: 1.3;
+            transition: color 0.2s ease;
+        }
+
+        .event-instrumentation-span {
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: var(--teal-muted);
+            margin-left: 6px;
+        }
+
+        .event-location-row {
+            font-size: 0.95rem;
+            color: var(--gold-satin);
+            font-weight: 500;
             display: flex;
             align-items: center;
             gap: 6px;
-            font-weight: 400;
         }
 
-        .event-performers {
+        .event-performer-row {
             font-size: 0.95rem;
             color: var(--teal-muted);
+            font-weight: 400;
         }
 
         /* Joyce Tang Worklist Architecture Styles */
@@ -335,7 +346,6 @@
             font-size: 0.95rem;
         }
 
-        /* Image Frame placeholder */
         .image-placeholder {
             background: var(--gold-light);
             border: 1px solid var(--border-color);
@@ -376,7 +386,6 @@
                 border-right: none;
                 border-left: 2px solid var(--gold-satin);
                 padding-left: 15px;
-                padding-right: 0;
             }
             body { padding-top: 120px; }
             .nav-container { flex-direction: column; gap: 15px; }
@@ -385,7 +394,6 @@
 </head>
 <body>
 
-    <!-- STICKY HEADER NAVIGATION -->
     <header>
         <div class="nav-container">
             <div class="logo"><a href="#home">KAI-YOUNG CHAN</a></div>
@@ -402,15 +410,13 @@
         </div>
     </header>
 
-    <!-- 1. DYNAMIC LIVE PERFORMANCE LOG -->
     <section id="home">
         <h2 class="section-title">Upcoming & Recent Performances</h2>
         <div id="live-events" class="events-container">
-            <p class="loading-text">Loading performance schedule...</p>
+            <p class="loading-text">Connecting to live scheduling platform...</p>
         </div>
     </section>
 
-    <!-- 2. ABOUT ME ZONE -->
     <section id="about" class="grid-2">
         <div>
             <h2 class="section-title">Biography</h2>
@@ -423,7 +429,6 @@
         </div>
     </section>
 
-    <!-- 3. SELECTED WORKS CATALOG -->
     <section id="works">
         <div class="works-header-block">
             <h2 class="section-title">Work List</h2>
@@ -485,7 +490,6 @@
         </div>
     </section>
 
-    <!-- 4. AUDIO / VISUAL SHOWCASE ZONE -->
     <section id="audio">
         <h2 class="section-title">Audio & Video Feature</h2>
         <div class="grid-2">
@@ -504,7 +508,6 @@
         </div>
     </section>
 
-    <!-- 5. RESEARCH & PUBLICATIONS ZONE -->
     <section id="research" class="grid-2">
         <div>
             <h2 class="section-title">Research Projects</h2>
@@ -521,7 +524,6 @@
         </div>
     </section>
 
-    <!-- 6. CONTACT ZONE -->
     <section id="contact">
         <div class="contact-box">
             <h2 class="section-title">Get In Touch</h2>
@@ -534,7 +536,6 @@
         <p>&copy; 2026 Kai-Young Chan. All Rights Reserved. Designed in compliance with minimalist portfolio frameworks.</p>
     </footer>
 
-    <!-- REALIGNED GOOGLE SHEETS PARSER FRAMEWORK -->
     <script>
         async function fetchPerformanceLog() {
             const sheetUrl = 'https://docs.google.com/spreadsheets/d/1ewOnbKddBpx4YFSQpfvhOvmJCznhGzdcS2DyMFp7d08/export?format=tsv&gid=1551264105';
@@ -542,74 +543,72 @@
 
             try {
                 const response = await fetch(sheetUrl);
-                if (!response.ok) throw new Error('Network issue fetching data.');
+                if (!response.ok) throw new Error('Data pipeline issue.');
                 const text = await response.text();
                 
                 const rows = text.split('\n').map(row => row.split('\t'));
                 let htmlOutput = '';
                 
-                // Select rows 1 to 5 from spreadsheet data
-                const entriesToRender = rows.slice(1, 6); 
+                // Read rows 3 through 7 (first 5 data entries)
+                const entriesToRender = rows.slice(2, 7); 
 
                 entriesToRender.forEach(columns => {
-                    if (columns.length < 5) return;
+                    if (columns.length < 8) return;
 
-                    // Exact structural remapping of columns
-                    const pieceTitle  = columns[0] ? columns[0].trim() : 'Untitled Work';
-                    const dateRaw     = columns[1] ? columns[1].trim() : 'TBA';
-                    const timeRaw     = columns[2] ? columns[2].trim() : '';
-                    const performer   = columns[3] ? columns[3].trim() : 'TBA Performer';
-                    const venue       = columns[4] ? columns[4].trim() : 'TBA Venue';
-                    const country     = columns[5] ? columns[5].trim() : '';
-                    const occasion    = columns[6] ? columns[6].trim() : 'Performance';
+                    // Absolute Schema Mapping
+                    const dateValue     = columns[0] ? columns[0].trim() : 'TBA';
+                    const pieceTitle    = columns[3] ? columns[3].trim() : 'Untitled';
+                    const instrument    = columns[4] ? columns[4].trim() : '';
+                    const performer     = columns[5] ? columns[5].trim() : 'TBA';
+                    const venue         = columns[6] ? columns[6].trim() : 'TBA';
+                    const cityCountry   = columns[7] ? columns[7].trim() : '';
+                    const hyperlinkUrl  = columns[8] ? columns[8].trim() : '';
+                    const eventTime     = columns[9] ? columns[9].trim() : '';
 
-                    // Parse the date to construct layout requirements
-                    let displayYear = "2026";
-                    let displayDay = dateRaw;
-                    
-                    if (dateRaw.includes('-')) {
-                        const dateParts = dateRaw.split('-');
-                        if (dateParts.length === 3) {
-                            displayYear = dateParts[0];
-                            displayDay = `${dateParts[1]}/${dateParts[2]}`;
-                        }
-                    } else if (dateRaw.includes('/')) {
-                        const dateParts = dateRaw.split('/');
-                        if (dateParts.length === 3) {
-                            displayYear = dateParts[0];
-                            displayDay = `${dateParts[1]}/${dateParts[2]}`;
-                        }
-                    }
+                    if (!dateValue || pieceTitle === 'Untitled') return;
 
-                    // Build markup matching structure requested
-                    htmlOutput += `
+                    // Inside architecture building string matching user precise directions
+                    const cardContent = `
                         <div class="event-card">
-                            <!-- Date on the Left Side -->
                             <div class="event-date-block">
-                                <span class="event-year">${displayYear}</span>
-                                <span class="event-day">${displayDay}</span>
-                                <span class="event-time">${occasion.toUpperCase()}</span>
+                                <span class="event-date-display">${dateValue}</span>
+                                <span class="event-time-display">${eventTime}</span>
                             </div>
                             
-                            <!-- Information Details Blocks -->
                             <div class="event-details-block">
-                                <div class="event-occasion">${venue.toUpperCase()}</div>
-                                <h3>${displayYear}-${displayDay.replace('/', '-')}</h3>
-                                <div class="event-venue">
-                                    📍 ${timeRaw} (${performer})
+                                <div class="event-title-h3">
+                                    ${pieceTitle} <span class="event-instrumentation-span">${instrument}</span>
                                 </div>
-                                <div class="event-performers">
-                                    Performers: "${pieceTitle}"
+                                <div class="event-location-row">
+                                    📍 ${venue}${cityCountry ? `, ${cityCountry}` : ''}
+                                </div>
+                                <div class="event-performer-row">
+                                    Performed by ${performer}
                                 </div>
                             </div>
                         </div>
                     `;
+
+                    // Handle link status verification
+                    if (hyperlinkUrl && hyperlinkUrl.startsWith('http')) {
+                        htmlOutput += `
+                            <a href="${hyperlinkUrl}" target="_blank" class="event-card-wrapper">
+                                ${cardContent}
+                            </a>
+                        `;
+                    } else {
+                        htmlOutput += `
+                            <div class="event-card-wrapper">
+                                ${cardContent}
+                            </div>
+                        `;
+                    }
                 });
 
-                container.innerHTML = htmlOutput || '<p class="loading-text">No performance schedule logged.</p>';
+                container.innerHTML = htmlOutput || '<p class="loading-text">No active schedule logs available.</p>';
             } catch (error) {
-                console.error('Data error:', error);
-                container.innerHTML = '<p class="loading-text" style="color: #a00;">Failed to link live scheduling updates.</p>';
+                console.error('Data loading error:', error);
+                container.innerHTML = '<p class="loading-text" style="color: #a00;">Failed to synchronize schedule logs.</p>';
             }
         }
 
