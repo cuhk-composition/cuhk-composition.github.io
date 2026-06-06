@@ -10,8 +10,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Combined clean Inter sans-serif with elegant Playfair Display serif -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -43,7 +42,7 @@
             padding-top: 80px;
         }
 
-        /* Nav Header styling */
+        /* Nav Header styling - Kept clean Sans-Serif */
         header {
             position: fixed;
             top: 0;
@@ -66,16 +65,16 @@
         }
 
         .logo a {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Inter', sans-serif;
             font-weight: 700;
-            font-size: 1.2rem;
-            letter-spacing: 1px;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
             text-decoration: none;
             color: var(--teal-deep);
             z-index: 1001;
         }
 
-        /* Responsive Navbar Layout - Default Desktop Configuration (Horizontal Bar) */
+        /* Responsive Navbar Layout - Kept Sans-Serif */
         .menu-toggle {
             display: none; /* Hidden on desktop viewports */
             flex-direction: column;
@@ -104,16 +103,17 @@
             display: flex;
             flex-direction: row;
             list-style: none;
-            gap: 30px;
+            gap: 25px;
         }
 
         nav a {
             text-decoration: none;
             color: var(--teal-muted);
-            font-family: 'Playfair Display', serif;
-            font-size: 0.95rem;
-            font-weight: 400;
-            font-style: italic;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
             transition: color 0.2s ease;
             display: inline-block;
         }
@@ -134,14 +134,15 @@
             border-bottom: none;
         }
 
-        /* Standardized Section Headings - Stylish Serif Accentuation */
+        /* Standardized Section Headings - Kept visually dominant Sans-Serif */
         .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.8rem;
+            text-transform: capitalize;
             letter-spacing: -0.5px;
             color: var(--teal-deep);
             margin-bottom: 40px;
-            font-weight: 600;
+            font-weight: 700;
             position: relative;
         }
 
@@ -149,9 +150,9 @@
             content: '';
             display: block;
             width: 40px;
-            height: 2px;
+            height: 3px;
             background-color: var(--gold-satin);
-            margin-top: 12px;
+            margin-top: 10px;
         }
 
         /* Layout Grids */
@@ -235,8 +236,8 @@
         .event-link-btn:hover {
             color: var(--bg-color);
             background-color: var(--teal-deep);
-            min-width: 135px; /* Elongates smooth width scaling */
-            padding: 6px 22px; /* Amplifies standard side tracking metrics */
+            min-width: 135px; /* Elongating smooth width transformation */
+            padding: 6px 22px; /* Smooth side padding scaling */
             letter-spacing: 1.5px;
         }
 
@@ -247,7 +248,7 @@
             gap: 8px;
         }
 
-        /* Distinct Performance Title Formatting style - Playfair Serif Integration */
+        /* Distinct Performance Title Formatting style - Elegant Serif Accent */
         .event-title-h3 {
             font-family: 'Playfair Display', serif;
             font-size: 1.5rem;
@@ -311,12 +312,13 @@
         }
 
         .category-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.15rem; 
-            font-style: italic;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem; 
+            text-transform: uppercase; 
             margin-bottom: 15px; 
+            letter-spacing: 1px;
             color: var(--teal-deep);
-            border-bottom: 1px solid var(--gold-satin);
+            border-bottom: 2px solid var(--gold-satin);
             padding-bottom: 5px;
             display: inline-block;
         }
@@ -479,7 +481,7 @@
             }
 
             nav a {
-                font-size: 1.1rem;
+                font-size: 0.95rem;
                 display: block;
             }
 
@@ -496,7 +498,7 @@
 
             .event-card {
                 grid-template-columns: 1fr;
-                gap: 12px;
+                gap: 16px;
                 text-align: left;
             }
 
@@ -505,20 +507,20 @@
                 flex-direction: row;
                 flex-wrap: wrap;
                 align-items: center;
-                gap: 14px; /* Flexible gap distribution rather than raw dot string elements */
+                gap: 14px; /* Clean gap distribution instead of literal dot separator strings */
                 border-right: none;
                 border-left: none;
                 padding-left: 0;
                 padding-right: 0;
             }
 
-            /* Assure dot string pseudo-elements are entirely removed */
+            /* Assure pseudo-element dots are entirely omitted */
             .event-date-display::after,
             .event-time-display::after {
                 content: none !important;
             }
 
-            /* Retain font sizing requirements across the 3 metadata elements */
+            /* Increased and standardized font sizing across all 3 elements */
             .event-date-display {
                 font-size: 1.05rem; 
                 font-weight: 600;
@@ -538,28 +540,28 @@
                 display: inline-block;
             }
 
+            /* Rebuilt dynamic animated action button behavior for Mobile Devices */
             .event-link-btn {
                 font-size: 1.05rem; 
-                text-transform: none;
-                letter-spacing: -0.2px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
                 font-weight: 600;
-                display: inline-block;
+                display: inline-flex;
                 margin-top: 0;
-                border: none;
-                padding: 0;
-                min-width: auto;
+                border: 1px solid var(--teal-deep);
+                padding: 4px 14px;
+                min-width: 95px;
+                border-radius: 2px;
                 background-color: transparent;
                 color: var(--teal-deep);
-                text-decoration: underline;
-                text-underline-offset: 4px;
             }
             
             .event-link-btn:hover {
-                color: var(--gold-satin);
-                background-color: transparent;
-                min-width: auto;
-                padding: 0;
-                letter-spacing: -0.2px;
+                color: var(--bg-color);
+                background-color: var(--teal-deep);
+                min-width: 125px; /* Performs the requested elongation transition on hover */
+                padding: 4px 18px;
+                letter-spacing: 1px;
             }
 
             /* Mobile Right Block Content Adjustments */
@@ -717,7 +719,7 @@
     <section id="research" class="grid-2">
         <div>
             <h2 class="section-title">Research Projects</h2>
-            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 600; margin-bottom: 15px; color: var(--teal-deep);">From Constraints to Creativity</h3>
+            <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; color: var(--teal-deep);">From Constraints to Creativity</h3>
             <p style="color: var(--teal-muted); margin-bottom: 15px;">Serving as Principal Investigator, this ongoing project investigates how Hong Kong composers navigate linguistic speech-tone structures to yield highly clear, expressive vocal music frameworks.</p>
             <p style="color: var(--teal-muted);">This research infrastructure led to the development of the open-access interactive platform <a href="https://www.cantonesecomposition.com" target="_blank" style="color:var(--teal-deep); font-weight:500;">Cantonese Melody Generator</a>.</p>
         </div>
