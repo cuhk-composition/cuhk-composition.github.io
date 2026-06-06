@@ -127,13 +127,24 @@
             border-bottom: none;
         }
 
+        /* Standardized Section Headings - Visually Dominant Over Card Headings */
         .section-title {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--gold-satin);
+            font-size: 1.8rem;
+            text-transform: capitalize;
+            letter-spacing: -0.5px;
+            color: var(--teal-deep);
             margin-bottom: 40px;
-            font-weight: 600;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 3px;
+            background-color: var(--gold-satin);
+            margin-top: 10px;
         }
 
         /* Layout Grids */
@@ -154,7 +165,7 @@
 
         .event-card {
             display: grid;
-            grid-template-columns: 150px 1fr;
+            grid-template-columns: 180px 1fr;
             gap: 40px;
             align-items: start;
             padding-bottom: 30px;
@@ -175,13 +186,14 @@
             padding-right: 20px;
         }
 
+        /* Enhanced Date Typography Metrics */
         .event-date-display {
-            font-size: 1.1rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: var(--teal-deep);
-            letter-spacing: -0.2px;
-            line-height: 1.3;
-            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            margin-bottom: 6px;
         }
 
         .event-time-display {
@@ -190,7 +202,7 @@
             color: var(--teal-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         /* Dedicated Link Button Design underneath Time metric */
@@ -218,9 +230,10 @@
         .event-details-block {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
 
+        /* Distinct Performance Title Formatting style */
         .event-title-h3 {
             font-size: 1.35rem;
             font-weight: 600;
@@ -228,11 +241,12 @@
             line-height: 1.3;
         }
 
-        .event-instrumentation-span {
-            font-size: 1.15rem;
+        /* Dedicated Structural Placement Row layout for Instrumentation */
+        .event-instrumentation-row {
+            font-size: 1.05rem;
             font-weight: 400;
             color: var(--teal-muted);
-            margin-left: 6px;
+            font-style: italic;
         }
 
         .event-location-row {
@@ -242,6 +256,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            margin-top: 2px;
         }
 
         .event-presenter-row {
@@ -477,16 +492,19 @@
 </head>
 <body>
 
+    <!-- STICKY HEADER NAVIGATION -->
     <header>
         <div class="nav-container">
             <div class="logo"><a href="#home">KAI-YOUNG CHAN</a></div>
             
+            <!-- Hamburger button visible ONLY on mobile/tablet viewports -->
             <button class="menu-toggle" id="menu-btn" aria-label="Toggle Navigation Layout">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
 
+            <!-- Menu links: Inline rows on desktop, slide-out drawer on mobile screens -->
             <nav id="nav-menu">
                 <ul>
                     <li><a href="#home">Home</a></li>
@@ -500,13 +518,15 @@
         </div>
     </header>
 
+    <!-- 1. DYNAMIC PERFORMANCE SCHEDULING FRAMEWORK -->
     <section id="home">
-        <h2 class="section-title">Upcoming & Recent Performances</h2>
+        <h2 class="section-title">Performances</h2>
         <div id="live-events" class="events-container">
             <p class="loading-text">Connecting to live scheduling platform...</p>
         </div>
     </section>
 
+    <!-- 2. ABOUT ME ZONE -->
     <section id="about" class="grid-2">
         <div>
             <h2 class="section-title">Biography</h2>
@@ -519,6 +539,7 @@
         </div>
     </section>
 
+    <!-- 3. SELECTED WORKS CATALOG -->
     <section id="works">
         <div class="works-header-block">
             <h2 class="section-title">Work List</h2>
@@ -580,6 +601,7 @@
         </div>
     </section>
 
+    <!-- 4. AUDIO / VISUAL SHOWCASE ZONE -->
     <section id="audio">
         <h2 class="section-title">Audio & Video Feature</h2>
         <div class="grid-2">
@@ -598,6 +620,7 @@
         </div>
     </section>
 
+    <!-- 5. RESEARCH & PUBLICATIONS ZONE -->
     <section id="research" class="grid-2">
         <div>
             <h2 class="section-title">Research Projects</h2>
@@ -614,6 +637,7 @@
         </div>
     </section>
 
+    <!-- 6. CONTACT ZONE -->
     <section id="contact">
         <div class="contact-box">
             <h2 class="section-title">Get In Touch</h2>
@@ -626,6 +650,7 @@
         <p>&copy; 2026 Kai-Young Chan. All Rights Reserved. Designed in compliance with minimalist portfolio frameworks.</p>
     </footer>
 
+    <!-- INTERACTIVE DOM SCRIPTS -->
     <script>
         // Hamburger Menu Overlay Interaction Logistics
         const menuBtn = document.getElementById('menu-btn');
@@ -709,6 +734,12 @@
                         presenterHtml = `<div class="event-presenter-row">${presenter}</div>`;
                     }
 
+                    // Open instrumentation row structural block on an exact new line element stream
+                    let instrumentationHtml = '';
+                    if (instrument) {
+                        instrumentationHtml = `<div class="event-instrumentation-row">${instrument}</div>`;
+                    }
+
                     htmlOutput += `
                         <div>
                             <div class="event-card">
@@ -719,9 +750,8 @@
                                 </div>
                                 
                                 <div class="event-details-block">
-                                    <div class="event-title-h3">
-                                        ${pieceTitle} <span class="event-instrumentation-span">${instrument}</span>
-                                    </div>
+                                    <div class="event-title-h3">${pieceTitle}</div>
+                                    ${instrumentationHtml}
                                     <div class="event-location-row">
                                         📍 ${venue}${cityCountry ? `, ${cityCountry}` : ''}
                                     </div>
