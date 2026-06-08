@@ -89,4 +89,97 @@
 
         .event-card {
             padding: 24px;
-            background-color: transparent
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        .event-card:hover { transform: translateY(-5px); background-color: var(--gold-light); border-color: transparent; }
+
+        .event-title-h3 { font-size: 1.2rem; font-weight: 600; color: var(--teal-deep); }
+        .event-date-display { font-family: 'Inter', sans-serif; font-weight: 700; color: var(--teal-deep); }
+        .venue-link { color: var(--gold-satin); text-decoration: none; font-weight: 600; cursor: pointer; }
+        .venue-link:hover { text-decoration: underline; }
+
+        /* General layout */
+        .grid-2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 80px; }
+        .image-placeholder { background: var(--gold-light); border: 1px solid var(--border-color); width: 100%; aspect-ratio: 4/5; display: flex; align-items: center; justify-content: center; }
+        
+        /* Footer */
+        footer { text-align: center; padding: 50px 20px; font-size: 0.75rem; color: var(--teal-muted); border-top: 1px solid var(--border-color); max-width: var(--max-width); margin: 0 auto; }
+
+        @media (max-width: 768px) {
+            .events-container { grid-template-columns: 1fr; }
+            .nav-container { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo"><a href="#home">KAI-YOUNG CHAN | COMPOSER</a></div>
+            <nav id="nav-menu">
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#works">Works</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home">
+        <h2 class="section-title">Performances</h2>
+        <div id="live-events" class="events-container">
+            <p class="loading-text">Connecting to live schedule...</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Kai-Young Chan. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        async function fetchPerformanceLog() {
+            const sheetUrl = 'https://docs.google.com/spreadsheets/d/1ewOnbKddBpx4YFSQpfvhOvmJCznhGzdcS2DyMFp7d08/gviz/tq?tqx=out:csv&sheet=Website';
+            const container = document.getElementById('live-events');
+
+            try {
+                const response = await fetch(sheetUrl);
+                const text = await response.text();
+                
+                // Simplified CSV parser for this logic
+                const rows = text.split('\n').map(row => row.split(',').map(cell => cell.replace(/^"|"$/g, '')));
+                let htmlOutput = '';
+
+                rows.slice(2, 6).forEach(columns => {
+                    if (columns.length < 8) return;
+                    const dateValue = columns[0];
+                    const pieceTitle = columns[3];
+                    const venue = columns[6];
+                    const loc = encodeURIComponent(venue + ', ' + columns[7]);
+
+                    htmlOutput += `
+                        <div class="event-card">
+                            <span class="event-date-display">${dateValue}</span>
+                            <div class="event-title-h3">${pieceTitle}</div>
+                            <div class="event-location">
+                                📍 <a href="https://www.google.com/maps/search/?api=1&query=${loc}" target="_blank" class="venue-link" onclick="window.open(this.href, 'mapPopup', 'width=800,height=600'); return false;">${venue}</a>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = htmlOutput;
+            } catch (error) {
+                container.innerHTML = '<p>Error loading schedule.</p>';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', fetchPerformanceLog);
+    </script>
+</body>
+</html>
