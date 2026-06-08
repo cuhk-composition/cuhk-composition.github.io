@@ -68,10 +68,10 @@
             position: relative;
         }
 
-        /* Logo styling set to a thin font weight and reduced tracking layout */
+        /* Logo styling set to a medium font weight */
         .logo a {
             font-family: 'Inter', sans-serif;
-            font-weight: 300;
+            font-weight: 500;
             font-size: 1.2rem;
             letter-spacing: 1px;
             text-decoration: none;
@@ -176,7 +176,7 @@
             align-items: center;
         }
 
-        /* NEW STYLE: Biography Section Layout Redesign Wrapper */
+        /* Biography Section Layout Redesign Wrapper */
         .bio-redesign-wrapper {
             display: flex;
             flex-direction: column;
@@ -184,7 +184,7 @@
             width: 100%;
         }
 
-        /* NEW STYLE: Auto Slideshow Architecture */
+        /* Auto Slideshow Architecture */
         .bio-slideshow-container {
             position: relative;
             width: 100%;
@@ -230,10 +230,8 @@
             font-weight: 500;
         }
 
-        /* NEW STYLE: Premium Multi-Column Editorial Typography Layout */
+        /* Premium Editorial Typography Layout - Single Column Full Width Layout */
         .biography-text-columns {
-            column-count: 2;
-            column-gap: 50px;
             text-align: justify;
         }
 
@@ -556,6 +554,7 @@
             font-size: 0.85rem;
         }
 
+        /** FOOTER STRUCTURE **/
         footer {
             text-align: center;
             padding: 50px 20px;
@@ -893,7 +892,7 @@
             });
         });
 
-        /* NEW SCRIPT: Auto Slideshow Loop Engine */
+        /* Auto Slideshow Loop Engine */
         function initAutoSlideshow() {
             const slides = document.querySelectorAll('.bio-slide');
             if (slides.length <= 1) return;
