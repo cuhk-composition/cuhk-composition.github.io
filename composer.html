@@ -9,7 +9,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -68,12 +68,12 @@
             position: relative;
         }
 
-        /* Logo Upgraded Scale, Weights, and Wording */
+        /* MODIFIED: Logo styling set to a thin font weight and reduced tracking layout */
         .logo a {
             font-family: 'Inter', sans-serif;
-            font-weight: 800;
+            font-weight: 300;
             font-size: 1.2rem;
-            letter-spacing: 3px;
+            letter-spacing: 1px;
             text-decoration: none;
             color: var(--teal-deep);
             z-index: 1001;
@@ -176,7 +176,12 @@
             align-items: center;
         }
 
-        /* UPDATED: Performance Container changed to grid to render 2 cards per row */
+        /* Biography Section Alignment override to accommodate longer textual values */
+        #about.grid-2 {
+            align-items: start;
+        }
+
+        /* MODIFIED: Performance layout configuration to display exactly 2 elements per row */
         .events-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -184,7 +189,7 @@
             width: 100%;
         }
 
-        /* UPDATED: Refined columns, borders, and rounded edges for grid compliance */
+        /* MODIFIED: Compact dimensions, structural border-radius changes, and alignment mappings */
         .event-card {
             display: grid;
             grid-template-columns: 130px 1fr;
@@ -221,7 +226,7 @@
             border-right-color: rgba(14, 58, 64, 0.15);
         }
 
-        /* UPDATED: Decreased date font size */
+        /* MODIFIED: Decreased font size architecture across card data parameters */
         .event-date-display {
             font-size: 0.95rem;
             font-weight: 700;
@@ -231,7 +236,6 @@
             margin-bottom: 2px;
         }
 
-        /* UPDATED: Decreased time font size */
         .event-time-display {
             font-size: 0.65rem;
             font-weight: 500;
@@ -277,7 +281,6 @@
             gap: 4px;
         }
 
-        /* UPDATED: Decreased title font size */
         .event-title-h3 {
             font-family: 'Inter', sans-serif;
             font-size: 1.05rem;
@@ -286,7 +289,6 @@
             line-height: 1.3;
         }
 
-        /* UPDATED: Decreased instrumentation font size */
         .event-instrumentation-row {
             font-family: 'Inter', sans-serif;
             font-size: 0.85rem;
@@ -294,7 +296,6 @@
             color: var(--teal-muted);
         }
 
-        /* UPDATED: Decreased location font size */
         .event-location-row {
             font-family: 'Inter', sans-serif;
             font-size: 0.8rem;
@@ -306,7 +307,6 @@
             margin-top: 1px;
         }
 
-        /* UPDATED: Decreased presenter font size */
         .event-presenter-row {
             font-family: 'Inter', sans-serif;
             font-size: 0.8rem;
@@ -314,7 +314,6 @@
             font-weight: 500;
         }
 
-        /* UPDATED: Decreased performer font size */
         .event-performer-row {
             font-family: 'Inter', sans-serif;
             font-size: 0.8rem;
@@ -529,7 +528,7 @@
 
         /* MOBILE MEDIA QUERIES */
         @media (max-width: 900px) {
-            /* Fallback to single column earlier for premium readability on medium screens */
+            /* Fallback to single column architecture for smaller tablet sizes */
             .events-container {
                 grid-template-columns: 1fr;
                 gap: 16px;
@@ -687,11 +686,14 @@
     <section id="about" class="grid-2">
         <div class="biography-text">
             <h2 class="section-title">Biography</h2>
-            <p><strong>Kai-Young Chan</strong> is an Associate Professor of music composition and an academic scholar whose work sits at the vital intersection of linguistic nuance, cultural heritage, and contemporary art music.</p>
-            <p style="color: var(--teal-muted);">His creative practice focus centers on turning linguistic rules into innovative creative assets, transforming structural text-setting boundaries into expressive melodic tools. He is a recipient of the prestigious <strong>CASH Golden Sail Music Award</strong>, and his compositions are regularly performed globally by ensembles including the Pittsburgh Symphony Orchestra and the Hong Kong Philharmonic.</p>
-            <p style="color: var(--teal-muted);">His scores are published internationally by <strong>Universal Edition (Vienna)</strong>, Edition Peters (London), and Edition ICOT (Japan).</p>
+            <p>Kai-Young Chan has taught at the Chinese University of Hong Kong (CUHK) since 2016, currently serving as Associate Professor. Through compositions and digital platforms, his research on Cantonese contemporary music explores compositional approaches beyond Western paradigms and challenges the stereotypical perception of Asian musics.</p>
+            <p style="color: var(--teal-muted);">Praised as “a tantalizing direction forward for East meets West classical fusion” by Classical Music Daily (2019), and “exquisitely flavored, with continual tension that captivates” by The News Lens (2023), Chan’s music has been performed in over 20 countries by renowned ensembles including the Pittsburgh Symphony Orchestra (with Leonard Slatkin), Hong Kong Philharmonic Orchestra (with Jaap van Zweden), Hong Kong Sinfonietta (with Wing-sie Yip), Hong Kong New Music Ensemble, Daedalus Quartet, and Mivos Quartet.</p>
+            <p style="color: var(--teal-muted);">His ongoing collaborations with violinist Patrick Yim (University of Notre Dame) have produced works of cross-cultural themes and instrumentations performed by Yim and such esteemed artists as Natalie Douglas (MIT), Joel Smirnoff (Juilliard), sheng artist Loo Sze-wang, and dizi artist Hong-da Chin. His works are released globally by leading record labels including Ablaze, innova, and PARMA, with scores published by Edition ICOT (Japan), Edition Peters (UK), and Universal Edition (Austria). His hour-long portrait album (Navona Records, 2025) is the first Cantonese choral album published by a classical label.</p>
+            <p style="color: var(--teal-muted);">Kai-Young is part of the first artist delegation of the American Composers Forum to the Havana Festival for Contemporary Music in Cuba, a historic tour documented by the National Public Radio. His music has been featured in leading festivals worldwide, including the Busan International Contemporary Music Festival (Korea), June in Buffalo (USA), International Forum of New Music Manuel Enriquez (Mexico), Risuonanze Festival (Italy), Internationalen Ferienkurse Darmstadt (Germany), and the Havana Contemporary Music Festival (Cuba). His works have represented Hong Kong at the ISCM World Music Days (2015, 2012) and the International Rostrum of Composers (2014, 2024). Chan has won the CASH Golden Sail Music Award and multiple other international competitions, including VocalEspoo (Finland), International Choral Composition Competition (Japan), Keuris Prize (Netherlands), and Robert Avalon International Competition for Composers (USA), among others.</p>
+            <p style="color: var(--teal-muted);">To promote Cantonese musical genres and reduce barriers to composing in this tonal language, Chan has developed the open-access application “Cantonese Melody Generator”, which converts Cantonese texts into intelligible melodies. Since its beta launch in May 2022, it has garnered over 350,000 inquiries from researchers, composers, lyricists, and educators. In 2023, he organized the first international conference on Cantonese contemporary music, recognized by RTHK as one of the Top 10 Music Headlines of 2023 for its cultural and academic impact in Hong Kong.</p>
+            <p style="color: var(--teal-muted);">Chan earned his PhD in Music Composition from the University of Pennsylvania, where he was the Benjamin Franklin Fellow. A two-time recipient of the Faculty Outstanding Teaching Award at CUHK, Chan has received six teaching grants to develop videos and online games for music theory education. His music and research, funded by the Hong Kong Research Grants Council, CUHK, the Arts Development Council, and other commissioning bodies, have investigated how Cantonese text-setting constraints inspire creativity in contemporary music, addressed the underrepresentation of Cantonese-language contemporary music internationally, and fostered interdisciplinary collaborations among music composition, artificial intelligence, and neuroscience.</p>
         </div>
-        <div class="image-placeholder">
+        <div class="image-placeholder" style="position: sticky; top: 120px;">
             <span>[ PORTRAIT PHOTO ]</span>
         </div>
     </section>
@@ -862,7 +864,7 @@
                 const rows = parseCSV(text);
                 let htmlOutput = '';
                 
-                // UPDATED: Changed the slice parameters to capture up to 8 entries (rows 2 through 9)
+                // MODIFIED: Changed slice bounds to process exactly up to 8 spreadsheet log entries (rows 2 through 9)
                 const entriesToRender = rows.slice(2, 10); 
 
                 entriesToRender.forEach(columns => {
@@ -895,8 +897,8 @@
                         instrumentationHtml = `<div class="event-instrumentation-row">${instrument}</div>`;
                     }
 
-                    /* REMOVED extra outer wrapping div container around .event-card 
-                       so cards interact natively as direct children of the CSS Grid wrapper */
+                    /* MODIFIED: Completely stripped the obsolete outer wrapper column divs 
+                       to map cards as direct components inside the 2-column grid layout definition. */
                     htmlOutput += `
                         <div class="event-card">
                             <div class="event-date-block">
