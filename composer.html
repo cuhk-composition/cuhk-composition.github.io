@@ -176,9 +176,72 @@
             align-items: center;
         }
 
-        /* Biography Section Alignment override to accommodate longer textual values */
-        #about.grid-2 {
-            align-items: start;
+        /* NEW STYLE: Biography Section Layout Redesign Wrapper */
+        .bio-redesign-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            width: 100%;
+        }
+
+        /* NEW STYLE: Auto Slideshow Architecture */
+        .bio-slideshow-container {
+            position: relative;
+            width: 100%;
+            height: 480px;
+            background: var(--gold-light);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(14, 58, 64, 0.03);
+        }
+
+        .bio-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bio-slide.active {
+            opacity: 1;
+            z-index: 2;
+        }
+
+        .bio-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 25%;
+        }
+
+        .bio-slide-placeholder {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--teal-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        /* NEW STYLE: Premium Multi-Column Editorial Typography Layout */
+        .biography-text-columns {
+            column-count: 2;
+            column-gap: 50px;
+            text-align: justify;
+        }
+
+        .biography-text-columns p {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            break-inside: avoid;
         }
 
         /* Performance layout configuration to display exactly 2 elements per row */
@@ -410,12 +473,6 @@
         }
 
         /* Sub-sections & Text Embed Layouts */
-        .biography-text p {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-        }
-
         .media-embed {
             background: var(--gold-light);
             border: 1px solid var(--border-color);
@@ -499,66 +556,6 @@
             font-size: 0.85rem;
         }
 
-        /* NEW STYLE: Overlapping dynamic stack photo architecture */
-        .portrait-scroll-container {
-            position: sticky;
-            top: 120px;
-            width: 100%;
-            aspect-ratio: 4/5;
-            overflow: visible; /* Allows rollout animations outside the base bounding box container safely */
-        }
-
-        .portrait-frame {
-            position: absolute;
-            width: 85%;
-            height: 85%;
-            background: var(--gold-light);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.1s linear; /* Fast, fluid transformation hook mapped via JS scroll */
-            box-shadow: 0 10px 30px rgba(14, 58, 64, 0.05);
-        }
-
-        .portrait-frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Overlapping layered offsets */
-        .p-img-1 {
-            top: 0;
-            left: 0;
-            z-index: 3;
-        }
-        
-        .p-img-2 {
-            top: 7%;
-            left: 7%;
-            z-index: 2;
-            opacity: 0.85;
-        }
-        
-        .p-img-3 {
-            top: 14%;
-            left: 14%;
-            z-index: 1;
-            opacity: 0.7;
-        }
-
-        .p-img-placeholder {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.75rem;
-            color: var(--teal-muted);
-            letter-spacing: 1px;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-
         footer {
             text-align: center;
             padding: 50px 20px;
@@ -573,7 +570,6 @@
 
         /* MOBILE MEDIA QUERIES */
         @media (max-width: 900px) {
-            /* Fallback to single column architecture for smaller tablet sizes */
             .events-container {
                 grid-template-columns: 1fr;
                 gap: 16px;
@@ -634,12 +630,13 @@
                 gap: 50px;
             }
 
-            /* Disable lateral shifts on compact phone screens */
-            .portrait-scroll-container {
-                position: relative;
-                top: 0;
-                margin-top: 20px;
+            /* Responsive tweaks for newly redesigned bio zones */
+            .bio-slideshow-container {
                 height: 320px;
+            }
+
+            .biography-text-columns {
+                column-count: 1;
             }
 
             .event-card {
@@ -736,29 +733,32 @@
         </div>
     </section>
 
-    <section id="about" class="grid-2">
-        <div class="biography-text">
+    <section id="about">
+        <div class="bio-redesign-wrapper">
             <h2 class="section-title">Biography</h2>
-            <p>Kai-Young Chan has taught at the Chinese University of Hong Kong (CUHK) since 2016, currently serving as Associate Professor. Through compositions and digital platforms, his research on Cantonese contemporary music explores compositional approaches beyond Western paradigms and challenges the stereotypical perception of Asian musics.</p>
-            <p style="color: var(--teal-muted);">Praised as “a tantalizing direction forward for East meets West classical fusion” by Classical Music Daily (2019), and “exquisitely flavored, with continual tension that captivates” by The News Lens (2023), Chan’s music has been performed in over 20 countries by renowned ensembles including the Pittsburgh Symphony Orchestra (with Leonard Slatkin), Hong Kong Philharmonic Orchestra (with Jaap van Zweden), Hong Kong Sinfonietta (with Wing-sie Yip), Hong Kong New Music Ensemble, Daedalus Quartet, and Mivos Quartet.</p>
-            <p style="color: var(--teal-muted);">His ongoing collaborations with violinist Patrick Yim (University of Notre Dame) have produced works of cross-cultural themes and instrumentations performed by Yim and such esteemed artists as Natalie Douglas (MIT), Joel Smirnoff (Juilliard), sheng artist Loo Sze-wang, and dizi artist Hong-da Chin. His works are released globally by leading record labels including Ablaze, innova, and PARMA, with scores published by Edition ICOT (Japan), Edition Peters (UK), and Universal Edition (Austria). His hour-long portrait album (Navona Records, 2025) is the first Cantonese choral album published by a classical label.</p>
-            <p style="color: var(--teal-muted);">Kai-Young is part of the first artist delegation of the American Composers Forum to the Havana Festival for Contemporary Music in Cuba, a historic tour documented by the National Public Radio. His music has been featured in leading festivals worldwide, including the Busan International Contemporary Music Festival (Korea), June in Buffalo (USA), International Forum of New Music Manuel Enriquez (Mexico), Risuonanze Festival (Italy), Internationalen Ferienkurse Darmstadt (Germany), and the Havana Contemporary Music Festival (Cuba). His works have represented Hong Kong at the ISCM World Music Days (2015, 2012) and the International Rostrum of Composers (2014, 2024). Chan has won the CASH Golden Sail Music Award and multiple other international competitions, including VocalEspoo (Finland), International Choral Composition Competition (Japan), Keuris Prize (Netherlands), and Robert Avalon International Competition for Composers (USA), among others.</p>
-            <p style="color: var(--teal-muted);">To promote Cantonese musical genres and reduce barriers to composing in this tonal language, Chan has developed the open-access application “Cantonese Melody Generator”, which converts Cantonese texts into intelligible melodies. Since its beta launch in May 2022, it has garnered over 350,000 inquiries from researchers, composers, lyricists, and educators. In 2023, he organized the first international conference on Cantonese contemporary music, recognized by RTHK as one of the Top 10 Music Headlines of 2023 for its cultural and academic impact in Hong Kong.</p>
-            <p style="color: var(--teal-muted);">Chan earned his PhD in Music Composition from the University of Pennsylvania, where he was the Benjamin Franklin Fellow. A two-time recipient of the Faculty Outstanding Teaching Award at CUHK, Chan has received six teaching grants to develop videos and online games for music theory education. His music and research, funded by the Hong Kong Research Grants Council, CUHK, the Arts Development Council, and other commissioning bodies, have investigated how Cantonese text-setting constraints inspire creativity in contemporary music, addressed the underrepresentation of Cantonese-language contemporary music internationally, and fostered interdisciplinary collaborations among music composition, artificial intelligence, and neuroscience.</p>
-        </div>
-        
-        <div class="portrait-scroll-container" id="portrait-stack">
-            <div class="portrait-frame p-img-1" id="p-frame-1">
-                <img src="/images/portrait1.png" alt="Kai-Young Chan Portrait 1" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <span class="p-img-placeholder" style="display:none;">[ Portrait 1 ]</span>
+            
+            <div class="bio-slideshow-container">
+                <div class="bio-slide active">
+                    <img src="/images/portrait1.png" alt="Kai-Young Chan Portrait 1" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <span class="bio-slide-placeholder" style="display:none;">[ Portrait Image 1 ]</span>
+                </div>
+                <div class="bio-slide">
+                    <img src="/images/portrait2.png" alt="Kai-Young Chan Portrait 2" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <span class="bio-slide-placeholder" style="display:none;">[ Portrait Image 2 ]</span>
+                </div>
+                <div class="bio-slide">
+                    <img src="/images/portrait3.png" alt="Kai-Young Chan Portrait 3" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <span class="bio-slide-placeholder" style="display:none;">[ Portrait Image 3 ]</span>
+                </div>
             </div>
-            <div class="portrait-frame p-img-2" id="p-frame-2">
-                <img src="/images/portrait2.png" alt="Kai-Young Chan Portrait 2" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <span class="p-img-placeholder" style="display:none;">[ Portrait 2 ]</span>
-            </div>
-            <div class="portrait-frame p-img-3" id="p-frame-3">
-                <img src="/images/portrait3.png" alt="Kai-Young Chan Portrait 3" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <span class="p-img-placeholder" style="display:none;">[ Portrait 3 ]</span>
+
+            <div class="biography-text-columns">
+                <p>Kai-Young Chan has taught at the Chinese University of Hong Kong (CUHK) since 2016, currently serving as Associate Professor. Through compositions and digital platforms, his research on Cantonese contemporary music explores compositional approaches beyond Western paradigms and challenges the stereotypical perception of Asian musics.</p>
+                <p style="color: var(--teal-muted);">Praised as “a tantalizing direction forward for East meets West classical fusion” by Classical Music Daily (2019), and “exquisitely flavored, with continual tension that captivates” by The News Lens (2023), Chan’s music has been performed in over 20 countries by renowned ensembles including the Pittsburgh Symphony Orchestra (with Leonard Slatkin), Hong Kong Philharmonic Orchestra (with Jaap van Zweden), Hong Kong Sinfonietta (with Wing-sie Yip), Hong Kong New Music Ensemble, Daedalus Quartet, and Mivos Quartet.</p>
+                <p style="color: var(--teal-muted);">His ongoing collaborations with violinist Patrick Yim (University of Notre Dame) have produced works of cross-cultural themes and instrumentations performed by Yim and such esteemed artists as Natalie Douglas (MIT), Joel Smirnoff (Juilliard), sheng artist Loo Sze-wang, and dizi artist Hong-da Chin. His works are released globally by leading record labels including Ablaze, innova, and PARMA, with scores published by Edition ICOT (Japan), Edition Peters (UK), and Universal Edition (Austria). His hour-long portrait album (Navona Records, 2025) is the first Cantonese choral album published by a classical label.</p>
+                <p style="color: var(--teal-muted);">Kai-Young is part of the first artist delegation of the American Composers Forum to the Havana Festival for Contemporary Music in Cuba, a historic tour documented by the National Public Radio. His music has been featured in leading festivals worldwide, including the Busan International Contemporary Music Festival (Korea), June in Buffalo (USA), International Forum of New Music Manuel Enriquez (Mexico), Risuonanze Festival (Italy), Internationalen Ferienkurse Darmstadt (Germany), and the Havana Contemporary Music Festival (Cuba). His works have represented Hong Kong at the ISCM World Music Days (2015, 2012) and the International Rostrum of Composers (2014, 2024). Chan has won the CASH Golden Sail Music Award and multiple other international competitions, including VocalEspoo (Finland), International Choral Composition Competition (Japan), Keuris Prize (Netherlands), and Robert Avalon International Competition for Composers (USA), among others.</p>
+                <p style="color: var(--teal-muted);">To promote Cantonese musical genres and reduce barriers to composing in this tonal language, Chan has developed the open-access application “Cantonese Melody Generator”, which converts Cantonese texts into intelligible melodies. Since its beta launch in May 2022, it has garnered over 350,000 inquiries from researchers, composers, lyricists, and educators. In 2023, he organized the first international conference on Cantonese contemporary music, recognized by RTHK as one of the Top 10 Music Headlines of 2023 for its cultural and academic impact in Hong Kong.</p>
+                <p style="color: var(--teal-muted);">Chan earned his PhD in Music Composition from the University of Pennsylvania, where he was the Benjamin Franklin Fellow. A two-time recipient of the Faculty Outstanding Teaching Award at CUHK, Chan has received six teaching grants to develop videos and online games for music theory education. His music and research, funded by the Hong Kong Research Grants Council, CUHK, the Arts Development Council, and other commissioning bodies, have investigated how Cantonese text-setting constraints inspire creativity in contemporary music, addressed the underrepresentation of Cantonese-language contemporary music internationally, and fostered interdisciplinary collaborations among music composition, artificial intelligence, and neuroscience.</p>
             </div>
         </div>
     </section>
@@ -893,34 +893,19 @@
             });
         });
 
-        /* NEW SCRIPT: Parallax tracking logic for rolling the portrait stack left during downward scrolls */
-        function initPortraitScrollEffect() {
-            const stackContainer = document.getElementById('portrait-stack');
-            const frame1 = document.getElementById('p-frame-1');
-            const frame2 = document.getElementById('p-frame-2');
-            const frame3 = document.getElementById('p-frame-3');
+        /* NEW SCRIPT: Auto Slideshow Loop Engine */
+        function initAutoSlideshow() {
+            const slides = document.querySelectorAll('.bio-slide');
+            if (slides.length <= 1) return;
 
-            if (!stackContainer || window.innerWidth <= 768) return;
+            let currentSlideIndex = 0;
+            const intervalTime = 4000; // Transitions every 4 seconds
 
-            window.addEventListener('scroll', () => {
-                // Determine layout positioning variables
-                const containerRect = stackContainer.getBoundingClientRect();
-                const windowHeight = window.innerHeight;
-
-                // Fire transitions when the component enters viewport bounds
-                if (containerRect.top < windowHeight && containerRect.bottom > 0) {
-                    const scrollProgress = (windowHeight - containerRect.top) / (windowHeight + containerRect.height);
-                    
-                    // Scale translations based on progressive depth hierarchies
-                    const shift1 = scrollProgress * -40; // Front image shifts left slightly
-                    const shift2 = scrollProgress * -90; // Middle image rolls left faster
-                    const shift3 = scrollProgress * -140; // Back image rolls left fastest
-
-                    frame1.style.transform = `translateX(${shift1}px)`;
-                    frame2.style.transform = `translateX(${shift2}px)`;
-                    frame3.style.transform = `translateX(${shift3}px)`;
-                }
-            });
+            setInterval(() => {
+                slides[currentSlideIndex].classList.remove('active');
+                currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+                slides[currentSlideIndex].classList.add('active');
+            }, intervalTime);
         }
 
         async function fetchPerformanceLog() {
@@ -959,7 +944,6 @@
                 const rows = parseCSV(text);
                 let htmlOutput = '';
                 
-                // Changed slice bounds to process exactly up to 8 spreadsheet log entries (rows 2 through 9)
                 const entriesToRender = rows.slice(2, 10); 
 
                 entriesToRender.forEach(columns => {
@@ -1024,7 +1008,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchPerformanceLog();
-            initPortraitScrollEffect();
+            initAutoSlideshow();
         });
     </script>
 </body>
