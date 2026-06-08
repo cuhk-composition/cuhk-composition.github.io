@@ -1,75 +1,92 @@
-<style>
-    /* ... existing styles ... */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kai-Young Chan | Composer & Scholar</title>
     
-    .events-container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr); /* Force two-column layout */
-        gap: 20px;
-        width: 100%;
-    }
-
-    .event-card {
-        display: grid;
-        grid-template-columns: 1fr; /* Stack content vertically within the card */
-        gap: 15px;
-        padding: 24px;
-        height: 100%; /* Ensure equal height */
-        border-bottom: 1px solid var(--border-color);
-        transition: transform 0.2s ease, background-color 0.3s ease;
-    }
-
-    .event-card:hover {
-        transform: translateY(-5px);
-        background-color: var(--gold-light);
-    }
-
-    /* Venue Link Styling */
-    .venue-link {
-        color: var(--gold-satin);
-        text-decoration: none;
-        font-weight: 600;
-        cursor: pointer;
-        transition: opacity 0.2s;
-    }
-    .venue-link:hover {
-        opacity: 0.7;
-        text-decoration: underline;
-    }
-
-    /* Adjustments for Mobile */
-    @media (max-width: 768px) {
-        .events-container {
-            grid-template-columns: 1fr; /* Revert to single column on small screens */
+    <link rel="icon" type="image/png" href="Screenshot 2026-06-02 at 12.37.27 PM.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #fcfbfa;
+            --teal-deep: #0e3a40;
+            --teal-muted: #2d5b60;
+            --gold-satin: #bda26b;
+            --gold-light: #f5f0e6;
+            --border-color: #e6e2db;
+            --max-width: 1100px;
         }
-    }
-</style>
 
-<script>
-    // ... inside fetchPerformanceLog loop ...
-    
-    // Construct Google Maps Search URL
-    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venue + ', ' + cityCountry)}`;
-    
-    // Replace the venue row in your HTML generation:
-    htmlOutput += `
-        <div class="event-card">
-            <div class="event-date-block">
-                <span class="event-date-display">${dateValue}</span>
-                <span class="event-time-display">${eventTime}</span>
-            </div>
-            
-            <div class="event-details-block">
-                <div class="event-title-h3">${pieceTitle}</div>
-                ${instrumentationHtml}
-                <div class="event-location-row">
-                    📍 <a href="${mapUrl}" target="_blank" class="venue-link" onclick="window.open(this.href, 'mapPopup', 'width=800,height=600'); return false;">${venue}</a>
-                </div>
-                ${presenterHtml}
-                <div class="event-performer-row">
-                    Performer(s): ${performer}
-                </div>
-            </div>
-            ${linkElementHtml}
-        </div>
-    `;
-</script>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--teal-deep);
+            line-height: 1.75;
+            padding-top: 110px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Header with Gold Transparent Backdrop */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(189, 162, 107, 0.65);
+            border-bottom: 1px solid rgba(14, 58, 64, 0.15);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 24px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo a {
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-decoration: none;
+            color: var(--teal-deep);
+        }
+
+        /* Nav Links */
+        nav ul { display: flex; list-style: none; gap: 30px; }
+        nav a {
+            text-decoration: none;
+            color: var(--teal-deep);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.25s ease;
+        }
+        nav a:hover { color: #ffffff; transform: translateY(-1px); }
+
+        /* Performance Grid Section */
+        section { max-width: var(--max-width); margin: 0 auto; padding: 60px 20px 100px 20px; border-bottom: 1px solid var(--border-color); }
+        .section-title { font-size: 1.15rem; text-transform: uppercase; letter-spacing: 4px; color: var(--gold-satin); margin-bottom: 50px; font-weight: 700; }
+        
+        .events-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .event-card {
+            padding: 24px;
+            background-color: transparent
