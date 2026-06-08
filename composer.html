@@ -231,19 +231,19 @@
             break-inside: avoid;
         }
 
-        /* RECONSTRUCTED: Scrollable Window for Performances */
+        /* Scrollable Window for Performances */
         .events-container {
             display: grid;
-            grid-template-columns: 1fr; /* Updated to single column layout */
+            grid-template-columns: 1fr; 
             gap: 24px;
             width: 100%;
-            max-height: 520px; /* Restricts the section footprint to an intentional frame */
+            max-height: 520px; 
             overflow-y: auto;
             padding-right: 12px;
             padding-bottom: 8px;
         }
 
-        /* Elegant Custom Scrollbar Design to keep layouts coherent */
+        /* Custom Scrollbar Design */
         .events-container::-webkit-scrollbar {
             width: 5px;
         }
@@ -266,7 +266,7 @@
             align-items: start;
             padding: 20px 16px;
             background-color: transparent;
-            border: none; /* Removed borders for the render cards */
+            border: none; 
             border-radius: 6px;
             height: 100%;
             transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
@@ -278,7 +278,6 @@
             box-shadow: 0 4px 12px rgba(189, 162, 107, 0.08);
         }
 
-        /* Left Block Layout configuration for vertical distribution */
         .event-date-block {
             text-align: left;
             display: flex;
@@ -342,11 +341,10 @@
             letter-spacing: 1.5px;
         }
 
-        /* Premium Minimalist World Premiere Tag */
         .premiere-badge {
             display: inline-block;
             align-self: flex-start;
-            margin-top: auto; /* Pushes the layout block down to the absolute lower-left boundary */
+            margin-top: auto; 
             font-family: 'Inter', sans-serif;
             font-size: 0.58rem;
             font-weight: 700;
@@ -969,11 +967,16 @@
                 const rows = parseCSV(text);
                 let htmlOutput = '';
                 
-                // Adjust or remove slice boundaries to render the log items cleanly within the windows
-                const entriesToRender = rows.slice(2, 12); 
+                // Adjusted slice boundaries to look up to the first 50 rows for safety,
+                // but we will explicitly drop out once 10 valid events are rendered.
+                const potentialEntries = rows.slice(2, 50); 
+                let renderedCount = 0;
 
-                entriesToRender.forEach(columns => {
-                    if (columns.length < 8) return;
+                for (let i = 0; i < potentialEntries.length; i++) {
+                    if (renderedCount >= 10) break; // Enforce the strict maximum limit of 10
+
+                    const columns = potentialEntries[i];
+                    if (columns.length < 8) continue;
 
                     const dateValue     = columns[0] ? columns[0].trim() : 'TBA';
                     const pieceTitle    = columns[3] ? columns[3].trim() : 'Untitled';
@@ -985,18 +988,16 @@
                     const eventTime     = columns[9] ? columns[9].trim() : '';
                     const presenter     = columns[10] ? columns[10].trim() : '';
                     
-                    // Look for a World Premiere marker in adjacent columns (like column 11 or inside the performance details text)
                     const detailsString = columns.join(' ').toLowerCase();
                     const isWorldPremiere = detailsString.includes('world premiere');
 
-                    if (!dateValue || pieceTitle === 'Untitled') return;
+                    if (!dateValue || pieceTitle === 'Untitled') continue;
 
                     let linkElementHtml = '';
                     if (hyperlinkUrl && hyperlinkUrl.startsWith('http')) {
                         linkElementHtml = `<a href="${hyperlinkUrl}" target="_blank" class="event-link-btn">Details →</a>`;
                     }
 
-                    // Generate HTML tag if verified as a world premiere
                     let premiereBadgeHtml = '';
                     if (isWorldPremiere) {
                         premiereBadgeHtml = `<span class="premiere-badge">World Premiere</span>`;
@@ -1034,7 +1035,9 @@
                             </div>
                         </div>
                     `;
-                });
+                    
+                    renderedCount++;
+                }
 
                 container.innerHTML = htmlOutput || '<p class="loading-text">No active schedule logs available.</p>';
             } catch (error) {
