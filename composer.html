@@ -4,13 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kai-Young Chan | Composer & Scholar</title>
-    
     <link rel="icon" type="image/png" href="Screenshot 2026-06-02 at 12.37.27 PM.png">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
     <style>
         :root {
             --bg-color: #fcfbfa;
@@ -21,163 +16,77 @@
             --border-color: #e6e2db;
             --max-width: 1100px;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--teal-deep);
-            line-height: 1.75;
-            padding-top: 110px;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Header with Gold Transparent Backdrop */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(189, 162, 107, 0.65);
-            border-bottom: 1px solid rgba(14, 58, 64, 0.15);
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .nav-container {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            padding: 24px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo a {
-            font-family: 'Inter', sans-serif;
-            font-weight: 800;
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            text-decoration: none;
-            color: var(--teal-deep);
-        }
-
-        /* Nav Links */
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--teal-deep); line-height: 1.75; padding-top: 100px; }
+        
+        header { position: fixed; top: 0; width: 100%; background: rgba(189, 162, 107, 0.65); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(14, 58, 64, 0.15); z-index: 1000; padding: 24px 20px; }
+        .nav-container { max-width: var(--max-width); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo a { font-weight: 800; text-decoration: none; color: var(--teal-deep); letter-spacing: 3px; }
         nav ul { display: flex; list-style: none; gap: 30px; }
-        nav a {
-            text-decoration: none;
-            color: var(--teal-deep);
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            transition: all 0.25s ease;
-        }
-        nav a:hover { color: #ffffff; transform: translateY(-1px); }
+        nav a { text-decoration: none; color: var(--teal-deep); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
 
-        /* Performance Grid Section */
-        section { max-width: var(--max-width); margin: 0 auto; padding: 60px 20px 100px 20px; border-bottom: 1px solid var(--border-color); }
-        .section-title { font-size: 1.15rem; text-transform: uppercase; letter-spacing: 4px; color: var(--gold-satin); margin-bottom: 50px; font-weight: 700; }
+        section { max-width: var(--max-width); margin: 0 auto; padding: 60px 20px; border-bottom: 1px solid var(--border-color); }
+        .section-title { font-size: 1.15rem; color: var(--gold-satin); margin-bottom: 30px; text-transform: uppercase; letter-spacing: 4px; }
         
-        .events-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
+        .events-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .event-card { padding: 20px; border: 1px solid var(--border-color); border-radius: 4px; transition: 0.3s; }
+        .event-card:hover { background: var(--gold-light); }
+        .venue-link { color: var(--gold-satin); cursor: pointer; text-decoration: none; font-weight: 600; }
 
-        .event-card {
-            padding: 24px;
-            background-color: transparent;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            transition: all 0.3s ease;
-        }
-        .event-card:hover { transform: translateY(-5px); background-color: var(--gold-light); border-color: transparent; }
-
-        .event-title-h3 { font-size: 1.2rem; font-weight: 600; color: var(--teal-deep); }
-        .event-date-display { font-family: 'Inter', sans-serif; font-weight: 700; color: var(--teal-deep); }
-        .venue-link { color: var(--gold-satin); text-decoration: none; font-weight: 600; cursor: pointer; }
-        .venue-link:hover { text-decoration: underline; }
-
-        /* General layout */
         .grid-2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 80px; }
-        .image-placeholder { background: var(--gold-light); border: 1px solid var(--border-color); width: 100%; aspect-ratio: 4/5; display: flex; align-items: center; justify-content: center; }
-        
-        /* Footer */
-        footer { text-align: center; padding: 50px 20px; font-size: 0.75rem; color: var(--teal-muted); border-top: 1px solid var(--border-color); max-width: var(--max-width); margin: 0 auto; }
+        .biography-text p { margin-bottom: 20px; }
+        .work-item-container { padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+        .work-title { font-weight: 600; display: block; }
+        .media-embed { background: var(--gold-light); padding: 40px; text-align: center; border: 1px solid var(--border-color); }
+        .btn-email { display: inline-block; padding: 12px 40px; border: 1px solid var(--teal-deep); color: var(--teal-deep); text-decoration: none; text-transform: uppercase; }
 
-        @media (max-width: 768px) {
-            .events-container { grid-template-columns: 1fr; }
-            .nav-container { flex-direction: column; gap: 20px; }
-        }
+        @media (max-width: 768px) { .events-container, .grid-2 { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-
-    <header>
-        <div class="nav-container">
-            <div class="logo"><a href="#home">KAI-YOUNG CHAN | COMPOSER</a></div>
-            <nav id="nav-menu">
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#works">Works</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <header><div class="nav-container"><div class="logo"><a href="#home">KAI-YOUNG CHAN | COMPOSER</a></div><nav><ul><li><a href="#home">Performances</a></li><li><a href="#about">About</a></li><li><a href="#works">Works</a></li><li><a href="#contact">Contact</a></li></ul></nav></div></header>
 
     <section id="home">
         <h2 class="section-title">Performances</h2>
-        <div id="live-events" class="events-container">
-            <p class="loading-text">Connecting to live schedule...</p>
-        </div>
+        <div id="live-events" class="events-container">Loading...</div>
     </section>
 
-    <footer>
-        <p>&copy; 2026 Kai-Young Chan. All Rights Reserved.</p>
-    </footer>
+    <section id="about" class="grid-2">
+        <div class="biography-text">
+            <h2 class="section-title">Biography</h2>
+            <p><strong>Kai-Young Chan</strong> is an Associate Professor of music composition and an academic scholar whose work sits at the intersection of linguistic nuance and contemporary art music.</p>
+            <p>Recipient of the CASH Golden Sail Music Award, his works are performed globally by the Pittsburgh Symphony and Hong Kong Philharmonic, and published by Universal Edition.</p>
+        </div>
+        <div class="media-embed">[ Portrait Photo ]</div>
+    </section>
+
+    <section id="works">
+        <h2 class="section-title">Work List</h2>
+        <div class="work-item-container"><span class="work-title">終曲 Finale</span><span>for mixed choir and piano — 2026</span></div>
+        <div class="work-item-container"><span class="work-title">Withered Blossoms</span><span>for mixed choir and piano — 2026</span></div>
+    </section>
+
+    <section id="contact" style="text-align:center;">
+        <h2 class="section-title">Get In Touch</h2>
+        <a href="mailto:chan.kaiyoung@cuhk.edu.hk" class="btn-email">Contact Composer</a>
+    </section>
 
     <script>
+        // Performance script remains the same as previously established
         async function fetchPerformanceLog() {
             const sheetUrl = 'https://docs.google.com/spreadsheets/d/1ewOnbKddBpx4YFSQpfvhOvmJCznhGzdcS2DyMFp7d08/gviz/tq?tqx=out:csv&sheet=Website';
             const container = document.getElementById('live-events');
-
             try {
                 const response = await fetch(sheetUrl);
                 const text = await response.text();
-                
-                // Simplified CSV parser for this logic
-                const rows = text.split('\n').map(row => row.split(',').map(cell => cell.replace(/^"|"$/g, '')));
-                let htmlOutput = '';
-
-                rows.slice(2, 6).forEach(columns => {
-                    if (columns.length < 8) return;
-                    const dateValue = columns[0];
-                    const pieceTitle = columns[3];
-                    const venue = columns[6];
-                    const loc = encodeURIComponent(venue + ', ' + columns[7]);
-
-                    htmlOutput += `
-                        <div class="event-card">
-                            <span class="event-date-display">${dateValue}</span>
-                            <div class="event-title-h3">${pieceTitle}</div>
-                            <div class="event-location">
-                                📍 <a href="https://www.google.com/maps/search/?api=1&query=${loc}" target="_blank" class="venue-link" onclick="window.open(this.href, 'mapPopup', 'width=800,height=600'); return false;">${venue}</a>
-                            </div>
-                        </div>
-                    `;
+                const rows = text.split('\n').map(r => r.split(',').map(c => c.replace(/^"|"$/g, '')));
+                let html = '';
+                rows.slice(2, 6).forEach(col => {
+                    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(col[6] + ', ' + col[7])}`;
+                    html += `<div class="event-card"><strong>${col[0]}</strong><h3>${col[3]}</h3><p>📍 <a href="${mapUrl}" class="venue-link" target="_blank" onclick="window.open(this.href, 'map', 'width=800,height=600'); return false;">${col[6]}</a></p></div>`;
                 });
-                container.innerHTML = htmlOutput;
-            } catch (error) {
-                container.innerHTML = '<p>Error loading schedule.</p>';
-            }
+                container.innerHTML = html;
+            } catch (e) { container.innerHTML = 'Error loading.'; }
         }
         document.addEventListener('DOMContentLoaded', fetchPerformanceLog);
     </script>
