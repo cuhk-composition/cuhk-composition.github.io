@@ -34,7 +34,6 @@
         }
 
         body {
-            /* Entire interface consolidated into the menu's premium typography */
             font-family: 'Inter', -apple-system, sans-serif;
             background-color: var(--bg-color);
             color: var(--teal-deep);
@@ -43,13 +42,12 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Nav Header styling - Light Gold Half-Transparent Background with Backdrop Filter */
+        /* Nav Header styling */
         header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            /* 65% Alpha transparency overlay using the brand gold palette */
             background: rgba(189, 162, 107, 0.65);
             border-bottom: 1px solid rgba(14, 58, 64, 0.15);
             z-index: 1000;
@@ -68,7 +66,6 @@
             position: relative;
         }
 
-        /* Logo styling set to a medium font weight */
         .logo a {
             font-family: 'Inter', sans-serif;
             font-weight: 500;
@@ -84,7 +81,6 @@
             opacity: 0.85;
         }
 
-        /* Responsive Navbar Layout */
         .menu-toggle {
             display: none;
             flex-direction: column;
@@ -116,7 +112,6 @@
             gap: 30px;
         }
 
-        /* Optimized Text Color Contrast over the Gold Background */
         nav a {
             text-decoration: none;
             color: var(--teal-deep);
@@ -129,13 +124,11 @@
             display: inline-block;
         }
 
-        /* Hover response: Transitions into pure crisp white with micro-scale accentuation */
         nav a:hover {
             color: #ffffff;
             transform: translateY(-1px);
         }
 
-        /* Structural Framework Sections */
         section {
             max-width: var(--max-width);
             margin: 0 auto;
@@ -147,7 +140,6 @@
             border-bottom: none;
         }
 
-        /* Standardized Section Headings - All-Caps, Muted Gold, Sans-Serif */
         .section-title {
             font-family: 'Inter', sans-serif;
             font-size: 1.15rem;
@@ -168,7 +160,6 @@
             margin-top: 16px;
         }
 
-        /* Layout Grids */
         .grid-2 {
             display: grid;
             grid-template-columns: 1.1fr 0.9fr;
@@ -176,7 +167,7 @@
             align-items: center;
         }
 
-        /* Biography Section Layout Redesign Wrapper */
+        /* Biography Layout */
         .bio-redesign-wrapper {
             display: flex;
             flex-direction: column;
@@ -184,7 +175,6 @@
             width: 100%;
         }
 
-        /* Auto Slideshow Architecture */
         .bio-slideshow-container {
             position: relative;
             width: 100%;
@@ -230,7 +220,6 @@
             font-weight: 500;
         }
 
-        /* Premium Editorial Typography Layout - Single Column Full Width Layout */
         .biography-text-columns {
             text-align: justify;
         }
@@ -242,15 +231,34 @@
             break-inside: avoid;
         }
 
-        /* Performance layout configuration to display exactly 2 elements per row */
+        /* RECONSTRUCTED: Scrollable Window for Performances */
         .events-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 24px;
             width: 100%;
+            max-height: 520px; /* Restricts the section footprint to an intentional frame */
+            overflow-y: auto;
+            padding-right: 12px;
+            padding-bottom: 8px;
         }
 
-        /* Compact dimensions, structural border-radius changes, and alignment mappings */
+        /* Elegant Custom Scrollbar Design to keep layouts coherent */
+        .events-container::-webkit-scrollbar {
+            width: 5px;
+        }
+        .events-container::-webkit-scrollbar-track {
+            background: var(--gold-light);
+            border-radius: 10px;
+        }
+        .events-container::-webkit-scrollbar-thumb {
+            background: var(--gold-satin);
+            border-radius: 10px;
+        }
+        .events-container::-webkit-scrollbar-thumb:hover {
+            background: var(--teal-muted);
+        }
+
         .event-card {
             display: grid;
             grid-template-columns: 130px 1fr;
@@ -264,7 +272,6 @@
             transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* Premium hover backdrop animation */
         .event-card:hover {
             background-color: var(--gold-light);
             border-color: var(--gold-satin);
@@ -272,22 +279,23 @@
             box-shadow: 0 4px 12px rgba(189, 162, 107, 0.08);
         }
 
-        /* Left Block layout - Editorial Sans Micro System */
+        /* Left Block Layout configuration for vertical distribution */
         .event-date-block {
             text-align: left;
             display: flex;
             flex-direction: column;
+            height: 100%;
             border-right: 1px solid var(--border-color);
             padding-right: 12px;
             font-family: 'Inter', sans-serif;
             transition: border-color 0.3s ease;
+            position: relative;
         }
 
         .event-card:hover .event-date-block {
             border-right-color: rgba(14, 58, 64, 0.15);
         }
 
-        /* Decreased font size architecture across card data parameters */
         .event-date-display {
             font-size: 0.95rem;
             font-weight: 700;
@@ -303,10 +311,9 @@
             color: var(--teal-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
-        /* Interactive Hover Action Button Design for Details */
         .event-link-btn {
             display: inline-flex;
             align-items: center;
@@ -325,6 +332,7 @@
             min-width: 80px;
             border-radius: 2px;
             transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            margin-bottom: 14px;
         }
 
         .event-link-btn:hover {
@@ -335,7 +343,23 @@
             letter-spacing: 1.5px;
         }
 
-        /* Right Block Layout Content Stream structure */
+        /* Premium Minimalist World Premiere Tag */
+        .premiere-badge {
+            display: inline-block;
+            align-self: flex-start;
+            margin-top: auto; /* Pushes the layout block down to the absolute lower-left boundary */
+            font-family: 'Inter', sans-serif;
+            font-size: 0.58rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffffff;
+            background-color: var(--gold-satin);
+            padding: 2px 6px;
+            border-radius: 2px;
+            white-space: nowrap;
+        }
+
         .event-details-block {
             display: flex;
             flex-direction: column;
@@ -470,7 +494,7 @@
             color: var(--gold-satin);
         }
 
-        /* Sub-sections & Text Embed Layouts */
+        /* Media Embed Layouts */
         .media-embed {
             background: var(--gold-light);
             border: 1px solid var(--border-color);
@@ -554,7 +578,6 @@
             font-size: 0.85rem;
         }
 
-        /** FOOTER STRUCTURE **/
         footer {
             text-align: center;
             padding: 50px 20px;
@@ -567,11 +590,12 @@
             margin: 0 auto;
         }
 
-        /* MOBILE MEDIA QUERIES */
+        /* MEDIA QUERIES */
         @media (max-width: 900px) {
             .events-container {
                 grid-template-columns: 1fr;
                 gap: 16px;
+                max-height: 480px;
             }
         }
 
@@ -598,7 +622,7 @@
                 right: -100%;
                 width: 280px;
                 height: 100vh;
-                background: #bda26b; /* Solid fallback brand gold for mobile tray */
+                background: #bda26b; 
                 box-shadow: -5px 0 25px rgba(0,0,0,0.08);
                 padding: 120px 40px 40px 40px;
                 transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -629,7 +653,6 @@
                 gap: 50px;
             }
 
-            /* Responsive tweaks for newly redesigned bio zones */
             .bio-slideshow-container {
                 height: 320px;
             }
@@ -644,7 +667,6 @@
                 padding: 16px 14px;
             }
 
-            /* Mobile Left Block Alignment & Sizing Re-adjustment */
             .event-date-block {
                 flex-direction: row;
                 flex-wrap: wrap;
@@ -652,6 +674,7 @@
                 gap: 10px; 
                 border-right: none;
                 padding-right: 0;
+                height: auto;
             }
 
             .event-card:hover .event-date-block {
@@ -671,19 +694,24 @@
                 display: inline-block;
             }
 
-            /* Compact Details Action Button optimized for Mobile */
             .event-link-btn {
                 font-size: 0.6rem; 
                 letter-spacing: 0.5px;
                 padding: 3px 8px;
                 min-width: 70px;
                 margin-top: 0;
+                margin-bottom: 0;
             }
             
             .event-link-btn:hover {
                 min-width: 85px;
                 padding: 3px 10px;
                 letter-spacing: 1px;
+            }
+
+            .premiere-badge {
+                margin-top: 0;
+                display: inline-block;
             }
 
             .event-details-block {
@@ -892,13 +920,12 @@
             });
         });
 
-        /* Auto Slideshow Loop Engine */
         function initAutoSlideshow() {
             const slides = document.querySelectorAll('.bio-slide');
             if (slides.length <= 1) return;
 
             let currentSlideIndex = 0;
-            const intervalTime = 4000; // Transitions every 4 seconds
+            const intervalTime = 4000;
 
             setInterval(() => {
                 slides[currentSlideIndex].classList.remove('active');
@@ -943,7 +970,8 @@
                 const rows = parseCSV(text);
                 let htmlOutput = '';
                 
-                const entriesToRender = rows.slice(2, 10); 
+                // Adjust or remove slice boundaries to render the log items cleanly within the windows
+                const entriesToRender = rows.slice(2, 20); 
 
                 entriesToRender.forEach(columns => {
                     if (columns.length < 8) return;
@@ -957,12 +985,22 @@
                     const hyperlinkUrl  = columns[8] ? columns[8].trim() : '';
                     const eventTime     = columns[9] ? columns[9].trim() : '';
                     const presenter     = columns[10] ? columns[10].trim() : '';
+                    
+                    // Look for a World Premiere marker in adjacent columns (like column 11 or inside the performance details text)
+                    const detailsString = columns.join(' ').toLowerCase();
+                    const isWorldPremiere = detailsString.includes('world premiere');
 
                     if (!dateValue || pieceTitle === 'Untitled') return;
 
                     let linkElementHtml = '';
                     if (hyperlinkUrl && hyperlinkUrl.startsWith('http')) {
                         linkElementHtml = `<a href="${hyperlinkUrl}" target="_blank" class="event-link-btn">Details →</a>`;
+                    }
+
+                    // Generate HTML tag if verified as a world premiere
+                    let premiereBadgeHtml = '';
+                    if (isWorldPremiere) {
+                        premiereBadgeHtml = `<span class="premiere-badge">World Premiere</span>`;
                     }
 
                     let presenterHtml = '';
@@ -981,6 +1019,7 @@
                                 <span class="event-date-display">${dateValue}</span>
                                 <span class="event-time-display">${eventTime}</span>
                                 ${linkElementHtml}
+                                ${premiereBadgeHtml}
                             </div>
                             
                             <div class="event-details-block">
