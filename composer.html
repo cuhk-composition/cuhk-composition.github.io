@@ -231,13 +231,13 @@
             break-inside: avoid;
         }
 
-        /* RECONSTRUCTED: Scrollable Window for Performances (Single Column Render) */
+        /* RECONSTRUCTED: Scrollable Window for Performances */
         .events-container {
             display: grid;
-            grid-template-columns: 1fr; /* Updated to 1 card per row */
+            grid-template-columns: 1fr; /* Updated to single column layout */
             gap: 24px;
             width: 100%;
-            max-height: 520px; 
+            max-height: 520px; /* Restricts the section footprint to an intentional frame */
             overflow-y: auto;
             padding-right: 12px;
             padding-bottom: 8px;
@@ -259,7 +259,6 @@
             background: var(--teal-muted);
         }
 
-        /* Borderless Card Layout Styling */
         .event-card {
             display: grid;
             grid-template-columns: 130px 1fr;
@@ -267,15 +266,14 @@
             align-items: start;
             padding: 20px 16px;
             background-color: transparent;
-            border: none; /* Removed border */
-            border-radius: 0; /* Reset default border radius for flat layout */
+            border: none; /* Removed borders for the render cards */
+            border-radius: 6px;
             height: 100%;
             transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         .event-card:hover {
             background-color: var(--gold-light);
-            border-radius: 6px; /* Smooth hover background fill container */
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(189, 162, 107, 0.08);
         }
@@ -348,7 +346,7 @@
         .premiere-badge {
             display: inline-block;
             align-self: flex-start;
-            margin-top: auto; 
+            margin-top: auto; /* Pushes the layout block down to the absolute lower-left boundary */
             font-family: 'Inter', sans-serif;
             font-size: 0.58rem;
             font-weight: 700;
@@ -971,6 +969,7 @@
                 const rows = parseCSV(text);
                 let htmlOutput = '';
                 
+                // Adjust or remove slice boundaries to render the log items cleanly within the windows
                 const entriesToRender = rows.slice(2, 20); 
 
                 entriesToRender.forEach(columns => {
@@ -986,6 +985,7 @@
                     const eventTime     = columns[9] ? columns[9].trim() : '';
                     const presenter     = columns[10] ? columns[10].trim() : '';
                     
+                    // Look for a World Premiere marker in adjacent columns (like column 11 or inside the performance details text)
                     const detailsString = columns.join(' ').toLowerCase();
                     const isWorldPremiere = detailsString.includes('world premiere');
 
@@ -996,6 +996,7 @@
                         linkElementHtml = `<a href="${hyperlinkUrl}" target="_blank" class="event-link-btn">Details →</a>`;
                     }
 
+                    // Generate HTML tag if verified as a world premiere
                     let premiereBadgeHtml = '';
                     if (isWorldPremiere) {
                         premiereBadgeHtml = `<span class="premiere-badge">World Premiere</span>`;
