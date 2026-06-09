@@ -231,19 +231,18 @@
             break-inside: avoid;
         }
 
-        /* Scrollable Window for Performances */
+        /* RECONSTRUCTED: Scrollable Window for Performances */
         .events-container {
             display: grid;
-            grid-template-columns: 1fr; 
+            grid-template-columns: 1fr;
             gap: 24px;
             width: 100%;
-            max-height: 520px; 
+            max-height: 520px;
             overflow-y: auto;
             padding-right: 12px;
             padding-bottom: 8px;
         }
 
-        /* Custom Scrollbar Design */
         .events-container::-webkit-scrollbar {
             width: 5px;
         }
@@ -266,7 +265,7 @@
             align-items: start;
             padding: 20px 16px;
             background-color: transparent;
-            border: none; 
+            border: none;
             border-radius: 6px;
             height: 100%;
             transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
@@ -344,7 +343,7 @@
         .premiere-badge {
             display: inline-block;
             align-self: flex-start;
-            margin-top: auto; 
+            margin-top: auto;
             font-family: 'Inter', sans-serif;
             font-size: 0.58rem;
             font-weight: 700;
@@ -706,9 +705,12 @@
                 letter-spacing: 1px;
             }
 
+            /* BREAKPOINT RULE: Force premiere-badge onto its own newline for mobile viewports */
             .premiere-badge {
-                margin-top: 0;
+                flex-basis: 100%;
+                margin-top: 6px;
                 display: inline-block;
+                width: max-content;
             }
 
             .event-details-block {
@@ -967,13 +969,12 @@
                 const rows = parseCSV(text);
                 let htmlOutput = '';
                 
-                // Adjusted slice boundaries to look up to the first 50 rows for safety,
-                // but we will explicitly drop out once 10 valid events are rendered.
+                // Read a safe layout range from the spreadsheet matrix
                 const potentialEntries = rows.slice(2, 50); 
                 let renderedCount = 0;
 
                 for (let i = 0; i < potentialEntries.length; i++) {
-                    if (renderedCount >= 10) break; // Enforce the strict maximum limit of 10
+                    if (renderedCount >= 10) break; // Terminate exactly at a 10 event maximum footprint
 
                     const columns = potentialEntries[i];
                     if (columns.length < 8) continue;
