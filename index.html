@@ -210,40 +210,53 @@
                 const year = (row['Year'] || '').trim();
                 const duration = (row['Duration'] || '').trim();
 
-                // Build modern absolute positioned contextual tags container (top right corner)
-                let tagsHtml = '';
+                // Generate styled tags to display directly inside the table structure below lyrics
+                let tagsMarkup = '';
                 if (duration || masterInstrumentation) {
-                    tagsHtml += `<div class="absolute top-4 right-4 flex flex-wrap gap-1.5 justify-end max-w-[60%] pointer-events-none">`;
+                    tagsMarkup += `<div class="flex flex-wrap gap-1.5 mt-1">`;
                     if (duration) {
-                        tagsHtml += `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 border border-slate-200 text-slate-600 tracking-wide">${duration}</span>`;
+                        tagsMarkup += `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 border border-slate-200 text-slate-600 tracking-wide">${duration}</span>`;
                     }
                     if (masterInstrumentation) {
-                        tagsHtml += `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#4A2E80]/5 border border-[#4A2E80]/10 text-[#4A2E80] tracking-wide line-clamp-1">${masterInstrumentation}</span>`;
+                        tagsMarkup += `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#4A2E80]/5 border border-[#4A2E80]/10 text-[#4A2E80] tracking-wide line-clamp-1">${masterInstrumentation}</span>`;
                     }
-                    tagsHtml += `</div>`;
+                    tagsMarkup += `</div>`;
                 }
 
-                // Table now explicitly excludes 'Forces' and 'Duration' inside render cards 
-                let rowsArray = [];
-                if (year) rowsArray.push(['Year', year]);
-                if (masterComposer) rowsArray.push(['Composer', masterComposer]);
-                if (masterLyrics) rowsArray.push(['Lyrics', masterLyrics]);
-
                 let tableRowsHtml = '';
-                rowsArray.forEach(([label, val]) => {
+                if (year) {
                     tableRowsHtml += `
                         <tr class="border-b border-slate-100 last:border-0">
-                            <td class="py-2 pr-4 font-bold text-[#4A2E80] text-sm tracking-wide w-1/3 align-top font-serif-title">${label}:</td>
-                            <td class="py-2 text-slate-700 font-medium text-sm align-top line-clamp-2">${val}</td>
+                            <td class="py-2 pr-4 font-bold text-[#4A2E80] text-sm tracking-wide w-1/3 align-top font-serif-title">Year:</td>
+                            <td class="py-2 text-slate-700 font-medium text-sm align-top line-clamp-2">${year}</td>
                         </tr>
                     `;
-                });
+                }
+                if (masterComposer) {
+                    tableRowsHtml += `
+                        <tr class="border-b border-slate-100 last:border-0">
+                            <td class="py-2 pr-4 font-bold text-[#4A2E80] text-sm tracking-wide w-1/3 align-top font-serif-title">Composer:</td>
+                            <td class="py-2 text-slate-700 font-medium text-sm align-top line-clamp-2">${masterComposer}</td>
+                        </tr>
+                    `;
+                }
+                if (masterLyrics || tagsMarkup) {
+                    tableRowsHtml += `
+                        <tr class="border-b border-slate-100 last:border-0">
+                            <td class="py-2 pr-4 font-bold text-[#4A2E80] text-sm tracking-wide w-1/3 align-top font-serif-title">Lyrics:</td>
+                            <td class="py-2 align-top">
+                                ${masterLyrics ? `<div class="text-slate-700 font-medium text-sm line-clamp-2">${masterLyrics}</div>` : ''}
+                                ${tagsMarkup}
+                            </td>
+                        </tr>
+                    `;
+                }
 
                 let cardHtml = `
                     <div onclick="openModal(${row.__naturalIndex})" class="relative bg-white border border-slate-200 rounded-2xl p-6 shadow-xs transition-all duration-300 flex flex-col justify-between cursor-pointer hover:shadow-md hover:border-[#B3923E] hover:-translate-y-1 hover:bg-[#D4AF37]/5">
-                        ${tagsHtml}
                         <div class="w-full">
-                            <div class="mb-4 pr-[50%]"> ${titleC ? `<h3 class="text-lg font-bold text-[#4A2E80] leading-snug font-serif-title uppercase tracking-wider line-clamp-2">${titleC}</h3>` : ''}
+                            <div class="mb-4">
+                                ${titleC ? `<h3 class="text-lg font-bold text-[#4A2E80] leading-snug font-serif-title uppercase tracking-wider line-clamp-2">${titleC}</h3>` : ''}
                                 ${titleE ? `<p class="text-sm font-medium text-[#B3923E] mt-0.5 leading-snug font-serif-title uppercase tracking-wider line-clamp-2">${titleE}</p>` : ''}
                                 ${(!titleC && !titleE) ? `<h3 class="text-lg font-bold text-slate-400 font-serif-title uppercase tracking-wider">Untitled Work</h3>` : ''}
                             </div>
@@ -280,7 +293,7 @@
                 <div class="mt-6 border-t border-slate-100 pt-6">
                     <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Media Link / 媒體連結</span>
                     <a href="${url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 bg-[#4A2E80] hover:bg-[#3b2466] text-white font-semibold text-sm rounded-xl transition-all shadow-xs">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 09 9 0 0118 0z"/></svg>
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Open External Media Player
                     </a>
                 </div>
@@ -330,7 +343,6 @@
             const commissionPremiere = (row['Commission/Premiere'] || '').trim();
             const perusal = (row['Perusal Score'] || '').trim();
 
-            // Modal explicitly keeps all contextual items structured cleanly for deep viewing
             let modalRows = [];
             if (year) modalRows.push(['Year', `<div class="text-slate-700 font-medium text-sm">${year}</div>`]);
             if (masterComposer) modalRows.push(['Composer', `<div class="text-slate-700 font-medium text-sm">${masterComposer}</div>`]);
