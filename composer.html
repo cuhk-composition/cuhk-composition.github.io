@@ -664,10 +664,7 @@
             }
 
             .event-date-block {
-                flex-direction: row;
-                flex-wrap: wrap;
-                align-items: center;
-                gap: 10px; 
+                display: block; /* Switch to block layout to control wrapping natively */
                 border-right: none;
                 padding-right: 0;
                 height: auto;
@@ -680,14 +677,18 @@
             .event-date-display {
                 font-size: 0.9rem; 
                 font-weight: 700;
-                margin-bottom: 0;
+                margin-bottom: 6px;
+                margin-right: 8px;
                 display: inline-block;
+                vertical-align: middle;
             }
 
             .event-time-display {
                 font-size: 0.65rem; 
-                margin-bottom: 0;
+                margin-bottom: 6px;
+                margin-right: 12px;
                 display: inline-block;
+                vertical-align: middle;
             }
 
             .event-link-btn {
@@ -696,7 +697,9 @@
                 padding: 3px 8px;
                 min-width: 70px;
                 margin-top: 0;
-                margin-bottom: 0;
+                margin-bottom: 6px;
+                display: inline-flex;
+                vertical-align: middle;
             }
             
             .event-link-btn:hover {
@@ -705,12 +708,11 @@
                 letter-spacing: 1px;
             }
 
-            /* BREAKPOINT RULE: Force premiere-badge onto its own newline for mobile viewports */
+            /* BREAKPOINT RULE: Force premiere-badge onto its own newline without stretching */
             .premiere-badge {
-                flex-basis: 100%;
-                margin-top: 6px;
-                display: inline-block;
-                width: max-content;
+                display: block;
+                width: max-content; /* Constrains background to text size */
+                margin-top: 2px;
             }
 
             .event-details-block {
