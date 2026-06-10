@@ -301,6 +301,7 @@
             const publisher = (row['Publisher'] || '').trim();
             const notes = (row['Notes'] || '').trim();
             const premiere = (row['Premiere'] || '').trim();
+            const commissionPremiere = (row['Commission/Premiere'] || '').trim();
             const perusal = (row['Perusal Score'] || '').trim();
 
             let modalRows = [];
@@ -313,6 +314,7 @@
             if (publisher) modalRows.push(['Publisher', publisher]);
             if (notes) modalRows.push(['Notes', notes]);
             if (premiere) modalRows.push(['Premiere', premiere]);
+            if (commissionPremiere) modalRows.push(['Commission / Premiere', commissionPremiere]);
             if (perusal) modalRows.push(['Perusal Score', perusal]);
 
             let tableHtml = '';
