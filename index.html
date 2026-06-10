@@ -7,13 +7,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
-        /* Base Serif typography */
+        /* Applying traditional Songti (Serif) typography for a classical aesthetic */
         body {
             font-family: "Times New Roman", "Songti TC", "Noto Serif TC", "Playfair Display", serif;
-        }
-        /* Sans-serif for data/tables */
-        .data-sans {
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
     </style>
 </head>
@@ -26,7 +22,7 @@
         <div class="flex flex-col md:flex-row md:items-end md:justify-between border-b border-[#D4AF37]/30 pb-8 mb-8 gap-4">
             <div>
                 <h1 class="text-4xl font-bold text-[#4A2E80] tracking-wide">粵語藝術歌曲庫</h1>
-                <p class="text-2xl font-semibold text-[#B3923E] mt-1 tracking-widest font-sans uppercase">CANTONESE ART SONG DATABASE</p>
+                <p class="text-2xl font-semibold text-[#B3923E] mt-1 tracking-widest font-sans uppercase">Cantonese Art Song Database</p>
                 <p class="mt-3 text-xs text-slate-400 flex items-center gap-2">
                     <span class="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     A resource from <a href="https://cantonesecomposition.com" target="_blank" rel="noopener noreferrer" class="hover:text-[#B3923E] underline decoration-slate-300 hover:decoration-[#B3923E] transition-colors">Cantonese Contemporary Music Research</a>
@@ -60,14 +56,38 @@
             </button>
         </div>
 
+        <div id="loading" class="flex flex-col justify-center items-center py-24">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-[#4A2E80]"></div>
+            <span class="mt-4 text-sm font-semibold text-slate-500 tracking-wide">Streaming real-time entries...</span>
+        </div>
+
+        <div id="error" class="hidden bg-rose-50 border border-rose-200 text-rose-900 p-6 rounded-2xl mb-8 shadow-xs">
+            <div class="flex gap-3">
+                <svg class="h-6 w-6 text-rose-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                <div>
+                    <h3 class="text-base font-bold">Local File Execution Policy Protection</h3>
+                    <p class="text-sm text-rose-700 mt-1">Browsers block data delivery queries targeting live files when launched directly using standard file clicks (`file:///`).</p>
+                    <div class="mt-4 bg-white/80 p-3 rounded-xl text-xs font-mono text-slate-700 border border-rose-100">
+                        Please upload this file onto GitHub Pages, run it via VS Code's "Live Server" extension, or execute `python -m http.server` locally inside your terminal.
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="gridContainer" class="hidden">
             <div id="cardsLayout" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+            <div id="noResults" class="hidden text-center py-20 bg-white border border-dashed border-slate-200 rounded-2xl">
+                <svg class="mx-auto h-12 w-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <h3 class="mt-4 text-sm font-bold text-slate-900">No matching search criteria found</h3>
+                <p class="mt-1 text-xs text-slate-500">Try checking your spelling variations or optimizing your keyword searches.</p>
+            </div>
         </div>
     </div>
 
     <div id="detailsModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl border border-slate-200 flex flex-col transform transition-transform duration-300 scale-95" id="modalBox">
-        </div>
+            </div>
     </div>
 
     <script>
@@ -77,85 +97,287 @@
         let globalData = [];
         let headers = [];
 
+        const loadingEl = document.getElementById('loading');
+        const errorEl = document.getElementById('error');
+        const gridContainerEl = document.getElementById('gridContainer');
         const cardsLayoutEl = document.getElementById('cardsLayout');
+        const recordCountEl = document.getElementById('recordCount');
+        const searchInput = document.getElementById('searchInput');
+        const sortDropdown = document.getElementById('sortDropdown');
+        const noResultsEl = document.getElementById('noResults');
+        const resetBtn = document.getElementById('resetFilters');
+        
         const modalEl = document.getElementById('detailsModal');
         const modalBox = document.getElementById('modalBox');
 
         function init() {
             Papa.parse(csvUrl, {
-                download: true, header: true, skipEmptyLines: true,
+                download: true,
+                header: true,
+                skipEmptyLines: true,
                 complete: function(results) {
                     headers = results.meta.fields;
-                    globalData = results.data.map((row, index) => ({ ...row, __naturalIndex: index }));
-                    renderCatalogCards(globalData);
+                    globalData = results.data.map((row, index) => ({
+                        ...row,
+                        __naturalIndex: index
+                    }));
+
+                    if (headers && headers.length > 0) {
+                        processDashboardEngine();
+                        loadingEl.classList.add('hidden');
+                        gridContainerEl.classList.remove('hidden');
+                    } else {
+                        showError();
+                    }
+                },
+                error: function(err) {
+                    console.error("Connection failed:", err);
+                    showError();
                 }
             });
         }
 
+        function showError() {
+            loadingEl.classList.add('hidden');
+            errorEl.classList.remove('hidden');
+        }
+
+        function processDashboardEngine() {
+            const query = searchInput.value.toLowerCase().trim();
+            const sortingType = sortDropdown.value;
+
+            let items = globalData.filter(row => {
+                return headers.some(h => String(row[h] || '').toLowerCase().includes(query));
+            });
+
+            items.sort((a, b) => {
+                if (sortingType === 'latest_entry') return b.__naturalIndex - a.__naturalIndex;
+                if (sortingType === 'earliest_entry') return a.__naturalIndex - b.__naturalIndex;
+                if (sortingType === 'year_latest' || sortingType === 'year_oldest') {
+                    const yearA = parseYearValue(a['Year']);
+                    const yearB = parseYearValue(b['Year']);
+                    return sortingType === 'year_latest' ? yearB - yearA : yearA - yearB;
+                }
+                return 0;
+            });
+
+            renderCatalogCards(items);
+        }
+
+        function parseYearValue(yearStr) {
+            if (!yearStr) return 0;
+            const corePart = String(yearStr).split('/')[0];
+            const parsedInt = parseInt(corePart.replace(/\D/g, ''));
+            return isNaN(parsedInt) ? 0 : parsedInt;
+        }
+
         function renderCatalogCards(data) {
             cardsLayoutEl.innerHTML = '';
+            recordCountEl.textContent = data.length;
+
+            if (data.length === 0) {
+                noResultsEl.classList.remove('hidden');
+                return;
+            }
+            noResultsEl.classList.add('hidden');
+
             data.forEach(row => {
                 const titleC = (row['Title (C)'] || '').trim();
                 const titleE = (row['Title (E)'] || '').trim();
-                const comp = (row['Composer (C)'] || '') + ' ' + (row['Composer (E)'] || '');
-                const lyrics = (row['Text (C)'] || '') + ' ' + (row['Text (E)'] || '');
+
+                const compC = (row['Composer (C)'] || '').trim();
+                const compE = (row['Composer (E)'] || '').trim();
+                let masterComposer = '';
+                if (compC && compE) masterComposer = `${compC} ${compE}`;
+                else masterComposer = compC || compE || '';
+
+                const voice = (row['Voice Type'] || '').trim();
+                const instruments = (row['Instrument(s)'] || '').trim();
+                let masterInstrumentation = '';
+                if (voice && instruments) masterInstrumentation = `${voice}, ${instruments}`;
+                else masterInstrumentation = voice || instruments || '';
+
+                const textC = (row['Text (C)'] || '').trim();
+                const textE = (row['Text (E)'] || '').trim();
+                let masterLyrics = '';
+                if (textC && textE) masterLyrics = `${textC} ${textE}`;
+                else masterLyrics = textC || textE || '';
+
                 const year = (row['Year'] || '').trim();
-                
+                const duration = (row['Duration'] || '').trim();
+
+                // Explicit sorting structure: Lyrics now immediately proceeds Composer
                 let rowsArray = [];
                 if (year) rowsArray.push(['Year', year]);
-                if (comp) rowsArray.push(['Composer', comp]);
-                if (lyrics) rowsArray.push(['Lyrics', lyrics]);
+                if (masterComposer) rowsArray.push(['Composer', masterComposer]);
+                if (masterLyrics) rowsArray.push(['Lyrics', masterLyrics]);
+                if (masterInstrumentation) rowsArray.push(['Forces', masterInstrumentation]);
+                if (duration) rowsArray.push(['Duration', duration]);
 
                 let tableRowsHtml = '';
                 rowsArray.forEach(([label, val]) => {
-                    tableRowsHtml += `<tr class="border-b border-slate-100 last:border-0"><td class="py-2 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top data-sans">${label}:</td><td class="py-2 text-slate-700 font-medium text-sm align-top data-sans">${val}</td></tr>`;
+                    tableRowsHtml += `
+                        <tr class="border-b border-slate-100 last:border-0">
+                            <td class="py-2 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-sans">${label}:</td>
+                            <td class="py-2 text-slate-700 font-medium text-sm align-top line-clamp-3">${val}</td>
+                        </tr>
+                    `;
                 });
 
-                cardsLayoutEl.insertAdjacentHTML('beforeend', `
-                    <div onclick="openModal(${row.__naturalIndex})" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs cursor-pointer hover:shadow-md hover:border-[#B3923E] hover:-translate-y-1 hover:bg-[#4A2E80]/5 transition-all">
-                        <div class="mb-4">
-                            ${titleC ? `<h3 class="text-xl font-bold text-[#4A2E80]">${titleC}</h3>` : ''}
-                            ${titleE ? `<p class="text-md font-medium text-[#B3923E] mt-0.5">${titleE}</p>` : ''}
+                let cardHtml = `
+                    <div onclick="openModal(${row.__naturalIndex})" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs transition-all duration-300 flex flex-col justify-between cursor-pointer hover:shadow-md hover:border-[#B3923E] hover:-translate-y-1 hover:bg-[#4A2E80]/5">
+                        <div>
+                            <div class="mb-4 font-sans">
+                                ${titleC ? `<h3 class="text-xl font-bold text-[#4A2E80] leading-snug">${titleC}</h3>` : ''}
+                                ${titleE ? `<p class="text-md font-medium text-[#B3923E] mt-0.5 leading-snug">${titleE}</p>` : ''}
+                                ${(!titleC && !titleE) ? `<h3 class="text-xl font-bold text-slate-400">Untitled Work</h3>` : ''}
+                            </div>
+                            <table class="w-full border-collapse mt-2">
+                                <tbody>
+                                    ${tableRowsHtml}
+                                </tbody>
+                            </table>
                         </div>
-                        <table class="w-full border-collapse mt-2"><tbody>${tableRowsHtml}</tbody></table>
                     </div>
-                `);
+                `;
+                cardsLayoutEl.insertAdjacentHTML('beforeend', cardHtml);
             });
+        }
+
+        // Parse YouTube links into an embeddable format
+        function getMediaEmbedHtml(url) {
+            if (!url) return '';
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            
+            if (match && match[2].length === 11) {
+                const videoId = match[2];
+                return `
+                    <div class="mt-6 border-t border-slate-100 pt-6">
+                        <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-3 font-sans">Media Preview / 媒體試聽</span>
+                        <div class="aspect-video w-full rounded-xl overflow-hidden shadow-xs border border-slate-200 bg-black">
+                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="mt-6 border-t border-slate-100 pt-6">
+                    <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2 font-sans">Media Link / 媒體連結</span>
+                    <a href="${url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 bg-[#4A2E80] hover:bg-[#3b2466] text-white font-semibold text-sm rounded-xl transition-all shadow-xs font-sans">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Open External Media Player
+                    </a>
+                </div>
+            `;
         }
 
         function openModal(naturalIndex) {
             const row = globalData.find(item => item.__naturalIndex === naturalIndex);
-            const textType = row['Text-type'];
-            const textFirst = row['Text-first'];
-            
-            // Generate Tags
-            let tagsHtml = '';
-            if (textType || textFirst) {
-                tagsHtml = `
-                    <div class="mt-4 flex flex-wrap gap-2 data-sans">
-                        ${textType ? `<span class="px-2 py-1 bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase rounded-md tracking-wider">${textType}</span>` : ''}
-                        ${textFirst ? `<span class="px-2 py-1 bg-[#B3923E]/10 text-[#B3923E] text-[10px] font-bold uppercase rounded-md tracking-wider">${textFirst}</span>` : ''}
-                    </div>
+            if (!row) return;
+
+            const titleC = (row['Title (C)'] || '').trim();
+            const titleE = (row['Title (E)'] || '').trim();
+            const compC = (row['Composer (C)'] || '').trim();
+            const compE = (row['Composer (E)'] || '').trim();
+            let masterComposer = (compC && compE) ? `${compC} ${compE}` : (compC || compE || '');
+
+            const voice = (row['Voice Type'] || '').trim();
+            const instruments = (row['Instrument(s)'] || '').trim();
+            let masterInstrumentation = (voice && instruments) ? `${voice}, ${instruments}` : (voice || instruments || '');
+
+            const textC = (row['Text (C)'] || '').trim();
+            const textE = (row['Text (E)'] || '').trim();
+            let masterLyrics = (textC && textE) ? `${textC} ${textE}` : (textC || textE || '');
+
+            const textType = (row['Text-type'] || '').trim();
+            const textFirst = (row['Text-first'] || '').trim();
+            let masterTextType = (textType && textFirst) ? `${textType} [${textFirst}]` : (textType || textFirst || '');
+
+            const mediaLink = (row['Media Link'] || '').trim();
+            const year = (row['Year'] || '').trim();
+            const duration = (row['Duration'] || '').trim();
+            const publisher = (row['Publisher'] || '').trim();
+            const notes = (row['Notes'] || '').trim();
+            const premiere = (row['Premiere'] || '').trim();
+            const commissionPremiere = (row['Commission/Premiere'] || '').trim();
+            const perusal = (row['Perusal Score'] || '').trim();
+
+            // Reordered popup mapping data layout context matches core interface flow
+            let modalRows = [];
+            if (year) modalRows.push(['Year', year]);
+            if (masterComposer) modalRows.push(['Composer', masterComposer]);
+            if (masterLyrics) modalRows.push(['Lyrics', masterLyrics]);
+            if (masterInstrumentation) modalRows.push(['Forces', masterInstrumentation]);
+            if (duration) modalRows.push(['Duration', duration]);
+            if (masterTextType) modalRows.push(['Text Type', masterTextType]);
+            if (publisher) modalRows.push(['Publisher', publisher]);
+            if (notes) modalRows.push(['Notes', notes]);
+            if (premiere) modalRows.push(['Premiere', premiere]);
+            if (commissionPremiere) modalRows.push(['Commission / Premiere', commissionPremiere]);
+            if (perusal) modalRows.push(['Perusal Score', perusal]);
+
+            let tableHtml = '';
+            modalRows.forEach(([label, val]) => {
+                tableHtml += `
+                    <tr class="border-b border-slate-100 last:border-0">
+                        <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-sans">${label}:</td>
+                        <td class="py-3 text-slate-700 font-medium text-sm align-top">${val}</td>
+                    </tr>
                 `;
-            }
+            });
+
+            const embedHtml = mediaLink ? getMediaEmbedHtml(mediaLink) : '';
 
             modalBox.innerHTML = `
-                <div class="p-6 border-b border-slate-100">
-                    <h2 class="text-2xl font-bold text-[#4A2E80] leading-snug">${row['Title (C)']}</h2>
-                    <p class="text-lg font-medium text-[#B3923E]">${row['Title (E)']}</p>
-                    ${tagsHtml}
+                <div class="p-6 border-b border-slate-100 flex justify-between items-start sticky top-0 bg-white z-10 shadow-xs">
+                    <div class="font-sans">
+                        ${titleC ? `<h2 class="text-2xl font-bold text-[#4A2E80] leading-snug">${titleC}</h2>` : ''}
+                        ${titleE ? `<p class="text-lg font-medium text-[#B3923E] mt-0.5 leading-snug">${titleE}</p>` : ''}
+                    </div>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1 bg-slate-50 hover:bg-slate-100 rounded-full cursor-pointer transition-all">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
                 </div>
-                <div class="p-6">
-                    <table class="w-full border-collapse data-sans">
-                        ${Object.keys(row).map(key => key !== '__naturalIndex' && row[key] ? `<tr class="border-b"><td class="py-2 text-xs font-bold text-[#4A2E80] uppercase">${key}</td><td class="py-2 text-sm">${row[key]}</td></tr>` : '').join('')}
+                <div class="p-6 overflow-y-auto">
+                    <table class="w-full border-collapse">
+                        <tbody>
+                            ${tableHtml}
+                        </tbody>
                     </table>
+                    ${embedHtml}
                 </div>
             `;
+
             modalEl.classList.remove('hidden');
+            setTimeout(() => modalBox.classList.remove('scale-95'), 10);
         }
 
-        function closeModal() { modalEl.classList.add('hidden'); }
-        modalEl.addEventListener('click', (e) => { if (e.target === modalEl) closeModal(); });
+        function closeModal() {
+            modalBox.classList.add('scale-95');
+            modalEl.classList.add('hidden');
+        }
+
+        // Close modal on outside background clicks
+        modalEl.addEventListener('click', (e) => {
+            if (e.target === modalEl) closeModal();
+        });
+
+        // Close modal on Escape button key down
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modalEl.classList.contains('hidden')) closeModal();
+        });
+
+        searchInput.addEventListener('input', processDashboardEngine);
+        sortDropdown.addEventListener('change', processDashboardEngine);
+        
+        resetBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            sortDropdown.value = 'latest_entry';
+            processDashboardEngine();
+        });
+
         init();
     </script>
 </body>
