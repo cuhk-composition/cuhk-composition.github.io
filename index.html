@@ -11,7 +11,7 @@
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
-        /* Explicit Serif class for Classical/Traditional Chinese titles aesthetic */
+        /* Explicit Serif class for Classical/Traditional aesthetic and catalog labels */
         .font-serif-title {
             font-family: "Times New Roman", "Songti TC", "Noto Serif TC", "Playfair Display", serif;
         }
@@ -25,7 +25,7 @@
         
         <div class="flex flex-col md:flex-row md:items-end md:justify-between border-b border-[#D4AF37]/30 pb-8 mb-8 gap-4">
             <div>
-                <h1 class="text-4xl font-bold text-[#4A2E80] tracking-wide font-serif-title">粵語藝術歌曲庫</h1>
+                <h1 class="text-4xl font-bold text-[#4A2E80] tracking-wide font-serif-title uppercase">粵語藝術歌曲庫</h1>
                 <p class="text-2xl font-semibold text-[#B3923E] mt-1 tracking-widest uppercase font-serif-title">Cantonese Art Song Database</p>
                 <p class="mt-3 text-xs text-slate-400 flex items-center gap-2">
                     <span class="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -221,19 +221,19 @@
                 rowsArray.forEach(([label, val]) => {
                     tableRowsHtml += `
                         <tr class="border-b border-slate-100 last:border-0">
-                            <td class="py-2 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top">${label}:</td>
+                            <td class="py-2 pr-4 font-bold text-[#4A2E80] text-sm tracking-wide w-1/3 align-top font-serif-title">${label}:</td>
                             <td class="py-2 text-slate-700 font-medium text-sm align-top line-clamp-3">${val}</td>
                         </tr>
                     `;
                 });
 
                 let cardHtml = `
-                    <div onclick="openModal(${row.__naturalIndex})" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs transition-all duration-300 flex flex-col justify-between cursor-pointer hover:shadow-md hover:border-[#B3923E] hover:-translate-y-1 hover:bg-[#4A2E80]/5">
+                    <div onclick="openModal(${row.__naturalIndex})" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs transition-all duration-300 flex flex-col justify-between cursor-pointer hover:shadow-md hover:border-[#B3923E] hover:-translate-y-1 hover:bg-[#D4AF37]/5">
                         <div>
                             <div class="mb-4">
-                                ${titleC ? `<h3 class="text-xl font-bold text-[#4A2E80] leading-snug font-serif-title">${titleC}</h3>` : ''}
-                                ${titleE ? `<p class="text-md font-medium text-[#B3923E] mt-0.5 leading-snug font-serif-title">${titleE}</p>` : ''}
-                                ${(!titleC && !titleE) ? `<h3 class="text-xl font-bold text-slate-400 font-serif-title">Untitled Work</h3>` : ''}
+                                ${titleC ? `<h3 class="text-xl font-bold text-[#4A2E80] leading-snug font-serif-title uppercase tracking-wider">${titleC}</h3>` : ''}
+                                ${titleE ? `<p class="text-md font-medium text-[#B3923E] mt-0.5 leading-snug font-serif-title uppercase tracking-wider">${titleE}</p>` : ''}
+                                ${(!titleC && !titleE) ? `<h3 class="text-xl font-bold text-slate-400 font-serif-title uppercase tracking-wider">Untitled Work</h3>` : ''}
                             </div>
                             <table class="w-full border-collapse mt-2">
                                 <tbody>
@@ -296,7 +296,6 @@
             const textType = (row['Text-type'] || '').trim();
             const textFirst = (row['Text-first'] || '').trim();
 
-            // Setup Text Type value cell with Text-First rendered beautifully as a modern Tag on a new line below it
             let textTypeCellContent = '';
             if (textType) {
                 textTypeCellContent += `<div class="text-slate-700 font-medium text-sm">${textType}</div>`;
@@ -336,7 +335,7 @@
             modalRows.forEach(([label, valHtml]) => {
                 tableHtml += `
                     <tr class="border-b border-slate-100 last:border-0">
-                        <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top">${label}:</td>
+                        <td class="py-3 pr-4 font-bold text-[#4A2E80] text-sm tracking-wide w-1/3 align-top font-serif-title">${label}:</td>
                         <td class="py-3 align-top">${valHtml}</td>
                     </tr>
                 `;
@@ -347,8 +346,8 @@
             modalBox.innerHTML = `
                 <div class="p-6 border-b border-slate-100 flex justify-between items-start sticky top-0 bg-white z-10 shadow-xs">
                     <div>
-                        ${titleC ? `<h2 class="text-2xl font-bold text-[#4A2E80] leading-snug font-serif-title">${titleC}</h2>` : ''}
-                        ${titleE ? `<p class="text-lg font-medium text-[#B3923E] mt-0.5 leading-snug font-serif-title">${titleE}</p>` : ''}
+                        ${titleC ? `<h2 class="text-2xl font-bold text-[#4A2E80] leading-snug font-serif-title uppercase tracking-wider">${titleC}</h2>` : ''}
+                        ${titleE ? `<p class="text-lg font-medium text-[#B3923E] mt-0.5 leading-snug font-serif-title uppercase tracking-wider">${titleE}</p>` : ''}
                     </div>
                     <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1 bg-slate-50 hover:bg-slate-100 rounded-full cursor-pointer transition-all">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
