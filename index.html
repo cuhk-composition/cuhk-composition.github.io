@@ -110,17 +110,17 @@
         const modalEl = document.getElementById('detailsModal');
         const modalBox = document.getElementById('modalBox');
 
-        /**
-         * Normalizes row object mapping properties to prevent punctuation anomalies,
-         * invisible casing whitespace, or structural header look up failures.
-         */
-        function getFieldValue(row, standardKey) {
-            if (!row) return '';
-            const target = standardKey.toLowerCase().replace(/[\s\-_:]/g, '');
-            for (let key in row) {
-                const normalizedKey = key.toLowerCase().replace(/[\s\-_:]/g, '').replace(/[\u200B-\u200D\uFEFF]/g, '');
-                if (normalizedKey === target) {
-                    return String(row[key] || '').trim();
+        // Helper function to safely fetch keys regardless of case or punctuation spacing anomalies
+        function getRowValueByFlexibleKey(row, keyVariantsArray) {
+            for (let variant of keyVariantsArray) {
+                if (row[variant] !== undefined) return String(row[variant]).trim();
+            }
+            // Fallback matching logic exploring structural object keys
+            const lowerVariants = keyVariantsArray.map(v => v.toLowerCase().replace(/[\s-_]/g, ''));
+            for (let actualKey in row) {
+                const normalizedActualKey = actualKey.toLowerCase().replace(/[\s-_]/g, '');
+                if (lowerVariants.includes(normalizedActualKey)) {
+                    return String(row[actualKey]).trim();
                 }
             }
             return '';
@@ -198,23 +198,23 @@
             noResultsEl.classList.add('hidden');
 
             data.forEach(row => {
-                const titleC = getFieldValue(row, 'Title (C)');
-                const titleE = getFieldValue(row, 'Title (E)');
+                const titleC = getRowValueByFlexibleKey(row, ['Title (C)', 'Title C']);
+                const titleE = getRowValueByFlexibleKey(row, ['Title (E)', 'Title E']);
 
-                const compC = getFieldValue(row, 'Composer (C)');
-                const compE = getFieldValue(row, 'Composer (E)');
+                const compC = getRowValueByFlexibleKey(row, ['Composer (C)', 'Composer C']);
+                const compE = getRowValueByFlexibleKey(row, ['Composer (E)', 'Composer E']);
                 let masterComposer = (compC && compE) ? `${compC} ${compE}` : (compC || compE || '');
 
-                const voice = getFieldValue(row, 'Voice Type');
-                const instruments = getFieldValue(row, 'Instrument(s)');
+                const voice = getRowValueByFlexibleKey(row, ['Voice Type', 'Voice-type']);
+                const instruments = getRowValueByFlexibleKey(row, ['Instrument(s)', 'Instruments']);
                 let masterInstrumentation = (voice && instruments) ? `${voice}, ${instruments}` : (voice || instruments || '');
 
-                const textC = getFieldValue(row, 'Text (C)');
-                const textE = getFieldValue(row, 'Text (E)');
+                const textC = getRowValueByFlexibleKey(row, ['Text (C)', 'Text C']);
+                const textE = getRowValueByFlexibleKey(row, ['Text (E)', 'Text E']);
                 let masterLyrics = (textC && textE) ? `${textC} ${textE}` : (textC || textE || '');
 
-                const year = getFieldValue(row, 'Year');
-                const duration = getFieldValue(row, 'Duration');
+                const year = getRowValueByFlexibleKey(row, ['Year']);
+                const duration = getRowValueByFlexibleKey(row, ['Duration']);
 
                 let rowsArray = [];
                 if (year) rowsArray.push(['Year', year]);
@@ -285,31 +285,31 @@
             const row = globalData.find(item => item.__naturalIndex === naturalIndex);
             if (!row) return;
 
-            const titleC = getFieldValue(row, 'Title (C)');
-            const titleE = getFieldValue(row, 'Title (E)');
-            const compC = getFieldValue(row, 'Composer (C)');
-            const compE = getFieldValue(row, 'Composer (E)');
+            const titleC = getRowValueByFlexibleKey(row, ['Title (C)', 'Title C']);
+            const titleE = getRowValueByFlexibleKey(row, ['Title (E)', 'Title E']);
+            const compC = getRowValueByFlexibleKey(row, ['Composer (C)', 'Composer C']);
+            const compE = getRowValueByFlexibleKey(row, ['Composer (E)', 'Composer E']);
             let masterComposer = (compC && compE) ? `${compC} ${compE}` : (compC || compE || '');
 
-            const voice = getFieldValue(row, 'Voice Type');
-            const instruments = getFieldValue(row, 'Instrument(s)');
+            const voice = getRowValueByFlexibleKey(row, ['Voice Type', 'Voice-type']);
+            const instruments = getRowValueByFlexibleKey(row, ['Instrument(s)', 'Instruments']);
             let masterInstrumentation = (voice && instruments) ? `${voice}, ${instruments}` : (voice || instruments || '');
 
-            const textC = getFieldValue(row, 'Text (C)');
-            const textE = getFieldValue(row, 'Text (E)');
+            const textC = getRowValueByFlexibleKey(row, ['Text (C)', 'Text C']);
+            const textE = getRowValueByFlexibleKey(row, ['Text (E)', 'Text E']);
             let masterLyrics = (textC && textE) ? `${textC} ${textE}` : (textC || textE || '');
 
-            const textType = getFieldValue(row, 'Text-type');
-            const textFirst = getFieldValue(row, 'Text-first');
+            const textType = getRowValueByFlexibleKey(row, ['Text-type', 'Text Type']);
+            const textFirst = getRowValueByFlexibleKey(row, ['Text-first', 'Text First', 'Textfirst']);
 
-            const mediaLink = getFieldValue(row, 'Media Link');
-            const year = getFieldValue(row, 'Year');
-            const duration = getFieldValue(row, 'Duration');
-            const publisher = getFieldValue(row, 'Publisher');
-            const notes = getFieldValue(row, 'Notes');
-            const premiere = getFieldValue(row, 'Premiere');
-            const commissionPremiere = getFieldValue(row, 'Commission/Premiere');
-            const perusal = getFieldValue(row, 'Perusal Score');
+            const mediaLink = getRowValueByFlexibleKey(row, ['Media Link', 'Media-link']);
+            const year = getRowValueByFlexibleKey(row, ['Year']);
+            const duration = getRowValueByFlexibleKey(row, ['Duration']);
+            const publisher = getRowValueByFlexibleKey(row, ['Publisher']);
+            const notes = getRowValueByFlexibleKey(row, ['Notes']);
+            const premiere = getRowValueByFlexibleKey(row, ['Premiere']);
+            const commissionPremiere = getRowValueByFlexibleKey(row, ['Commission/Premiere', 'Commission / Premiere']);
+            const perusal = getRowValueByFlexibleKey(row, ['Perusal Score', 'Perusal-score']);
 
             let modalRows = [];
             if (year) modalRows.push(['Year', year]);
@@ -318,25 +318,20 @@
             if (masterInstrumentation) modalRows.push(['Forces', masterInstrumentation]);
             if (duration) modalRows.push(['Duration', duration]);
             
-            // Render Text Type row independently without internal inline value additions
+            // Render Text Type cleanly without stacking indicators inline
             if (textType) {
                 modalRows.push(['Text Type', textType]);
             }
 
-            // Inclusive truthy checking matches any affirmative entries ("Yes", "是", "true", etc.)
-            const textFirstLower = textFirst.toLowerCase();
-            const textTypeLower = textType.toLowerCase();
-            const textFirstActive = (textFirst !== '' && 
-                                     textFirstLower !== 'no' && 
-                                     textFirstLower !== 'false' && 
-                                     textFirstLower !== '否' && 
-                                     textFirstLower !== 'n') || 
-                                    textTypeLower.includes('text-first') || 
-                                    textTypeLower.includes('先詞後曲');
-
-            /* RESTORATION IMPLEMENTATION: Appends a standalone row for Text-First 
-               immediately below the Text Type entry inside the pop-up modal structure.
+            /* CRITICAL REFACTOR: Check if Text-first indicator column contains 'yes', '是', 
+               or if the Text Type string itself has '[先詞後曲 Text-first]' baked in!
             */
+            const rawTextTypeLower = textType.toLowerCase();
+            const textFirstActive = textFirst.toLowerCase() === 'yes' || 
+                                    textFirst === '是' || 
+                                    rawTextTypeLower.includes('text-first') || 
+                                    rawTextTypeLower.includes('先詞後曲');
+
             if (textFirstActive) {
                 modalRows.push([
                     'Text-First', 
