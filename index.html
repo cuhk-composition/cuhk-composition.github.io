@@ -3,13 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>粵語藝術歌曲庫|Cantonese Art Song Database </title>
+    <title>Cantonese Art Song Database | 粵語藝術歌曲庫</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
-        /* Applying traditional Songti (Serif) typography for a classical aesthetic */
+        /* Traditional Songti (Serif) typography for standard and Chinese body characters */
         body {
             font-family: "Times New Roman", "Songti TC", "Noto Serif TC", "Playfair Display", serif;
+        }
+        /* Explicit Inter font mapping helper for all alphanumeric structures and descriptive tags */
+        .font-inter {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
         }
     </style>
 </head>
@@ -22,19 +30,19 @@
         <div class="flex flex-col md:flex-row md:items-end md:justify-between border-b border-[#D4AF37]/30 pb-8 mb-8 gap-4">
             <div>
                 <h1 class="text-4xl font-bold text-[#4A2E80] tracking-wide">粵語藝術歌曲庫</h1>
-                <p class="text-2xl font-semibold text-[#B3923E] mt-1 tracking-widest font-sans uppercase">Cantonese Art Song Database</p>
-                <p class="mt-3 text-xs text-slate-400 flex items-center gap-2">
+                <p class="text-2xl font-semibold text-[#B3923E] mt-1 tracking-[0.25em] font-inter uppercase">Cantonese Art Song Database</p>
+                <p class="mt-3 text-xs text-slate-400 flex items-center gap-2 font-inter">
                     <span class="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span>Powered by <a href="https://cantonesecomposition.com" target="_blank" rel="noopener noreferrer" class="text-[#4A2E80] no-underline hover:text-[#B3923E] transition-colors font-medium">Cantonese Contemporary Music Research</a></span>
                 </p>
             </div>
-            <div class="bg-white px-5 py-3 rounded-xl border border-slate-200 shadow-xs flex items-center gap-3 w-fit">
+            <div class="bg-white px-5 py-3 rounded-xl border border-slate-200 shadow-xs flex items-center gap-3 w-fit font-inter">
                 <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Entries / 總數</span>
                 <span id="recordCount" class="text-2xl font-bold text-[#4A2E80]">0</span>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-2xl shadow-xs border border-slate-200/60 mb-8 flex flex-col md:flex-row gap-4 items-end">
+        <div class="bg-white p-6 rounded-2xl shadow-xs border border-slate-200/60 mb-8 flex flex-col md:flex-row gap-4 items-end font-inter">
             <div class="w-full md:flex-1">
                 <label for="searchInput" class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Search Catalog / 搜尋目錄</label>
                 <input type="text" id="searchInput" placeholder="Search title, composer, instrumentation, text type..." 
@@ -56,12 +64,12 @@
             </button>
         </div>
 
-        <div id="loading" class="flex flex-col justify-center items-center py-24">
+        <div id="loading" class="flex flex-col justify-center items-center py-24 font-inter">
             <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-[#4A2E80]"></div>
             <span class="mt-4 text-sm font-semibold text-slate-500 tracking-wide">Streaming real-time entries...</span>
         </div>
 
-        <div id="error" class="hidden bg-rose-50 border border-rose-200 text-rose-900 p-6 rounded-2xl mb-8 shadow-xs">
+        <div id="error" class="hidden bg-rose-50 border border-rose-200 text-rose-900 p-6 rounded-2xl mb-8 shadow-xs font-inter">
             <div class="flex gap-3">
                 <svg class="h-6 w-6 text-rose-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                 <div>
@@ -77,7 +85,7 @@
         <div id="gridContainer" class="hidden">
             <div id="cardsLayout" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
 
-            <div id="noResults" class="hidden text-center py-20 bg-white border border-dashed border-slate-200 rounded-2xl">
+            <div id="noResults" class="hidden text-center py-20 bg-white border border-dashed border-slate-200 rounded-2xl font-inter">
                 <svg class="mx-auto h-12 w-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 <h3 class="mt-4 text-sm font-bold text-slate-900">No matching search criteria found</h3>
                 <p class="mt-1 text-xs text-slate-500">Try checking your spelling variations or optimizing your keyword searches.</p>
@@ -217,24 +225,24 @@
                 rowsArray.forEach(([label, val]) => {
                     tableRowsHtml += `
                         <tr class="border-b border-slate-100 last:border-0">
-                            <td class="py-2 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-sans">${label}:</td>
+                            <td class="py-2 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">${label}:</td>
                             <td class="py-2 text-slate-700 font-medium text-sm align-top line-clamp-3">${val}</td>
                         </tr>
                     `;
                 });
 
                 const hasMedia = mediaLink !== '';
-                const audioTagMarkup = hasMedia ? `<span class="absolute top-4 right-4 bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase px-2 py-0.5 tracking-wider rounded-sm select-none font-sans">試聽 Listen</span>` : '';
+                const audioTagMarkup = hasMedia ? `<span class="absolute top-4 right-4 bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase px-2 py-0.5 tracking-wider rounded-sm select-none font-inter">試聽 Listen</span>` : '';
 
-                /* Removed border rules, added clean rounded-xl properties instead */
+                /* Card structural definition: Borders removed completely, rounded-xl and soft shadow applied */
                 let cardHtml = `
                     <div onclick="openModal(${row.__naturalIndex})" class="relative bg-white rounded-xl p-6 shadow-xs transition-all duration-300 flex flex-col justify-between cursor-pointer hover:shadow-md hover:border-[#B3923E] hover:-translate-y-1 hover:bg-[#4A2E80]/5">
                         ${audioTagMarkup}
                         <div>
-                            <div class="mb-4 font-sans">
+                            <div class="mb-4">
                                 ${titleC ? `<h3 class="text-xl font-bold text-[#4A2E80] leading-snug">${titleC}</h3>` : ''}
-                                ${titleE ? `<p class="text-md font-medium text-[#B3923E] mt-0.5 leading-snug">${titleE}</p>` : ''}
-                                ${(!titleC && !titleE) ? `<h3 class="text-xl font-bold text-slate-400">Untitled Work</h3>` : ''}
+                                ${titleE ? `<p class="text-md font-medium text-[#B3923E] mt-0.5 leading-snug font-inter">${titleE}</p>` : ''}
+                                ${(!titleC && !titleE) ? `<h3 class="text-xl font-bold text-slate-400 font-inter">Untitled Work</h3>` : ''}
                             </div>
                             <table class="w-full border-collapse mt-2">
                                 <tbody>
@@ -256,8 +264,8 @@
             if (match && match[2].length === 11) {
                 const videoId = match[2];
                 return `
-                    <div class="mt-6 border-t border-slate-100 pt-6">
-                        <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-3 font-sans">Media Preview / 媒體試聽</span>
+                    <div class="mt-6 border-t border-slate-100 pt-6 font-inter">
+                        <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-3">Media Preview / 媒體試聽</span>
                         <div class="aspect-video w-full rounded-xl overflow-hidden shadow-xs border border-slate-200 bg-black">
                             <iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
@@ -266,9 +274,9 @@
             }
             
             return `
-                <div class="mt-6 border-t border-slate-100 pt-6">
-                    <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2 font-sans">Media Link / 媒體連結</span>
-                    <a href="${url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 bg-[#4A2E80] hover:bg-[#3b2466] text-white font-semibold text-sm rounded-xl transition-all shadow-xs font-sans">
+                <div class="mt-6 border-t border-slate-100 pt-6 font-inter">
+                    <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Media Link / 媒體連結</span>
+                    <a href="${url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 bg-[#4A2E80] hover:bg-[#3b2466] text-white font-semibold text-sm rounded-xl transition-all shadow-xs">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Open External Media Player
                     </a>
@@ -312,13 +320,26 @@
             if (masterLyrics) modalRows.push(['Lyrics', masterLyrics]);
             if (masterInstrumentation) modalRows.push(['Forces', masterInstrumentation]);
             if (duration) modalRows.push(['Duration', duration]);
-            if (textType) modalRows.push(['Text Type', textType]);
             
-            /* Placed Text-first row directly below the text type element styled as a tag */
-            if (textFirst) {
-                modalRows.push(['Text-first', `<span class="inline-block bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase px-2 py-0.5 tracking-wider rounded-sm select-none">${textFirst}</span>`]);
+            /* Text Type and Text-First structural embedding rule processing context */
+            if (textType) {
+                let textTypeCellContent = textType;
+                if (textFirst && (textFirst.toLowerCase() === 'yes' || textFirst === '是')) {
+                    textTypeCellContent += `
+                        <div class="mt-2">
+                            <span class="inline-block bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase px-2 py-0.5 tracking-wider rounded-sm select-none font-inter">先詞後曲 Text-first</span>
+                        </div>
+                    `;
+                }
+                modalRows.push(['Text Type', textTypeCellContent]);
+            } else if (textFirst && (textFirst.toLowerCase() === 'yes' || textFirst === '是')) {
+                modalRows.push(['Text Type', `
+                    <div>
+                        <span class="inline-block bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase px-2 py-0.5 tracking-wider rounded-sm select-none font-inter">先詞後曲 Text-first</span>
+                    </div>
+                `]);
             }
-            
+
             if (publisher) modalRows.push(['Publisher', publisher]);
             if (notes) modalRows.push(['Notes', notes]);
             if (premiere) modalRows.push(['Premiere', premiere]);
@@ -329,7 +350,7 @@
             modalRows.forEach(([label, val]) => {
                 tableHtml += `
                     <tr class="border-b border-slate-100 last:border-0">
-                        <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-sans">${label}:</td>
+                        <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">${label}:</td>
                         <td class="py-3 text-slate-700 font-medium text-sm align-top">${val}</td>
                     </tr>
                 `;
@@ -339,9 +360,9 @@
 
             modalBox.innerHTML = `
                 <div class="p-6 border-b border-slate-100 flex justify-between items-start sticky top-0 bg-white z-10 shadow-xs">
-                    <div class="font-sans">
+                    <div>
                         ${titleC ? `<h2 class="text-2xl font-bold text-[#4A2E80] leading-snug">${titleC}</h2>` : ''}
-                        ${titleE ? `<p class="text-lg font-medium text-[#B3923E] mt-0.5 leading-snug">${titleE}</p>` : ''}
+                        ${titleE ? `<p class="text-lg font-medium text-[#B3923E] mt-0.5 leading-snug font-inter">${titleE}</p>` : ''}
                     </div>
                     <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1 bg-slate-50 hover:bg-slate-100 rounded-full cursor-pointer transition-all">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
