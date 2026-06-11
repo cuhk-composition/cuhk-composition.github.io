@@ -153,6 +153,26 @@
         const modalEl = document.getElementById('detailsModal');
         const modalBox = document.getElementById('modalBox');
 
+        /**
+         * Helper utility to cleanly split string inputs into individual inline text blocks.
+         * Detects non-Chinese text components dynamically and formats them into 'font-inter'.
+         */
+        function formatMixedScript(str) {
+            if (!str) return '';
+            // Regex splitting string along blocks containing non-Chinese characters versus Chinese characters
+            const tokens = str.split(/([\u4e00-\u9fa5]+)/g);
+            return tokens.map(token => {
+                if (!token) return '';
+                // If it contains Chinese characters, render as custom serif
+                if (/[\u4e00-\u9fa5]/.test(token)) {
+                    return `<span class="font-serif-custom">${token}</span>`;
+                } else {
+                    // Any non-Chinese string element segments are forced to fit sans-serif style parameters
+                    return `<span class="font-inter inline-block">${token}</span>`;
+                }
+            }).join('');
+        }
+
         function init() {
             Papa.parse(csvUrl, {
                 download: true,
@@ -285,12 +305,12 @@
 
                 const textC = (row['Text (C)'] || '').trim();
                 const textE = (row['Text (E)'] || '').trim();
+                const textFirst = (row['Text-first'] || '').trim();
 
                 const year = (row['Year'] || '').trim();
                 const duration = (row['Duration'] || '').trim();
                 const mediaLink = (row['Media Link'] || '').trim();
 
-                // Dynamic translation row parsing that injects .font-inter to English data fragments
                 let rowsArrayHtml = '';
                 
                 if (year) {
@@ -306,30 +326,38 @@
                         <tr class="border-b border-slate-100 last:border-0">
                             <td class="py-2 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">Composer:</td>
                             <td class="py-2 text-slate-700 font-medium text-sm align-top">
-                                ${compC ? `<span class="font-serif-custom pr-1">${compC}</span>` : ''}
-                                ${compE ? `<span class="font-inter text-xs text-slate-500">${compE}</span>` : ''}
+                                ${compC ? `<span class="pr-1">${formatMixedScript(compC)}</span>` : ''}
+                                ${compE ? `<span class="font-inter text-xs text-slate-500 block">${compE}</span>` : ''}
                             </td>
                         </tr>
                     `;
                 }
                 if (textC || textE) {
+                    // Conditional calculation logic nesting "先詞後曲" inline badge layouts under Lyrics row block explicitly
+                    const isTextFirstTagActive = textFirst === '先詞後曲';
+                    const tagBadgeMarkup = isTextFirstTagActive ? `
+                        <div class="mt-1">
+                            <span class="inline-block bg-[#B3923E]/10 text-[#B3923E] text-[11px] font-semibold px-2 py-0.5 rounded-sm font-serif-custom select-none">先詞後曲</span>
+                        </div>
+                    ` : '';
+
                     rowsArrayHtml += `
                         <tr class="border-b border-slate-100 last:border-0">
                             <td class="py-2 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">Lyrics:</td>
                             <td class="py-2 text-slate-700 font-medium text-sm align-top">
-                                ${textC ? `<span class="font-serif-custom pr-1">${textC}</span>` : ''}
-                                ${textE ? `<span class="font-inter text-xs text-slate-500">${textE}</span>` : ''}
+                                ${textC ? `<span class="pr-1">${formatMixedScript(textC)}</span>` : ''}
+                                ${textE ? `<span class="font-inter text-xs text-slate-500 block">${textE}</span>` : ''}
+                                ${tagBadgeMarkup}
                             </td>
                         </tr>
                     `;
                 }
                 if (voice || instruments) {
+                    let forcesCombined = `${voice}${voice && instruments ? ', ' : ''}${instruments}`;
                     rowsArrayHtml += `
                         <tr class="border-b border-slate-100 last:border-0">
                             <td class="py-2 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">Forces:</td>
-                            <td class="py-2 text-slate-700 font-medium text-sm align-top font-inter">
-                                ${voice}${voice && instruments ? ', ' : ''}${instruments}
-                            </td>
+                            <td class="py-2 text-slate-700 font-medium text-sm align-top">${formatMixedScript(forcesCombined)}</td>
                         </tr>
                     `;
                 }
@@ -337,13 +365,12 @@
                     rowsArrayHtml += `
                         <tr class="border-b border-slate-100 last:border-0">
                             <td class="py-2 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">Duration:</td>
-                            <td class="py-2 text-slate-700 font-medium text-sm align-top font-inter">${duration}</td>
+                            <td class="py-2 text-slate-700 font-medium text-sm align-top">${formatMixedScript(duration)}</td>
                         </tr>
                     `;
                 }
 
                 const hasMedia = mediaLink !== '';
-                // All cards strictly set to pure white background per specifications
                 const audioTagMarkup = hasMedia ? `<span class="absolute top-4 right-4 bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase px-2 py-0.5 rounded tracking-wider font-inter select-none">試聽 Listen</span>` : '';
 
                 let cardHtml = `
@@ -351,7 +378,7 @@
                         ${audioTagMarkup}
                         <div>
                             <div class="mb-4">
-                                ${titleC ? `<h3 class="text-xl font-bold text-[#4A2E80] leading-snug line-clamp-2 font-serif-custom">${titleC}</h3>` : `<h3 class="text-xl font-bold text-slate-400 font-serif-custom">無題的作品</h3>`}
+                                ${titleC ? `<h3 class="text-xl font-bold text-[#4A2E80] leading-snug line-clamp-2">${formatMixedScript(titleC)}</h3>` : `<h3 class="text-xl font-bold text-slate-400 font-serif-custom">無題的作品</h3>`}
                                 <p class="text-md font-bold text-[#B3923E] mt-0.5 leading-snug line-clamp-1 min-h-[1.5rem] font-inter">${titleE ? titleE : '&nbsp;'}</p>
                             </div>
                             <table class="w-full border-collapse mt-2">
@@ -437,28 +464,37 @@
                     <tr class="border-b border-slate-100 last:border-0">
                         <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">Composer:</td>
                         <td class="py-3 text-slate-700 font-medium text-sm align-top">
-                            ${compC ? `<span class="font-serif-custom pr-2">${compC}</span>` : ''}
-                            ${compE ? `<span class="font-inter text-xs text-slate-500">${compE}</span>` : ''}
+                            ${compC ? `<span>${formatMixedScript(compC)}</span>` : ''}
+                            ${compE ? `<span class="font-inter text-xs text-slate-500 block">${compE}</span>` : ''}
                         </td>
                     </tr>
                 `;
             }
             if (textC || textE) {
+                const isTextFirstTagActive = textFirst === '先詞後曲';
+                const tagBadgeMarkup = isTextFirstTagActive ? `
+                    <div class="mt-1">
+                        <span class="inline-block bg-[#B3923E]/10 text-[#B3923E] text-[11px] font-semibold px-2 py-0.5 rounded-sm font-serif-custom select-none">先詞後曲</span>
+                    </div>
+                ` : '';
+
                 tableHtml += `
                     <tr class="border-b border-slate-100 last:border-0">
                         <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">Lyrics:</td>
                         <td class="py-3 text-slate-700 font-medium text-sm align-top">
-                            ${textC ? `<span class="font-serif-custom pr-2">${textC}</span>` : ''}
-                            ${textE ? `<span class="font-inter text-xs text-slate-500">${textE}</span>` : ''}
+                            ${textC ? `<span>${formatMixedScript(textC)}</span>` : ''}
+                            ${textE ? `<span class="font-inter text-xs text-slate-500 block">${textE}</span>` : ''}
+                            ${tagBadgeMarkup}
                         </td>
                     </tr>
                 `;
             }
             if (voice || instruments) {
+                let forcesCombined = `${voice}${voice && instruments ? ', ' : ''}${instruments}`;
                 tableHtml += `
                     <tr class="border-b border-slate-100 last:border-0">
                         <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">Forces:</td>
-                        <td class="py-3 text-slate-700 font-medium text-sm align-top font-inter">${voice}${voice && instruments ? ', ' : ''}${instruments}</td>
+                        <td class="py-3 text-slate-700 font-medium text-sm align-top">${formatMixedScript(forcesCombined)}</td>
                     </tr>
                 `;
             }
@@ -466,7 +502,7 @@
                 tableHtml += `
                     <tr class="border-b border-slate-100 last:border-0">
                         <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">Duration:</td>
-                        <td class="py-3 text-slate-700 font-medium text-sm align-top font-inter">${duration}</td>
+                        <td class="py-3 text-slate-700 font-medium text-sm align-top">${formatMixedScript(duration)}</td>
                     </tr>
                 `;
             }
@@ -475,8 +511,8 @@
                     <tr class="border-b border-slate-100 last:border-0">
                         <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">Text Type:</td>
                         <td class="py-3 text-slate-700 font-medium text-sm align-top">
-                            ${textType ? `<span class="font-serif-custom pr-1">${textType}</span>` : ''}
-                            ${textFirst ? `<span class="font-inter text-xs text-slate-500">[${textFirst}]</span>` : ''}
+                            ${textType ? `<span>${formatMixedScript(textType)}</span>` : ''}
+                            ${textFirst ? `<span class="font-inter text-xs text-slate-500 inline-block ml-1">[${textFirst}]</span>` : ''}
                         </td>
                     </tr>
                 `;
@@ -485,7 +521,7 @@
                 tableHtml += `
                     <tr class="border-b border-slate-100 last:border-0">
                         <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">Publisher:</td>
-                        <td class="py-3 text-slate-700 font-medium text-sm align-top font-inter">${publisher}</td>
+                        <td class="py-3 text-slate-700 font-medium text-sm align-top">${formatMixedScript(publisher)}</td>
                     </tr>
                 `;
             }
@@ -493,7 +529,7 @@
                 tableHtml += `
                     <tr class="border-b border-slate-100 last:border-0">
                         <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">Notes:</td>
-                        <td class="py-3 text-slate-700 font-medium text-sm align-top font-serif-custom">${notes}</td>
+                        <td class="py-3 text-slate-700 font-medium text-sm align-top">${formatMixedScript(notes)}</td>
                     </tr>
                 `;
             }
@@ -501,7 +537,7 @@
                 tableHtml += `
                     <tr class="border-b border-slate-100 last:border-0">
                         <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">Premiere:</td>
-                        <td class="py-3 text-slate-700 font-medium text-sm align-top font-serif-custom">${premiere}</td>
+                        <td class="py-3 text-slate-700 font-medium text-sm align-top">${formatMixedScript(premiere)}</td>
                     </tr>
                 `;
             }
@@ -509,7 +545,7 @@
                 tableHtml += `
                     <tr class="border-b border-slate-100 last:border-0">
                         <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">Commission:</td>
-                        <td class="py-3 text-slate-700 font-medium text-sm align-top font-serif-custom">${commissionPremiere}</td>
+                        <td class="py-3 text-slate-700 font-medium text-sm align-top">${formatMixedScript(commissionPremiere)}</td>
                     </tr>
                 `;
             }
@@ -517,7 +553,7 @@
                 tableHtml += `
                     <tr class="border-b border-slate-100 last:border-0">
                         <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">Perusal Score:</td>
-                        <td class="py-3 text-slate-700 font-medium text-sm align-top font-inter">${perusal}</td>
+                        <td class="py-3 text-slate-700 font-medium text-sm align-top">${formatMixedScript(perusal)}</td>
                     </tr>
                 `;
             }
@@ -527,7 +563,7 @@
             modalBox.innerHTML = `
                 <div class="p-6 border-b border-slate-100 flex justify-between items-start sticky top-0 bg-white z-10 shadow-xs">
                     <div>
-                        ${titleC ? `<h2 class="text-2xl font-bold text-[#4A2E80] leading-snug font-serif-custom">${titleC}</h2>` : ''}
+                        ${titleC ? `<h2 class="text-2xl font-bold text-[#4A2E80] leading-snug">${formatMixedScript(titleC)}</h2>` : ''}
                         ${titleE ? `<p class="text-lg font-bold text-[#B3923E] mt-0.5 leading-snug font-inter">${titleE}</p>` : ''}
                     </div>
                     <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1 bg-slate-50 hover:bg-slate-100 rounded-full cursor-pointer transition-all">
