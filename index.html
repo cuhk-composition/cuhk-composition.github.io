@@ -31,12 +31,13 @@
         
         <div class="flex flex-col md:flex-row md:items-end md:justify-between border-b border-[#D4AF37]/30 pb-8 mb-8 gap-4">
             <div>
-                <h1 class="text-4xl font-bold text-[#4A2E80] tracking-wide font-serif-custom">
-                    粵語藝術歌曲庫 <span class="text-3xl font-medium px-1 text-slate-300">|</span> <span class="text-2xl tracking-widest uppercase text-[#B3923E] font-inter">Cantonese Art Song Database</span>
+                <h1 class="font-bold text-[#4A2E80] tracking-wide font-serif-custom flex flex-col gap-1">
+                    <span class="text-4xl">粵語藝術歌曲庫</span>
+                    <span class="text-2xl tracking-[0.25em] uppercase text-[#B3923E] font-inter block mt-1">Cantonese Art Song Database</span>
                 </h1>
-                <p class="mt-3 text-xs text-slate-400 flex items-center gap-2 font-inter">
+                <p class="mt-4 text-xs text-slate-400 flex items-center gap-2 font-inter">
                     <span class="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    A resource from <a href="https://cantonesecomposition.com" target="_blank" rel="noopener noreferrer" class="hover:text-[#B3923E] underline decoration-slate-300 hover:decoration-[#B3923E] transition-colors">Cantonese Contemporary Music Research</a>
+                    <span>A resource from<a href="https://cantonesecomposition.com" target="_blank" rel="noopener noreferrer" class="hover:text-[#B3923E] no-underline transition-colors pl-1">Cantonese Contemporary Music Research</a></span>
                 </p>
             </div>
             <div class="bg-white px-5 py-3 rounded-xl border border-slate-200 shadow-xs flex items-center gap-3 w-fit font-inter">
@@ -159,15 +160,12 @@
          */
         function formatMixedScript(str) {
             if (!str) return '';
-            // Regex splitting string along blocks containing non-Chinese characters versus Chinese characters
             const tokens = str.split(/([\u4e00-\u9fa5]+)/g);
             return tokens.map(token => {
                 if (!token) return '';
-                // If it contains Chinese characters, render as custom serif
                 if (/[\u4e00-\u9fa5]/.test(token)) {
                     return `<span class="font-serif-custom">${token}</span>`;
                 } else {
-                    // Any non-Chinese string element segments are forced to fit sans-serif style parameters
                     return `<span class="font-inter inline-block">${token}</span>`;
                 }
             }).join('');
@@ -333,11 +331,10 @@
                     `;
                 }
                 if (textC || textE) {
-                    // Conditional calculation logic nesting "先詞後曲" inline badge layouts under Lyrics row block explicitly
                     const isTextFirstTagActive = textFirst === '先詞後曲';
                     const tagBadgeMarkup = isTextFirstTagActive ? `
-                        <div class="mt-1">
-                            <span class="inline-block bg-[#B3923E]/10 text-[#B3923E] text-[11px] font-semibold px-2 py-0.5 rounded-sm font-serif-custom select-none">先詞後曲</span>
+                        <div class="mt-1 block">
+                            <span class="inline-block bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase px-2 py-0.5 rounded tracking-wider select-none font-serif-custom">先詞後曲</span>
                         </div>
                     ` : '';
 
@@ -374,7 +371,7 @@
                 const audioTagMarkup = hasMedia ? `<span class="absolute top-4 right-4 bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase px-2 py-0.5 rounded tracking-wider font-inter select-none">試聽 Listen</span>` : '';
 
                 let cardHtml = `
-                    <div onclick="openModal(${row.__naturalIndex})" class="relative bg-white rounded-2xl p-6 shadow-xs transition-all duration-300 flex flex-col justify-between cursor-pointer hover:shadow-md hover:-translate-y-1 hover:bg-[#D4AF37]/10">
+                    <div onclick="openModal(${row.__naturalIndex})" class="relative bg-white rounded-none p-6 shadow-xs transition-all duration-300 flex flex-col justify-between cursor-pointer hover:shadow-md hover:-translate-y-1 hover:bg-[#D4AF37]/10">
                         ${audioTagMarkup}
                         <div>
                             <div class="mb-4">
@@ -473,8 +470,8 @@
             if (textC || textE) {
                 const isTextFirstTagActive = textFirst === '先詞後曲';
                 const tagBadgeMarkup = isTextFirstTagActive ? `
-                    <div class="mt-1">
-                        <span class="inline-block bg-[#B3923E]/10 text-[#B3923E] text-[11px] font-semibold px-2 py-0.5 rounded-sm font-serif-custom select-none">先詞後曲</span>
+                    <div class="mt-1 block">
+                        <span class="inline-block bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase px-2 py-0.5 rounded tracking-wider select-none font-serif-custom">先詞後曲</span>
                     </div>
                 ` : '';
 
