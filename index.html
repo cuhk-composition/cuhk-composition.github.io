@@ -7,12 +7,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
-        /* Base layout typography */
+        /* Applying traditional Songti (Serif) typography for a classical aesthetic */
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        }
-        /* Custom Serif configuration for titles, metadata labels, and dynamic database text values */
-        .font-serif-title {
             font-family: "Times New Roman", "Songti TC", "Noto Serif TC", "Playfair Display", serif;
         }
     </style>
@@ -25,8 +21,8 @@
         
         <div class="flex flex-col md:flex-row md:items-end md:justify-between border-b border-[#D4AF37]/30 pb-8 mb-8 gap-4">
             <div>
-                <h1 class="text-4xl font-bold text-[#4A2E80] tracking-wide font-serif-title uppercase">粵語藝術歌曲庫</h1>
-                <p class="text-2xl font-semibold text-[#B3923E] mt-1 tracking-widest uppercase font-serif-title">Cantonese Art Song Database</p>
+                <h1 class="text-4xl font-bold text-[#4A2E80] tracking-wide">粵語藝術歌曲庫</h1>
+                <p class="text-2xl font-semibold text-[#B3923E] mt-1 tracking-widest font-sans uppercase">Cantonese Art Song Database</p>
                 <p class="mt-3 text-xs text-slate-400 flex items-center gap-2">
                     <span class="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     A resource from <a href="https://cantonesecomposition.com" target="_blank" rel="noopener noreferrer" class="hover:text-[#B3923E] underline decoration-slate-300 hover:decoration-[#B3923E] transition-colors">Cantonese Contemporary Music Research</a>
@@ -45,7 +41,7 @@
                     class="w-full px-4 py-3 bg-[#FAF9F6] border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-[#4A2E80] focus:border-[#4A2E80] transition-all text-sm font-medium">
             </div>
             
-            <div class="w-full md:w-72">
+            <div class="w-full md:w-64">
                 <label for="sortDropdown" class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Sort By / 排序方式</label>
                 <select id="sortDropdown" class="w-full bg-[#FAF9F6] border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-hidden focus:ring-2 focus:ring-[#4A2E80] cursor-pointer">
                     <option value="latest_entry">最新加入 Latest Entry First</option>
@@ -55,6 +51,13 @@
                 </select>
             </div>
 
+            <div class="w-full md:w-auto flex items-center h-12 pb-3 select-none">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" id="audioFilter" class="w-4 h-4 rounded border-slate-300 text-[#4A2E80] focus:ring-[#4A2E80] cursor-pointer">
+                    <span class="text-xs font-bold text-[#4A2E80] uppercase tracking-wider whitespace-nowrap">Audio Available 可供試聽</span>
+                </label>
+            </div>
+
             <button id="resetFilters" class="w-full md:w-auto px-5 py-3 bg-slate-100 hover:bg-slate-200 active:scale-98 transition-all text-sm font-semibold text-slate-600 rounded-xl cursor-pointer whitespace-nowrap">
                 Reset / 重設
             </button>
@@ -62,7 +65,6 @@
 
         <div id="loading" class="flex flex-col justify-center items-center py-24">
             <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-[#4A2E80]"></div>
-            <span class="mt-4 text-sm font-semibold text-slate-500 tracking-wide">Streaming real-time entries...</span>
         </div>
 
         <div id="error" class="hidden bg-rose-50 border border-rose-200 text-rose-900 p-6 rounded-2xl mb-8 shadow-xs">
@@ -79,7 +81,7 @@
         </div>
 
         <div id="gridContainer" class="hidden">
-            <div id="cardsLayout" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+            <div id="cardsLayout" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 
             <div id="noResults" class="hidden text-center py-20 bg-white border border-dashed border-slate-200 rounded-2xl">
                 <svg class="mx-auto h-12 w-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -108,6 +110,7 @@
         const recordCountEl = document.getElementById('recordCount');
         const searchInput = document.getElementById('searchInput');
         const sortDropdown = document.getElementById('sortDropdown');
+        const audioFilterEl = document.getElementById('audioFilter');
         const noResultsEl = document.getElementById('noResults');
         const resetBtn = document.getElementById('resetFilters');
         
@@ -149,9 +152,16 @@
         function processDashboardEngine() {
             const query = searchInput.value.toLowerCase().trim();
             const sortingType = sortDropdown.value;
+            const audioOnly = audioFilterEl.checked;
 
             let items = globalData.filter(row => {
-                return headers.some(h => String(row[h] || '').toLowerCase().includes(query));
+                const matchesSearch = headers.some(h => String(row[h] || '').toLowerCase().includes(query));
+                if (!matchesSearch) return false;
+
+                if (audioOnly) {
+                    return String(row['Media Link'] || '').trim() !== '';
+                }
+                return true;
             });
 
             items.sort((a, b) => {
@@ -209,8 +219,8 @@
 
                 const year = (row['Year'] || '').trim();
                 const duration = (row['Duration'] || '').trim();
+                const mediaLink = (row['Media Link'] || '').trim();
 
-                // Order rows array to place forces and duration cleanly below lyrics
                 let rowsArray = [];
                 if (year) rowsArray.push(['Year', year]);
                 if (masterComposer) rowsArray.push(['Composer', masterComposer]);
@@ -222,19 +232,24 @@
                 rowsArray.forEach(([label, val]) => {
                     tableRowsHtml += `
                         <tr class="border-b border-slate-100 last:border-0">
-                            <td class="py-2 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wide w-1/3 align-top font-serif-title">${label}:</td>
-                            <td class="py-2 text-slate-700 font-medium text-sm align-top line-clamp-2 font-serif-title">${val}</td>
+                            <td class="py-2 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-sans">${label}:</td>
+                            <td class="py-2 text-slate-700 font-medium text-sm align-top line-clamp-3">${val}</td>
                         </tr>
                     `;
                 });
 
+                // Conditional layout styles for items containing media playback links
+                const hasMedia = mediaLink !== '';
+                const cardBgClass = hasMedia ? 'bg-[#F5F4F0]' : 'bg-white';
+                const audioTagMarkup = hasMedia ? `<span class="absolute top-4 right-4 bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase px-2 py-0.5 rounded tracking-wider font-sans">試聽 Listen</span>` : '';
+
                 let cardHtml = `
-                    <div onclick="openModal(${row.__naturalIndex})" class="relative bg-white border border-slate-200 rounded-2xl p-6 shadow-xs transition-all duration-300 flex flex-col justify-between cursor-pointer hover:shadow-md hover:border-[#B3923E] hover:-translate-y-1 hover:bg-[#D4AF37]/5">
-                        <div class="w-full">
-                            <div class="mb-4">
-                                ${titleC ? `<h3 class="text-lg font-bold text-[#4A2E80] leading-snug font-serif-title uppercase tracking-wider line-clamp-2">${titleC}</h3>` : ''}
-                                ${titleE ? `<p class="text-sm font-bold text-[#B3923E] mt-0.5 leading-snug font-serif-title uppercase tracking-wider line-clamp-2">${titleE}</p>` : ''}
-                                ${(!titleC && !titleE) ? `<h3 class="text-lg font-bold text-slate-400 font-serif-title uppercase tracking-wider">Untitled Work</h3>` : ''}
+                    <div onclick="openModal(${row.__naturalIndex})" class="relative ${cardBgClass} rounded-2xl p-6 shadow-xs transition-all duration-300 flex flex-col justify-between cursor-pointer hover:shadow-md hover:border-[#B3923E] hover:-translate-y-1 hover:bg-[#4A2E80]/5">
+                        ${audioTagMarkup}
+                        <div>
+                            <div class="mb-4 font-sans">
+                                ${titleC ? `<h3 class="text-xl font-bold text-[#4A2E80] leading-snug line-clamp-2">${titleC}</h3>` : `<h3 class="text-xl font-bold text-slate-400">Untitled Work</h3>`}
+                                <p class="text-md font-bold text-[#B3923E] mt-0.5 leading-snug line-clamp-1 min-h-[1.5rem]">${titleE ? titleE : '&nbsp;'}</p>
                             </div>
                             <table class="w-full border-collapse mt-2">
                                 <tbody>
@@ -257,7 +272,7 @@
                 const videoId = match[2];
                 return `
                     <div class="mt-6 border-t border-slate-100 pt-6">
-                        <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-3">Media Preview / 媒體試聽</span>
+                        <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-3 font-sans">Media Preview / 媒體試聽</span>
                         <div class="aspect-video w-full rounded-xl overflow-hidden shadow-xs border border-slate-200 bg-black">
                             <iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
@@ -267,8 +282,8 @@
             
             return `
                 <div class="mt-6 border-t border-slate-100 pt-6">
-                    <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Media Link / 媒體連結</span>
-                    <a href="${url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 bg-[#4A2E80] hover:bg-[#3b2466] text-white font-semibold text-sm rounded-xl transition-all shadow-xs">
+                    <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2 font-sans">Media Link / 媒體連結</span>
+                    <a href="${url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 bg-[#4A2E80] hover:bg-[#3b2466] text-white font-semibold text-sm rounded-xl transition-all shadow-xs font-sans">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Open External Media Player
                     </a>
@@ -296,19 +311,7 @@
 
             const textType = (row['Text-type'] || '').trim();
             const textFirst = (row['Text-first'] || '').trim();
-
-            let textTypeCellContent = '';
-            if (textType) {
-                textTypeCellContent += `<div class="text-slate-700 font-medium text-sm font-serif-title">${textType}</div>`;
-            }
-            if (textFirst) {
-                textTypeCellContent += `
-                    <div class="mt-1.5">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-[#4A2E80]/10 text-[#4A2E80] border border-[#4A2E80]/20 tracking-wide">
-                            ${textFirst}
-                        </span>
-                    </div>`;
-            }
+            let masterTextType = (textType && textFirst) ? `${textType} [${textFirst}]` : (textType || textFirst || '');
 
             const mediaLink = (row['Media Link'] || '').trim();
             const year = (row['Year'] || '').trim();
@@ -320,24 +323,24 @@
             const perusal = (row['Perusal Score'] || '').trim();
 
             let modalRows = [];
-            if (year) modalRows.push(['Year', `<div class="text-slate-700 font-medium text-sm font-serif-title">${year}</div>`]);
-            if (masterComposer) modalRows.push(['Composer', `<div class="text-slate-700 font-medium text-sm font-serif-title">${masterComposer}</div>`]);
-            if (masterLyrics) modalRows.push(['Lyrics', `<div class="text-slate-700 font-medium text-sm font-serif-title">${masterLyrics}</div>`]);
-            if (masterInstrumentation) modalRows.push(['Forces', `<div class="text-slate-700 font-medium text-sm font-serif-title">${masterInstrumentation}</div>`]);
-            if (duration) modalRows.push(['Duration', `<div class="text-slate-700 font-medium text-sm font-serif-title">${duration}</div>`]);
-            if (textTypeCellContent) modalRows.push(['Text Type', textTypeCellContent]);
-            if (publisher) modalRows.push(['Publisher', `<div class="text-slate-700 font-medium text-sm font-serif-title">${publisher}</div>`]);
-            if (notes) modalRows.push(['Notes', `<div class="text-slate-700 font-medium text-sm font-serif-title">${notes}</div>`]);
-            if (premiere) modalRows.push(['Premiere', `<div class="text-slate-700 font-medium text-sm font-serif-title">${premiere}</div>`]);
-            if (commissionPremiere) modalRows.push(['Commission / Premiere', `<div class="text-slate-700 font-medium text-sm font-serif-title">${commissionPremiere}</div>`]);
-            if (perusal) modalRows.push(['Perusal Score', `<div class="text-slate-700 font-medium text-sm font-serif-title">${perusal}</div>`]);
+            if (year) modalRows.push(['Year', year]);
+            if (masterComposer) modalRows.push(['Composer', masterComposer]);
+            if (masterLyrics) modalRows.push(['Lyrics', masterLyrics]);
+            if (masterInstrumentation) modalRows.push(['Forces', masterInstrumentation]);
+            if (duration) modalRows.push(['Duration', duration]);
+            if (masterTextType) modalRows.push(['Text Type', masterTextType]);
+            if (publisher) modalRows.push(['Publisher', publisher]);
+            if (notes) modalRows.push(['Notes', notes]);
+            if (premiere) modalRows.push(['Premiere', premiere]);
+            if (commissionPremiere) modalRows.push(['Commission / Premiere', commissionPremiere]);
+            if (perusal) modalRows.push(['Perusal Score', perusal]);
 
             let tableHtml = '';
-            modalRows.forEach(([label, valHtml]) => {
+            modalRows.forEach(([label, val]) => {
                 tableHtml += `
                     <tr class="border-b border-slate-100 last:border-0">
-                        <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wide w-1/3 align-top font-serif-title">${label}:</td>
-                        <td class="py-3 align-top">${valHtml}</td>
+                        <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-sans">${label}:</td>
+                        <td class="py-3 text-slate-700 font-medium text-sm align-top">${val}</td>
                     </tr>
                 `;
             });
@@ -346,9 +349,9 @@
 
             modalBox.innerHTML = `
                 <div class="p-6 border-b border-slate-100 flex justify-between items-start sticky top-0 bg-white z-10 shadow-xs">
-                    <div>
-                        ${titleC ? `<h2 class="text-2xl font-bold text-[#4A2E80] leading-snug font-serif-title uppercase tracking-wider">${titleC}</h2>` : ''}
-                        ${titleE ? `<p class="text-lg font-bold text-[#B3923E] mt-0.5 leading-snug font-serif-title uppercase tracking-wider">${titleE}</p>` : ''}
+                    <div class="font-sans">
+                        ${titleC ? `<h2 class="text-2xl font-bold text-[#4A2E80] leading-snug">${titleC}</h2>` : ''}
+                        ${titleE ? `<p class="text-lg font-bold text-[#B3923E] mt-0.5 leading-snug">${titleE}</p>` : ''}
                     </div>
                     <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1 bg-slate-50 hover:bg-slate-100 rounded-full cursor-pointer transition-all">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -383,10 +386,12 @@
 
         searchInput.addEventListener('input', processDashboardEngine);
         sortDropdown.addEventListener('change', processDashboardEngine);
+        audioFilterEl.addEventListener('change', processDashboardEngine);
         
         resetBtn.addEventListener('click', () => {
             searchInput.value = '';
             sortDropdown.value = 'latest_entry';
+            audioFilterEl.checked = false;
             processDashboardEngine();
         });
 
