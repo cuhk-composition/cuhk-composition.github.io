@@ -37,20 +37,20 @@
                 </p>
             </div>
             <div class="bg-white px-5 py-3 rounded-xl border border-slate-200 shadow-xs flex items-center gap-3 w-fit font-inter">
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Entries / 總數</span>
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">總數 / Total Entries</span>
                 <span id="recordCount" class="text-2xl font-bold text-[#4A2E80]">0</span>
             </div>
         </div>
 
         <div class="bg-white p-6 rounded-2xl shadow-xs border border-slate-200/60 mb-8 flex flex-col md:flex-row gap-4 items-end">
             <div class="w-full md:flex-1 font-inter">
-                <label for="searchInput" class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Search Catalog / 搜尋目錄</label>
-                <input type="text" id="searchInput" placeholder="Search title, composer, instrumentation, text type..." 
+                <label for="searchInput" class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">搜尋目錄 / Search Catalog </label>
+                <input type="text" id="searchInput" placeholder="關鍵字搜尋 Keyword Search..." 
                     class="w-full px-4 py-3 bg-[#FAF9F6] border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-[#4A2E80] focus:border-[#4A2E80] transition-all text-sm font-medium">
             </div>
             
             <div class="w-full md:w-72 relative font-inter">
-                <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Sort & Filter / 排序與篩選</span>
+                <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">排序與篩選 / Sort & Filter</span>
                 <button id="dropdownBtn" class="w-full bg-[#FAF9F6] border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-left flex justify-between items-center focus:outline-hidden focus:ring-2 focus:ring-[#4A2E80] cursor-pointer">
                     <span id="dropdownCurrentLabel">最新加入 Latest Entry</span>
                     <svg id="dropdownArrow" class="h-4 w-4 text-slate-500 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -80,13 +80,13 @@
                     
                     <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-semibold text-[#4A2E80]">
                         <input type="checkbox" id="audioFilterCheckbox" class="accent-[#4A2E80] mr-3 h-4 w-4 rounded-xs">
-                        <span>Audio Available 可供試聽</span>
+                        <span>可供試聽 Audio Available</span>
                     </label>
                 </div>
             </div>
 
             <button id="resetFilters" class="w-full md:w-auto px-5 py-3 bg-slate-100 hover:bg-slate-200 active:scale-98 transition-all text-sm font-semibold text-slate-600 rounded-xl cursor-pointer whitespace-nowrap font-inter">
-                Reset / 重設
+                重設 / Reset
             </button>
         </div>
 
@@ -113,8 +113,8 @@
 
             <div id="noResults" class="hidden text-center py-20 bg-white border border-dashed border-slate-200 rounded-2xl font-inter">
                 <svg class="mx-auto h-12 w-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                <h3 class="mt-4 text-sm font-bold text-slate-900">No matching search criteria found</h3>
-                <p class="mt-1 text-xs text-slate-500">Try checking your spelling variations or optimizing your keyword searches.</p>
+                <h3 class="mt-4 text-sm font-bold text-slate-900">沒有相關結果 No matching search criteria found</h3>
+                <p class="mt-1 text-xs text-slate-500">請試試其他關鍵字 Try checking your spelling variations or optimizing your keyword searches.</p>
             </div>
         </div>
     </div>
