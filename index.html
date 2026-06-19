@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cantonese Art Song Database | 粵語藝術歌曲庫</title>
+    <title>粵語藝術歌曲資料庫 | Cantonese Art Song Database</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
         
         <div class="flex flex-col md:flex-row md:items-end md:justify-between border-b border-[#D4AF37]/30 pb-8 mb-8 gap-4">
             <div>
-                <h1 class="text-4xl font-bold text-[#4A2E80] tracking-wide">粵語藝術歌曲庫</h1>
+                <h1 class="text-4xl font-bold text-[#4A2E80] tracking-wide">粵語藝術歌曲資料庫</h1>
                 <p class="text-2xl font-semibold text-[#B3923E] mt-1 tracking-[0.25em] font-inter uppercase">Cantonese Art Song Database</p>
                 <p class="mt-3 text-xs text-slate-400 flex items-center gap-2 font-inter">
                     <span class="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -52,7 +52,7 @@
             <div class="w-full md:w-72 relative font-inter">
                 <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Sort & Filter / 排序與篩選</span>
                 <button id="dropdownBtn" class="w-full bg-[#FAF9F6] border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-left flex justify-between items-center focus:outline-hidden focus:ring-2 focus:ring-[#4A2E80] cursor-pointer">
-                    <span id="dropdownCurrentLabel">最新加入 Latest Entry First</span>
+                    <span id="dropdownCurrentLabel">最新加入 Latest Entry</span>
                     <svg id="dropdownArrow" class="h-4 w-4 text-slate-500 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
@@ -61,19 +61,19 @@
                 <div id="dropdownMenu" class="hidden absolute left-0 mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg z-30 py-2">
                     <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-medium text-slate-700">
                         <input type="radio" name="sortOption" value="latest_entry" checked class="accent-[#4A2E80] mr-3 h-4 w-4">
-                        <span>最新加入 Latest Entry First</span>
+                        <span>最新加入 Latest Entry</span>
                     </label>
                     <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-medium text-slate-700">
                         <input type="radio" name="sortOption" value="earliest_entry" class="accent-[#4A2E80] mr-3 h-4 w-4">
-                        <span>最先加入 Earliest Entry First</span>
+                        <span>最先加入 Earliest Entry</span>
                     </label>
                     <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-medium text-slate-700">
                         <input type="radio" name="sortOption" value="year_latest" class="accent-[#4A2E80] mr-3 h-4 w-4">
-                        <span>年份最近 Year: Latest First</span>
+                        <span>年份最近 Year: Latest</span>
                     </label>
                     <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-medium text-slate-700">
                         <input type="radio" name="sortOption" value="year_oldest" class="accent-[#4A2E80] mr-3 h-4 w-4">
-                        <span>年份最遠 Year: Oldest First</span>
+                        <span>年份最遠 Year: Earliest</span>
                     </label>
                     
                     <div class="border-t border-slate-100 my-1"></div>
@@ -341,7 +341,7 @@
                 const videoId = match[2];
                 return `
                     <div class="mt-6 border-t border-slate-100 pt-6 font-inter">
-                        <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-3">Media Preview / 媒體試聽</span>
+                        <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-3">Media / 試聽</span>
                         <div class="aspect-video w-full rounded-xl overflow-hidden shadow-xs border border-slate-200 bg-black">
                             <iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
@@ -478,7 +478,7 @@
             // Reset custom interactive elements status
             document.querySelector('input[name="sortOption"][value="latest_entry"]').checked = true;
             audioFilterCheckbox.checked = false;
-            dropdownCurrentLabel.textContent = '最新加入 Latest Entry First';
+            dropdownCurrentLabel.textContent = '最新加入 Latest Entry';
             
             dropdownMenu.classList.add('hidden');
             dropdownArrow.classList.remove('rotate-180');
