@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>陳啟揚 Kai-Young Chan | 合唱作品目錄 Choral Catalogue</title>
+    <title>CKY Choral Catalog | 陳啟揚 Kai-Young Chan 合唱作品目錄</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -36,7 +36,7 @@
         <div class="flex flex-col md:flex-row md:items-end md:justify-between border-b border-[#D4AF37]/30 pb-8 mb-8 gap-4">
             <div>
                 <h1 class="text-4xl font-bold text-[#4A2E80] tracking-wide">陳啟揚 Kai-Young Chan</h1>
-                <p class="text-2xl font-semibold text-[#B3923E] mt-1 tracking-[0.25em] font-inter uppercase">合唱作品目錄 • Choral Catalogue</p>
+                <p class="text-2xl font-semibold text-[#B3923E] mt-1 tracking-[0.25em] font-inter uppercase">CKY Choral Catalog • 合唱作品目錄</p>
             </div>
             <div class="bg-white px-5 py-3 rounded-xl border border-slate-200 shadow-xs flex items-center gap-3 w-fit font-inter">
                 <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Entries / 總數</span>
@@ -48,7 +48,7 @@
         <div class="bg-white p-6 rounded-2xl shadow-xs border border-slate-200/60 mb-8 flex flex-col md:flex-row gap-4 items-end">
             <div class="w-full md:flex-1 font-inter">
                 <label class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Search Catalog / 搜尋目錄</label>
-                <input type="text" id="searchInput" placeholder="Search title, year, voice type..." 
+                <input type="text" id="searchInput" placeholder="Search title, composer, lyrics, year..." 
                     class="w-full px-4 py-3 bg-[#FAF9F6] border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-[#4A2E80] focus:border-[#4A2E80] transition-all text-sm">
             </div>
             
@@ -89,7 +89,7 @@
 
         <div id="loading" class="flex flex-col justify-center items-center py-24 font-inter">
             <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-[#4A2E80]"></div>
-            <span class="mt-4 text-sm font-semibold text-slate-500">Loading from Google Sheet...</span>
+            <span class="mt-4 text-sm font-semibold text-slate-500">Loading live data from Google Sheet...</span>
         </div>
 
         <div id="gridContainer" class="hidden">
@@ -195,11 +195,12 @@
             data.forEach(row => {
                 const titleC = (row['曲名'] || '').trim();
                 const titleE = (row['Title'] || '').trim();
+                const lang = (row['Lang.'] || '').trim();
                 const year = (row['年 Year'] || '').trim();
-                const duration = (row['Duration'] || '').trim();
-                const lyrics = (row['文本作者 Text by'] || '').trim();
-                const voice = (row['聲部 Voice Type'] || '').trim();
+                const voices = (row['聲部 Voice Type'] || '').trim();
                 const instrument = (row['樂器Instrument'] || '').trim();
+                const duration = (row['Duration'] || '').trim();
+                const lyrics = (row['文本作者 Text by '] || row['文本作者 Text by'] || '').trim();
                 const recording = (row['錄音 Recording'] || '').trim();
 
                 const hasRecording = recording.length > 0;
@@ -207,12 +208,8 @@
                 const cardHTML = `
                     <div onclick="openModal(${row.__index})" class="bg-white rounded-2xl p-6 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer relative group">
                         ${hasRecording ? `
-                            <span class="absolute top-4 right-4 bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
-                                <span class="relative flex h-2 w-2">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                </span>
-                                試聽 Listen
+                            <span class="absolute top-4 right-4 bg-violet-100 text-violet-700 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                                試聽 LISTEN
                             </span>` : ''}
                         
                         <div class="mb-5">
@@ -221,11 +218,12 @@
                         </div>
 
                         <div class="space-y-3 text-sm">
+                            ${lang ? `<div><span class="data-label">LANGUAGE:</span> <span class="font-medium">${lang}</span></div>` : ''}
                             ${year ? `<div><span class="data-label">YEAR:</span> <span class="font-medium">${year}</span></div>` : ''}
+                            ${voices ? `<div><span class="data-label">VOICES:</span> <span class="font-medium">${voices}</span></div>` : ''}
+                            ${instrument ? `<div><span class="data-label">INSTRUMENT(S):</span> <span class="font-medium">${instrument}</span></div>` : ''}
                             ${duration ? `<div><span class="data-label">DURATION:</span> <span class="font-medium">${duration}</span></div>` : ''}
                             ${lyrics ? `<div><span class="data-label">LYRICS:</span> <span class="font-medium">${lyrics}</span></div>` : ''}
-                            ${voice ? `<div><span class="data-label">VOICE TYPE:</span> <span class="font-medium">${voice}</span></div>` : ''}
-                            ${instrument ? `<div><span class="data-label">INSTRUMENT:</span> <span class="font-medium">${instrument}</span></div>` : ''}
                         </div>
                     </div>
                 `;
@@ -248,20 +246,21 @@
                 <div class="p-8 space-y-6 overflow-auto max-h-[65vh]">
             `;
 
-            // All available fields in modal
-            const allFields = [
+            const fields = [
+                ['LANGUAGE', row['Lang.']],
                 ['YEAR', row['年 Year']],
-                ['VOICE TYPE', row['聲部 Voice Type']],
-                ['INSTRUMENT', row['樂器Instrument']],
+                ['VOICES', row['聲部 Voice Type']],
+                ['INSTRUMENT(S)', row['樂器Instrument']],
                 ['DURATION', row['Duration']],
-                ['LYRICS / TEXT BY', row['文本作者 Text by']],
+                ['LYRICS', row['文本作者 Text by '] || row['文本作者 Text by']],
+                ['PUBLISHER / TO BUY', row['購買 To Buy']],
                 ['LEVEL', row['程度Level']],
                 ['PREMIERE', row['首演日 Premiere']],
                 ['NOTES', row['附註 Notes']]
             ];
 
-            allFields.forEach(([label, value]) => {
-                if (value) {
+            fields.forEach(([label, value]) => {
+                if (value && value.trim() !== '') {
                     content += `
                         <div class="flex border-b border-slate-100 pb-3 last:border-0">
                             <span class="data-label w-48 flex-shrink-0">${label}:</span>
@@ -271,21 +270,35 @@
                 }
             });
 
-            // Embedded Video
+            // Embedded Media
             const recording = row['錄音 Recording'] || '';
             if (recording) {
-                const match = recording.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
-                if (match && match[1]) {
+                let videoId = null;
+                const youtubeMatch = recording.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube.com\/embed\/)([^&\n?#]+)/);
+                if (youtubeMatch && youtubeMatch[1]) {
+                    videoId = youtubeMatch[1];
+                }
+
+                content += `
+                    <div class="pt-8 border-t border-slate-200">
+                        <span class="data-label block mb-4">MEDIA 媒體 / RECORDING</span>
+                `;
+
+                if (videoId) {
                     content += `
-                        <div class="pt-6 border-t border-slate-200">
-                            <span class="data-label block mb-3">RECORDING / 錄音</span>
-                            <div class="aspect-video rounded-2xl overflow-hidden shadow-inner border border-slate-200">
-                                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/${match[1]}" 
-                                    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            </div>
+                        <div class="aspect-video rounded-2xl overflow-hidden shadow-inner border border-slate-200 bg-black">
+                            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}" 
+                                frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
                     `;
+                } else {
+                    content += `
+                        <a href="${recording}" target="_blank" class="inline-flex items-center gap-2 px-5 py-3 bg-[#4A2E80] text-white rounded-xl hover:bg-[#3b2466]">
+                            ▶ Open Recording Link
+                        </a>
+                    `;
                 }
+                content += `</div>`;
             }
 
             content += `</div>`;
