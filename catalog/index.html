@@ -3,92 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>陳啟揚合唱作品 | Choral Works by Kai-Young Chan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <title>陳啟揚 Kai-Young Chan - 合唱作品目錄 Choral Catalogue</title>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css">
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: "Times New Roman", "Songti TC", serif; }
-        .font-inter { font-family: 'Inter', sans-serif !important; }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+        }
+        header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            margin: 0;
+            font-size: 2.8rem;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .controls {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+        }
+        th {
+            background: #1e3a8a !important;
+            color: white !important;
+        }
+        .youtube-link {
+            color: #ff0000;
+            text-decoration: none;
+        }
+        .youtube-link:hover {
+            text-decoration: underline;
+        }
+        .level-beginner { background-color: #d1fae5; }
+        .level-intermediate { background-color: #fef3c7; }
+        .level-advanced { background-color: #fee2e2; }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+        }
     </style>
 </head>
-<body class="bg-[#FAF9F6] text-slate-900">
+<body>
+    <header>
+        <h1>陳啟揚 Kai-Young Chan</h1>
+        <p class="subtitle">合唱作品目錄 • Choral Catalogue</p>
+        <p style="margin-top: 0.5rem; opacity: 0.85;">演出較多作品 | 最新錄音</p>
+    </header>
 
-    <div class="h-2 bg-gradient-to-r from-[#B3923E] via-[#D4AF37] to-[#F3E5AB]"></div>
-
-    <div class="max-w-7xl mx-auto px-6 py-12">
-        <div class="border-b border-[#D4AF37]/30 pb-8 mb-8">
-            <h1 class="text-4xl font-bold text-[#4A2E80]">陳啟揚合唱作品</h1>
-            <p class="text-2xl font-semibold text-[#B3923E] mt-1 font-inter uppercase tracking-[0.2em]">Choral Works by Kai-Young Chan</p>
+    <div class="container">
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="globalSearch" placeholder="🔍 搜尋曲名 / 標題 / 作曲家 / 文本作者..." 
+                       style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;">
+            </div>
+            <div>
+                <select id="langFilter" style="padding: 12px; border-radius: 8px; border: 2px solid #e5e7eb;">
+                    <option value="">所有語言 All Languages</option>
+                    <option value="Can.">粵語 / 國語 Can.</option>
+                    <option value="Eng.">English</option>
+                </select>
+            </div>
+            <div>
+                <select id="levelFilter" style="padding: 12px; border-radius: 8px; border: 2px solid #e5e7eb;">
+                    <option value="">所有程度 All Levels</option>
+                    <option value="初級 Beginner">初級 Beginner</option>
+                    <option value="中級 Intermediate">中級 Intermediate</option>
+                    <option value="高級 Advanced">高級 Advanced</option>
+                </select>
+            </div>
+            <button onclick="window.location.reload()" style="padding: 12px 24px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                <i class="fas fa-sync"></i> 重新載入 Refresh
+            </button>
         </div>
 
-        <div id="cardsLayout" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        <div class="table-container">
+            <table id="catalogTable" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>曲名 Chinese Title</th>
+                        <th>Title English</th>
+                        <th>Lang.</th>
+                        <th>Year</th>
+                        <th>Voice Type</th>
+                        <th>Instrument</th>
+                        <th>Duration</th>
+                        <th>Text by</th>
+                        <th>Recording</th>
+                        <th>To Buy</th>
+                        <th>Level</th>
+                        <th>Premiere</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 
-    <div id="detailsModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div id="modalBox" class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 shadow-2xl"></div>
-    </div>
+    <footer>
+        <p>Data from Kai-Young Chan's Google Sheet • Dynamically loaded • Email: chan.kaiyoung@cuhk.edu.hk</p>
+        <p style="margin-top: 0.5rem;">Made with ❤️ for choral music lovers</p>
+    </footer>
 
     <script>
-        const sheetId = '1gUY4w6OIb9_mbQ0M1GmXP_Lp27oO-ThcKqKiI5sWJJ0';
-        const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+        let table;
 
-        let globalData = [];
+        async function loadData() {
+            const csvUrl = 'https://docs.google.com/spreadsheets/d/1gUY4w6OIb9_mbQ0M1GmXP_Lp27oO-ThcKqKiI5sWJJ0/gviz/tq?tqx=out:csv&gid=0';
+            
+            try {
+                const response = await fetch(csvUrl);
+                const csvText = await response.text();
+                
+                // Parse CSV
+                const rows = csvText.trim().split('\n').map(row => {
+                    // Simple CSV parser handling quotes
+                    const matches = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
+                    return matches.map(field => field.replace(/^"|"$/g, '').trim());
+                });
 
-        function init() {
-            // PapaParse automatically treats row 2 as headers if using {header: true}
-            Papa.parse(csvUrl, {
-                download: true, 
-                header: true, 
-                skipEmptyLines: true,
-                complete: (results) => {
-                    globalData = results.data;
-                    renderCards(globalData);
-                }
+                // Skip header rows
+                const dataRows = rows.slice(2); // Skip title and column headers
+
+                const tbody = document.querySelector('#catalogTable tbody');
+                tbody.innerHTML = '';
+
+                dataRows.forEach(row => {
+                    if (row.length < 5 || !row[0] && !row[1]) return; // Skip empty
+                    
+                    const chineseTitle = row[0] || 'N/A';
+                    const englishTitle = row[1] || '';
+                    const lang = row[2] || '';
+                    const year = row[3] || '';
+                    const voice = row[4] || '';
+                    const instrument = row[5] || '';
+                    const duration = row[6] || '';
+                    const textBy = row[7] || '';
+                    const recording = row[8] || '';
+                    const toBuy = row[9] || '';
+                    const level = row[10] || '';
+                    const premiere = row[11] || '';
+                    const notes = row[12] || '';
+
+                    const recordingHtml = recording ? 
+                        `<a href="${recording}" target="_blank" class="youtube-link"><i class="fab fa-youtube"></i> Watch</a>` : '—';
+
+                    const rowHtml = `
+                        <tr>
+                            <td><strong>${chineseTitle}</strong></td>
+                            <td>${englishTitle}</td>
+                            <td>${lang}</td>
+                            <td>${year}</td>
+                            <td>${voice}</td>
+                            <td>${instrument}</td>
+                            <td>${duration}</td>
+                            <td>${textBy}</td>
+                            <td>${recordingHtml}</td>
+                            <td>${toBuy}</td>
+                            <td class="${getLevelClass(level)}">${level}</td>
+                            <td>${premiere}</td>
+                            <td style="max-width: 300px;">${notes}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += rowHtml;
+                });
+
+                // Initialize DataTable
+                if (table) table.destroy();
+                
+                table = $('#catalogTable').DataTable({
+                    language: {
+                        search: "全域搜尋 Global Search:",
+                        lengthMenu: "顯示 _MENU_ 筆",
+                        info: "顯示第 _START_ 到 _END_ 筆，共 _TOTAL_ 筆作品",
+                        infoEmpty: "無符合資料",
+                        zeroRecords: "沒有符合的結果",
+                        paginate: {
+                            first: "第一頁",
+                            last: "最後一頁",
+                            next: "下一頁",
+                            previous: "上一頁"
+                        }
+                    },
+                    pageLength: 25,
+                    order: [[3, 'desc']], // Sort by year descending
+                    responsive: true
+                });
+
+                // Custom filters
+                setupFilters();
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.querySelector('#catalogTable tbody').innerHTML = `
+                    <tr><td colspan="13" style="text-align:center; padding:40px; color:#ef4444;">
+                        無法載入資料表。請確保 Google Sheet 已公開。<br>
+                        Error loading catalogue. Make sure the Google Sheet is publicly accessible.
+                    </td></tr>`;
+            }
+        }
+
+        function getLevelClass(level) {
+            if (level.includes('初級') || level.includes('Beginner')) return 'level-beginner';
+            if (level.includes('中級') || level.includes('Intermediate')) return 'level-intermediate';
+            if (level.includes('高級') || level.includes('Advanced')) return 'level-advanced';
+            return '';
+        }
+
+        function setupFilters() {
+            // Global search already handled by DataTable
+            // Additional filters
+            $('#langFilter').on('change', function() {
+                const val = $(this).val();
+                table.column(2).search(val).draw();
+            });
+
+            $('#levelFilter').on('change', function() {
+                const val = $(this).val();
+                table.column(10).search(val).draw();
+            });
+
+            // Extra global search box
+            $('#globalSearch').on('keyup', function() {
+                table.search(this.value).draw();
             });
         }
 
-        function renderCards(data) {
-            const container = document.getElementById('cardsLayout');
-            container.innerHTML = data.map((row, index) => `
-                <div onclick="openModal(${index})" class="bg-white border border-slate-200 p-6 rounded-2xl cursor-pointer hover:bg-[#F3E5AB]/40 transition-all shadow-sm">
-                    <h3 class="text-lg font-bold text-[#4A2E80] mb-2">${row['曲名'] || 'Untitled'}</h3>
-                    <p class="text-xs text-slate-500 font-inter uppercase tracking-wider">${row['年 Year'] || ''}</p>
-                    <p class="text-sm text-slate-700 mt-2">${row['聲部 Voice Type'] || ''}</p>
-                </div>
-            `).join('');
-        }
-
-        function openModal(index) {
-            const row = globalData[index];
-            const modalBox = document.getElementById('modalBox');
-            const videoId = extractYouTubeID(row['錄音 Recording']);
-            
-            modalBox.innerHTML = `
-                <div class="flex justify-between items-start mb-6">
-                    <h2 class="text-2xl font-bold text-[#4A2E80]">${row['曲名']} (${row['Title']})</h2>
-                    <button onclick="document.getElementById('detailsModal').classList.add('hidden')" class="text-slate-400">✕</button>
-                </div>
-                <div class="space-y-3 font-inter text-sm">
-                    <p><strong>Year:</strong> ${row['年 Year']}</p>
-                    <p><strong>Voice Type:</strong> ${row['聲部 Voice Type']}</p>
-                    <p><strong>Instrument:</strong> ${row['樂器Instrument']}</p>
-                    <p><strong>Duration:</strong> ${row['Duration']}</p>
-                    <p><strong>Text by:</strong> ${row['文本作者 Text by']}</p>
-                    <p><strong>Level:</strong> ${row['程度Level']}</p>
-                    ${videoId ? `<div class="aspect-video mt-4 rounded-xl overflow-hidden"><iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe></div>` : ''}
-                </div>
-            `;
-            document.getElementById('detailsModal').classList.remove('hidden');
-        }
-
-        function extractYouTubeID(url) {
-            if (!url) return null;
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : null;
-        }
-
-        init();
+        // Load data when page loads
+        window.onload = loadData;
     </script>
 </body>
 </html>
