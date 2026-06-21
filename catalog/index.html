@@ -284,15 +284,19 @@
                     `;
                 });
 
-                // Add Purple Tag if recording exists
+                // Bottom Right Tag logic - added flex layout pushing it to the bottom
                 const hasMedia = recording !== '';
-                const audioTagMarkup = hasMedia ? `<span class="absolute top-4 right-4 bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase px-2 py-0.5 tracking-wider rounded-md select-none font-inter">試聽 Listen</span>` : '';
+                const audioTagMarkup = hasMedia ? `
+                    <div class="mt-5 w-full flex justify-end mt-auto">
+                        <span class="bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase px-2.5 py-1 tracking-wider rounded-md select-none font-inter">試聽 Listen</span>
+                    </div>
+                ` : `<div class="mt-auto"></div>`;
 
+                // Layout updated to remove 'relative' restrictions and title padding
                 let cardHtml = `
-                    <div onclick="openModal(${row.__naturalIndex})" class="relative bg-white rounded-2xl p-6 shadow-xs transition-all duration-300 flex flex-col justify-between cursor-pointer hover:shadow-md hover:-translate-y-1 hover:bg-[#F3E5AB]/40">
-                        ${audioTagMarkup}
-                        <div>
-                            <div class="mb-4 font-inter pr-22">
+                    <div onclick="openModal(${row.__naturalIndex})" class="bg-white rounded-2xl p-6 shadow-xs transition-all duration-300 flex flex-col justify-between cursor-pointer hover:shadow-md hover:-translate-y-1 hover:bg-[#F3E5AB]/40 h-full">
+                        <div class="w-full">
+                            <div class="mb-4 font-inter">
                                 ${titleC ? `<h3 class="text-xl font-bold text-[#4A2E80] leading-snug font-serif">${titleC}</h3>` : ''}
                                 ${titleE ? `<p class="text-md font-medium text-[#B3923E] mt-0.5 leading-snug">${titleE}</p>` : ''}
                                 ${(!titleC && !titleE) ? `<h3 class="text-xl font-bold text-slate-400">Untitled Work</h3>` : ''}
@@ -303,6 +307,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        ${audioTagMarkup}
                     </div>
                 `;
                 cardsLayoutEl.insertAdjacentHTML('beforeend', cardHtml);
