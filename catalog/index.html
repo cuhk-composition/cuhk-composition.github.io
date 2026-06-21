@@ -196,9 +196,10 @@
                 const titleC = (row['曲名'] || '').trim();
                 const titleE = (row['Title'] || '').trim();
                 const year = (row['年 Year'] || '').trim();
+                const duration = (row['Duration'] || '').trim();
+                const lyrics = (row['文本作者 Text by'] || '').trim();
                 const voice = (row['聲部 Voice Type'] || '').trim();
                 const instrument = (row['樂器Instrument'] || '').trim();
-                const duration = (row['Duration'] || '').trim();
                 const recording = (row['錄音 Recording'] || '').trim();
 
                 const hasRecording = recording.length > 0;
@@ -221,9 +222,10 @@
 
                         <div class="space-y-3 text-sm">
                             ${year ? `<div><span class="data-label">YEAR:</span> <span class="font-medium">${year}</span></div>` : ''}
+                            ${duration ? `<div><span class="data-label">DURATION:</span> <span class="font-medium">${duration}</span></div>` : ''}
+                            ${lyrics ? `<div><span class="data-label">LYRICS:</span> <span class="font-medium">${lyrics}</span></div>` : ''}
                             ${voice ? `<div><span class="data-label">VOICE TYPE:</span> <span class="font-medium">${voice}</span></div>` : ''}
                             ${instrument ? `<div><span class="data-label">INSTRUMENT:</span> <span class="font-medium">${instrument}</span></div>` : ''}
-                            ${duration ? `<div><span class="data-label">DURATION:</span> <span class="font-medium">${duration}</span></div>` : ''}
                         </div>
                     </div>
                 `;
@@ -246,36 +248,28 @@
                 <div class="p-8 space-y-6 overflow-auto max-h-[65vh]">
             `;
 
-            // Main fields like in screenshot
-            const mainFields = [
+            // All available fields in modal
+            const allFields = [
                 ['YEAR', row['年 Year']],
                 ['VOICE TYPE', row['聲部 Voice Type']],
                 ['INSTRUMENT', row['樂器Instrument']],
                 ['DURATION', row['Duration']],
-                ['TEXT BY', row['文本作者 Text by']],
+                ['LYRICS / TEXT BY', row['文本作者 Text by']],
                 ['LEVEL', row['程度Level']],
-                ['PREMIERE', row['首演日 Premiere']]
+                ['PREMIERE', row['首演日 Premiere']],
+                ['NOTES', row['附註 Notes']]
             ];
 
-            mainFields.forEach(([label, value]) => {
+            allFields.forEach(([label, value]) => {
                 if (value) {
                     content += `
                         <div class="flex border-b border-slate-100 pb-3 last:border-0">
-                            <span class="data-label w-40 flex-shrink-0">${label}:</span>
+                            <span class="data-label w-48 flex-shrink-0">${label}:</span>
                             <span class="font-medium">${value}</span>
                         </div>
                     `;
                 }
             });
-
-            if (row['附註 Notes']) {
-                content += `
-                    <div>
-                        <span class="data-label">NOTES:</span>
-                        <p class="mt-2 text-slate-700">${row['附註 Notes']}</p>
-                    </div>
-                `;
-            }
 
             // Embedded Video
             const recording = row['錄音 Recording'] || '';
