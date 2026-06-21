@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Data Catalog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-[#FAF9F6] text-slate-900 selection:bg-indigo-500 selection:text-white relative">
+
+    <div class="h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between border-b border-indigo-200/50 pb-8 mb-8 gap-4">
+            <div>
+                <h1 class="text-4xl font-bold text-indigo-950 tracking-wide">Data Catalog</h1>
+                <p class="text-xl font-semibold text-indigo-600 mt-1 tracking-widest uppercase">Searchable Database</p>
+            </div>
+            <div class="bg-white px-5 py-3 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3 w-fit">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Entries</span>
+                <span id="recordCount" class="text-2xl font-bold text-indigo-900">0</span>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60 mb-8 flex flex-col md:flex-row gap-4 items-end">
+            <div class="w-full md:flex-1">
+                <label for="searchInput" class="block text-xs font-bold text-indigo-900 uppercase tracking-wider mb-2">Search Catalog</label>
+                <input type="text" id="searchInput" placeholder="Search any keyword..." 
+                    class="w-full px-4 py-3 bg-[#FAF9F6] border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm font-medium">
+            </div>
+            
+            <div class="w-full md:w-72 relative">
+                <span class="block text-xs font-bold text-indigo-900 uppercase tracking-wider mb-2">Sort</span>
+                <button id="dropdownBtn" class="w-full bg-[#FAF9F6] border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-left flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+                    <span id="dropdownCurrentLabel">Latest Entry</span>
+                    <svg id="dropdownArrow" class="h-4 w-4 text-slate-500 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                
+                <div id="dropdownMenu" class="hidden absolute left-0 mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg z-30 py-2">
+                    <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-medium text-slate-700">
+                        <input type="radio" name="sortOption" value="latest_entry" checked class="accent-indigo-600 mr-3 h-4 w-4">
+                        <span>Latest Entry</span>
+                    </label>
+                    <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-medium text-slate-700">
+                        <input type="radio" name="sortOption" value="earliest_entry" class="accent-indigo-600 mr-3 h-4 w-4">
+                        <span>Earliest Entry</span>
+                    </label>
+                </div>
+            </div>
+
+            <button id="resetFilters" class="w-full md:w-auto px-5 py-3 bg-slate-100 hover:bg-slate-200 active:scale-95 transition-all text-sm font-semibold text-slate-600 rounded-xl cursor-pointer whitespace-nowrap">
+                Reset
+            </button>
+        </div>
+
+        <div id="loading" class="flex flex-col justify-center items-center py-24">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-indigo-600"></div>
+            <span class="mt-4 text-sm font-semibold text-slate-500 tracking-wide">Fetching entries from Google Sheets...</span>
+        </div>
+
+        <div id="error" class="hidden bg-rose-50 border border-rose-200 text-rose-900 p-6 rounded-2xl mb-8 shadow-sm">
+            <div class="flex gap-3">
+                <svg class="h-6 w-6 text-rose-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                <div>
+                    <h3 class="text-base font-bold">Data Loading Error</h3>
+                    <p class="text-sm text-rose-700 mt-1">Make sure the Google Sheet is published to the web or set to "Anyone with the link can view", and that you are not running this file directly via `file:///` without a local server.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="gridContainer" class="hidden">
+            <div id="cardsLayout" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+
+            <div id="noResults" class="hidden text-center py-20 bg-white border border-dashed border-slate-200 rounded-2xl">
+                <svg class="mx-auto h-12 w-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <h3 class="mt-4 text-sm font-bold text-slate-900">No matching search criteria found</h3>
+                <p class="mt-1 text-xs text-slate-500">Try adjusting your keywords.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="detailsModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl border border-slate-200 flex flex-col transform transition-transform duration-300 scale-95" id="modalBox"></div>
+    </div>
+
+    <script>
+        // Updated Google Sheet ID
+        const sheetId = '1gUY4w6OIb9_mbQ0M1GmXP_Lp27oO-ThcKqKiI5sWJJ0';
+        const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+
+        let globalData = [];
+        let headers = [];
+
+        const loadingEl = document.getElementById('loading');
+        const errorEl = document.getElementById('error');
+        const gridContainerEl = document.getElementById('gridContainer');
+        const cardsLayoutEl = document.getElementById('cardsLayout');
+        const recordCountEl = document.getElementById('recordCount');
+        const searchInput = document.getElementById('searchInput');
+        const noResultsEl = document.getElementById('noResults');
+        const resetBtn = document.getElementById('resetFilters');
+        
+        const modalEl = document.getElementById('detailsModal');
+        const modalBox = document.getElementById('modalBox');
+
+        const dropdownBtn = document.getElementById('dropdownBtn');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const dropdownArrow = document.getElementById('dropdownArrow');
+        const dropdownCurrentLabel = document.getElementById('dropdownCurrentLabel');
+
+        function init() {
+            Papa.parse(csvUrl, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    headers = results.meta.fields;
+                    globalData = results.data.map((row, index) => ({
+                        ...row,
+                        __naturalIndex: index
+                    }));
+
+                    if (headers && headers.length > 0) {
+                        setupCustomDropdownListeners();
+                        processDashboardEngine();
+                        loadingEl.classList.add('hidden');
+                        gridContainerEl.classList.remove('hidden');
+                    } else {
+                        showError();
+                    }
+                },
+                error: function(err) {
+                    console.error("Connection failed:", err);
+                    showError();
+                }
+            });
+        }
+
+        function showError() {
+            loadingEl.classList.add('hidden');
+            errorEl.classList.remove('hidden');
+        }
+
+        function setupCustomDropdownListeners() {
+            dropdownBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('hidden');
+                dropdownArrow.classList.toggle('rotate-180');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                    dropdownMenu.classList.add('hidden');
+                    dropdownArrow.classList.remove('rotate-180');
+                }
+            });
+
+            const sortRadios = document.querySelectorAll('input[name="sortOption"]');
+            sortRadios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    dropdownCurrentLabel.textContent = e.target.nextElementSibling.textContent;
+                    processDashboardEngine();
+                });
+            });
+        }
+
+        function processDashboardEngine() {
+            const query = searchInput.value.toLowerCase().trim();
+            const selectedRadio = document.querySelector('input[name="sortOption"]:checked');
+            const sortingType = selectedRadio ? selectedRadio.value : 'latest_entry';
+
+            let items = globalData.filter(row => {
+                return headers.some(h => String(row[h] || '').toLowerCase().includes(query));
+            });
+
+            items.sort((a, b) => {
+                if (sortingType === 'latest_entry') return b.__naturalIndex - a.__naturalIndex;
+                if (sortingType === 'earliest_entry') return a.__naturalIndex - b.__naturalIndex;
+                return 0;
+            });
+
+            renderCatalogCards(items);
+        }
+
+        function renderCatalogCards(data) {
+            cardsLayoutEl.innerHTML = '';
+            recordCountEl.textContent = data.length;
+
+            if (data.length === 0) {
+                noResultsEl.classList.remove('hidden');
+                return;
+            }
+            noResultsEl.classList.add('hidden');
+
+            const primaryHeader = headers[0]; // Assuming first column is the Title
+
+            data.forEach(row => {
+                const title = (row[primaryHeader] || 'Untitled Record').trim();
+                
+                // Dynamically grab up to 4 other columns for the card preview
+                let tableRowsHtml = '';
+                let previewCount = 0;
+                
+                for(let i = 1; i < headers.length; i++) {
+                    if (previewCount >= 4) break;
+                    const headerName = headers[i];
+                    const val = (row[headerName] || '').trim();
+                    
+                    if (val) {
+                        tableRowsHtml += `
+                            <tr class="border-b border-slate-100 last:border-0">
+                                <td class="py-2 pr-4 font-bold text-indigo-900 text-xs uppercase tracking-wider w-1/3 align-top">${headerName}:</td>
+                                <td class="py-2 text-slate-700 font-medium text-sm align-top line-clamp-2">${val}</td>
+                            </tr>
+                        `;
+                        previewCount++;
+                    }
+                }
+
+                let cardHtml = `
+                    <div onclick="openModal(${row.__naturalIndex})" class="relative bg-white rounded-2xl p-6 shadow-sm transition-all duration-300 flex flex-col justify-between cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-indigo-200 border border-transparent">
+                        <div>
+                            <div class="mb-4">
+                                <h3 class="text-xl font-bold text-indigo-950 leading-snug">${title}</h3>
+                            </div>
+                            <table class="w-full border-collapse mt-2">
+                                <tbody>
+                                    ${tableRowsHtml}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+                cardsLayoutEl.insertAdjacentHTML('beforeend', cardHtml);
+            });
+        }
+
+        function openModal(naturalIndex) {
+            const row = globalData.find(item => item.__naturalIndex === naturalIndex);
+            if (!row) return;
+
+            const primaryHeader = headers[0];
+            const title = (row[primaryHeader] || 'Untitled Record').trim();
+
+            let tableHtml = '';
+            
+            // Loop through all headers to populate the detailed view
+            headers.forEach(headerName => {
+                if(headerName === primaryHeader) return; // Skip title as it's the header
+                
+                const val = (row[headerName] || '').trim();
+                if (val) {
+                    // Basic check to make URLs clickable in the modal
+                    let displayVal = val;
+                    if(val.startsWith('http')) {
+                         displayVal = `<a href="${val}" target="_blank" class="text-indigo-600 underline hover:text-indigo-800 break-all">Link</a>`;
+                    }
+                    
+                    tableHtml += `
+                        <tr class="border-b border-slate-100 last:border-0">
+                            <td class="py-3 pr-4 font-bold text-indigo-900 text-xs uppercase tracking-wider w-1/3 align-top">${headerName}:</td>
+                            <td class="py-3 text-slate-700 font-medium text-sm align-top">${displayVal}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            modalBox.innerHTML = `
+                <div class="p-6 border-b border-slate-100 flex justify-between items-start sticky top-0 bg-white z-10 shadow-sm">
+                    <div>
+                        <h2 class="text-2xl font-bold text-indigo-950 leading-snug">${title}</h2>
+                    </div>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1 bg-slate-50 hover:bg-slate-100 rounded-full cursor-pointer transition-all ml-4">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+                <div class="p-6 overflow-y-auto">
+                    <table class="w-full border-collapse">
+                        <tbody>
+                            ${tableHtml}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            modalEl.classList.remove('hidden');
+            setTimeout(() => modalBox.classList.remove('scale-95'), 10);
+        }
+
+        function closeModal() {
+            modalBox.classList.add('scale-95');
+            modalEl.classList.add('hidden');
+        }
+
+        modalEl.addEventListener('click', (e) => {
+            if (e.target === modalEl) closeModal();
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modalEl.classList.contains('hidden')) closeModal();
+        });
+
+        searchInput.addEventListener('input', processDashboardEngine);
+        
+        resetBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            document.querySelector('input[name="sortOption"][value="latest_entry"]').checked = true;
+            dropdownCurrentLabel.textContent = 'Latest Entry';
+            
+            dropdownMenu.classList.add('hidden');
+            dropdownArrow.classList.remove('rotate-180');
+
+            processDashboardEngine();
+        });
+
+        init();
+    </script>
+</body>
+</html>
