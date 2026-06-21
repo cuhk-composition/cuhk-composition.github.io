@@ -3,276 +3,334 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>陳啟揚 Kai-Young Chan - 合唱作品目錄 Choral Catalogue</title>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css">
-    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <title>陳啟揚 Kai-Young Chan | 合唱作品目錄 Choral Catalogue</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:wght@400;700&display=swap');
-        
         body {
-            font-family: 'Noto Sans TC', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: #333;
+            font-family: "Times New Roman", "Songti TC", "Noto Serif TC", serif;
         }
-        header {
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        h1 {
-            font-family: 'Playfair Display', serif;
-            margin: 0;
-            font-size: 2.8rem;
-        }
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-        .controls {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            margin-bottom: 1.5rem;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .table-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            overflow: hidden;
-        }
-        table {
-            width: 100%;
-        }
-        th {
-            background: #1e3a8a !important;
-            color: white !important;
-        }
-        .youtube-link {
-            color: #ff0000;
-            text-decoration: none;
-        }
-        .youtube-link:hover {
-            text-decoration: underline;
-        }
-        .level-beginner { background-color: #d1fae5; }
-        .level-intermediate { background-color: #fef3c7; }
-        .level-advanced { background-color: #fee2e2; }
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: #666;
-            font-size: 0.9rem;
-        }
-        .search-box {
-            flex: 1;
-            min-width: 300px;
+        .font-inter {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
         }
     </style>
 </head>
-<body>
-    <header>
-        <h1>陳啟揚 Kai-Young Chan</h1>
-        <p class="subtitle">合唱作品目錄 • Choral Catalogue</p>
-        <p style="margin-top: 0.5rem; opacity: 0.85;">演出較多作品 | 最新錄音</p>
-    </header>
+<body class="bg-[#FAF9F6] text-slate-900 selection:bg-[#D4AF37] selection:text-white">
 
-    <div class="container">
-        <div class="controls">
-            <div class="search-box">
-                <input type="text" id="globalSearch" placeholder="🔍 搜尋曲名 / 標題 / 作曲家 / 文本作者..." 
-                       style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;">
-            </div>
+    <div class="h-2 bg-gradient-to-r from-[#B3923E] via-[#D4AF37] to-[#F3E5AB]"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between border-b border-[#D4AF37]/30 pb-8 mb-8 gap-4">
             <div>
-                <select id="langFilter" style="padding: 12px; border-radius: 8px; border: 2px solid #e5e7eb;">
-                    <option value="">所有語言 All Languages</option>
-                    <option value="Can.">粵語 / 國語 Can.</option>
-                    <option value="Eng.">English</option>
-                </select>
+                <h1 class="text-4xl font-bold text-[#4A2E80] tracking-wide">陳啟揚 Kai-Young Chan</h1>
+                <p class="text-2xl font-semibold text-[#B3923E] mt-1 tracking-[0.25em] font-inter uppercase">合唱作品目錄 • Choral Catalogue</p>
+                <p class="mt-3 text-xs text-slate-400 flex items-center gap-2 font-inter">
+                    <span class="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    演出較多作品 | 最新錄音
+                </p>
             </div>
-            <div>
-                <select id="levelFilter" style="padding: 12px; border-radius: 8px; border: 2px solid #e5e7eb;">
-                    <option value="">所有程度 All Levels</option>
-                    <option value="初級 Beginner">初級 Beginner</option>
-                    <option value="中級 Intermediate">中級 Intermediate</option>
-                    <option value="高級 Advanced">高級 Advanced</option>
-                </select>
+            <div class="bg-white px-5 py-3 rounded-xl border border-slate-200 shadow-xs flex items-center gap-3 w-fit font-inter">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Entries / 總數</span>
+                <span id="recordCount" class="text-2xl font-bold text-[#4A2E80]">0</span>
             </div>
-            <button onclick="window.location.reload()" style="padding: 12px 24px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                <i class="fas fa-sync"></i> 重新載入 Refresh
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div class="bg-white p-6 rounded-2xl shadow-xs border border-slate-200/60 mb-8 flex flex-col md:flex-row gap-4 items-end">
+            <div class="w-full md:flex-1 font-inter">
+                <label class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Search Catalog / 搜尋目錄</label>
+                <input type="text" id="searchInput" placeholder="Search title, composer, text, year..." 
+                    class="w-full px-4 py-3 bg-[#FAF9F6] border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-[#4A2E80] focus:border-[#4A2E80] transition-all text-sm font-medium">
+            </div>
+            
+            <div class="w-full md:w-72 relative font-inter">
+                <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Sort & Filter / 排序與篩選</span>
+                <button id="dropdownBtn" class="w-full bg-[#FAF9F6] border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-left flex justify-between items-center focus:outline-hidden focus:ring-2 focus:ring-[#4A2E80] cursor-pointer">
+                    <span id="dropdownCurrentLabel">最新加入 Latest Entry</span>
+                    <svg id="dropdownArrow" class="h-4 w-4 text-slate-500 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                
+                <div id="dropdownMenu" class="hidden absolute left-0 mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg z-30 py-2">
+                    <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-medium text-slate-700">
+                        <input type="radio" name="sortOption" value="latest_entry" checked class="accent-[#4A2E80] mr-3 h-4 w-4">
+                        <span>最新加入 Latest Entry</span>
+                    </label>
+                    <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-medium text-slate-700">
+                        <input type="radio" name="sortOption" value="year_latest" class="accent-[#4A2E80] mr-3 h-4 w-4">
+                        <span>年份最近 Year: Latest</span>
+                    </label>
+                    <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-medium text-slate-700">
+                        <input type="radio" name="sortOption" value="year_oldest" class="accent-[#4A2E80] mr-3 h-4 w-4">
+                        <span>年份最遠 Year: Earliest</span>
+                    </label>
+                    
+                    <div class="border-t border-slate-100 my-1"></div>
+                    
+                    <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-semibold text-[#4A2E80]">
+                        <input type="checkbox" id="audioFilterCheckbox" class="accent-[#4A2E80] mr-3 h-4 w-4 rounded-xs">
+                        <span>有錄音 Audio Available</span>
+                    </label>
+                </div>
+            </div>
+
+            <button id="resetFilters" class="w-full md:w-auto px-5 py-3 bg-slate-100 hover:bg-slate-200 active:scale-98 transition-all text-sm font-semibold text-slate-600 rounded-xl cursor-pointer whitespace-nowrap font-inter">
+                Reset / 重設
             </button>
         </div>
 
-        <div class="table-container">
-            <table id="catalogTable" class="display" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>曲名 Chinese Title</th>
-                        <th>Title English</th>
-                        <th>Lang.</th>
-                        <th>Year</th>
-                        <th>Voice Type</th>
-                        <th>Instrument</th>
-                        <th>Duration</th>
-                        <th>Text by</th>
-                        <th>Recording</th>
-                        <th>To Buy</th>
-                        <th>Level</th>
-                        <th>Premiere</th>
-                        <th>Notes</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+        <div id="loading" class="flex flex-col justify-center items-center py-24 font-inter">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-[#4A2E80]"></div>
+            <span class="mt-4 text-sm font-semibold text-slate-500 tracking-wide">Loading live data from Google Sheet...</span>
+        </div>
+
+        <div id="gridContainer" class="hidden">
+            <div id="cardsLayout" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+
+            <div id="noResults" class="hidden text-center py-20 bg-white border border-dashed border-slate-200 rounded-2xl font-inter">
+                <svg class="mx-auto h-12 w-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <h3 class="mt-4 text-sm font-bold text-slate-900">No matching works found</h3>
+                <p class="mt-1 text-xs text-slate-500">Try different keywords or clear some filters.</p>
+            </div>
         </div>
     </div>
 
-    <footer>
-        <p>Data from Kai-Young Chan's Google Sheet • Dynamically loaded • Email: chan.kaiyoung@cuhk.edu.hk</p>
-        <p style="margin-top: 0.5rem;">Made with ❤️ for choral music lovers</p>
-    </footer>
+    <!-- Detail Modal -->
+    <div id="detailsModal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl" id="modalBox"></div>
+    </div>
 
     <script>
-        let table;
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/1gUY4w6OIb9_mbQ0M1GmXP_Lp27oO-ThcKqKiI5sWJJ0/gviz/tq?tqx=out:csv&gid=0';
 
-        async function loadData() {
-            const csvUrl = 'https://docs.google.com/spreadsheets/d/1gUY4w6OIb9_mbQ0M1GmXP_Lp27oO-ThcKqKiI5sWJJ0/gviz/tq?tqx=out:csv&gid=0';
-            
-            try {
-                const response = await fetch(csvUrl);
-                const csvText = await response.text();
-                
-                // Parse CSV
-                const rows = csvText.trim().split('\n').map(row => {
-                    // Simple CSV parser handling quotes
-                    const matches = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
-                    return matches.map(field => field.replace(/^"|"$/g, '').trim());
+        let globalData = [];
+        let headers = [];
+
+        const loadingEl = document.getElementById('loading');
+        const gridContainerEl = document.getElementById('gridContainer');
+        const cardsLayoutEl = document.getElementById('cardsLayout');
+        const recordCountEl = document.getElementById('recordCount');
+        const searchInput = document.getElementById('searchInput');
+        const noResultsEl = document.getElementById('noResults');
+
+        const modalEl = document.getElementById('detailsModal');
+        const modalBox = document.getElementById('modalBox');
+
+        const dropdownBtn = document.getElementById('dropdownBtn');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const dropdownArrow = document.getElementById('dropdownArrow');
+        const dropdownCurrentLabel = document.getElementById('dropdownCurrentLabel');
+        const audioFilterCheckbox = document.getElementById('audioFilterCheckbox');
+
+        function init() {
+            Papa.parse(csvUrl, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    headers = results.meta.fields;
+                    globalData = results.data
+                        .filter(row => row['曲名'] || row['Title'])
+                        .map((row, index) => ({ ...row, __naturalIndex: index }));
+
+                    setupListeners();
+                    loadingEl.classList.add('hidden');
+                    gridContainerEl.classList.remove('hidden');
+                    processDashboardEngine();
+                },
+                error: function() {
+                    loadingEl.innerHTML = `<p class="text-red-600">Failed to load data. Please make sure the Google Sheet is published to the web.</p>`;
+                }
+            });
+        }
+
+        function setupListeners() {
+            dropdownBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('hidden');
+                dropdownArrow.classList.toggle('rotate-180');
+            });
+
+            document.addEventListener('click', () => {
+                dropdownMenu.classList.add('hidden');
+                dropdownArrow.classList.remove('rotate-180');
+            });
+
+            document.querySelectorAll('input[name="sortOption"]').forEach(radio => {
+                radio.addEventListener('change', () => {
+                    const label = radio.nextElementSibling.textContent;
+                    dropdownCurrentLabel.textContent = label;
+                    processDashboardEngine();
                 });
+            });
 
-                // Skip header rows
-                const dataRows = rows.slice(2); // Skip title and column headers
+            audioFilterCheckbox.addEventListener('change', processDashboardEngine);
+            searchInput.addEventListener('input', processDashboardEngine);
+        }
 
-                const tbody = document.querySelector('#catalogTable tbody');
-                tbody.innerHTML = '';
+        function processDashboardEngine() {
+            const query = searchInput.value.toLowerCase().trim();
+            const sortingType = document.querySelector('input[name="sortOption"]:checked').value;
+            const audioOnly = audioFilterCheckbox.checked;
 
-                dataRows.forEach(row => {
-                    if (row.length < 5 || !row[0] && !row[1]) return; // Skip empty
-                    
-                    const chineseTitle = row[0] || 'N/A';
-                    const englishTitle = row[1] || '';
-                    const lang = row[2] || '';
-                    const year = row[3] || '';
-                    const voice = row[4] || '';
-                    const instrument = row[5] || '';
-                    const duration = row[6] || '';
-                    const textBy = row[7] || '';
-                    const recording = row[8] || '';
-                    const toBuy = row[9] || '';
-                    const level = row[10] || '';
-                    const premiere = row[11] || '';
-                    const notes = row[12] || '';
+            let items = globalData.filter(row => {
+                const matchesSearch = headers.some(h => 
+                    String(row[h] || '').toLowerCase().includes(query)
+                );
+                if (!matchesSearch) return false;
 
-                    const recordingHtml = recording ? 
-                        `<a href="${recording}" target="_blank" class="youtube-link"><i class="fab fa-youtube"></i> Watch</a>` : '—';
+                if (audioOnly) {
+                    const hasRecording = (row['錄音 Recording'] || '').trim() !== '';
+                    if (!hasRecording) return false;
+                }
+                return true;
+            });
 
-                    const rowHtml = `
-                        <tr>
-                            <td><strong>${chineseTitle}</strong></td>
-                            <td>${englishTitle}</td>
-                            <td>${lang}</td>
-                            <td>${year}</td>
-                            <td>${voice}</td>
-                            <td>${instrument}</td>
-                            <td>${duration}</td>
-                            <td>${textBy}</td>
-                            <td>${recordingHtml}</td>
-                            <td>${toBuy}</td>
-                            <td class="${getLevelClass(level)}">${level}</td>
-                            <td>${premiere}</td>
-                            <td style="max-width: 300px;">${notes}</td>
-                        </tr>
-                    `;
-                    tbody.innerHTML += rowHtml;
-                });
+            // Sorting
+            items.sort((a, b) => {
+                if (sortingType === 'latest_entry') return b.__naturalIndex - a.__naturalIndex;
+                if (sortingType === 'year_latest' || sortingType === 'year_oldest') {
+                    const yearA = parseInt(a['年 Year'] || 0);
+                    const yearB = parseInt(b['年 Year'] || 0);
+                    return sortingType === 'year_latest' ? yearB - yearA : yearA - yearB;
+                }
+                return 0;
+            });
 
-                // Initialize DataTable
-                if (table) table.destroy();
-                
-                table = $('#catalogTable').DataTable({
-                    language: {
-                        search: "全域搜尋 Global Search:",
-                        lengthMenu: "顯示 _MENU_ 筆",
-                        info: "顯示第 _START_ 到 _END_ 筆，共 _TOTAL_ 筆作品",
-                        infoEmpty: "無符合資料",
-                        zeroRecords: "沒有符合的結果",
-                        paginate: {
-                            first: "第一頁",
-                            last: "最後一頁",
-                            next: "下一頁",
-                            previous: "上一頁"
-                        }
-                    },
-                    pageLength: 25,
-                    order: [[3, 'desc']], // Sort by year descending
-                    responsive: true
-                });
+            renderCards(items);
+        }
 
-                // Custom filters
-                setupFilters();
+        function renderCards(data) {
+            cardsLayoutEl.innerHTML = '';
+            recordCountEl.textContent = data.length;
 
-            } catch (error) {
-                console.error('Error loading data:', error);
-                document.querySelector('#catalogTable tbody').innerHTML = `
-                    <tr><td colspan="13" style="text-align:center; padding:40px; color:#ef4444;">
-                        無法載入資料表。請確保 Google Sheet 已公開。<br>
-                        Error loading catalogue. Make sure the Google Sheet is publicly accessible.
-                    </td></tr>`;
+            if (data.length === 0) {
+                noResultsEl.classList.remove('hidden');
+                return;
             }
+            noResultsEl.classList.add('hidden');
+
+            data.forEach(row => {
+                const titleC = (row['曲名'] || '').trim();
+                const titleE = (row['Title'] || '').trim();
+                const year = (row['年 Year'] || '').trim();
+                const voice = (row['聲部 Voice Type'] || '').trim();
+                const instrument = (row['樂器Instrument'] || '').trim();
+                const duration = (row['Duration'] || '').trim();
+                const textBy = (row['文本作者 Text by'] || '').trim();
+                const recording = (row['錄音 Recording'] || '').trim();
+                const level = (row['程度Level'] || '').trim();
+                const premiere = (row['首演日 Premiere'] || '').trim();
+                const notes = (row['附註 Notes'] || '').trim();
+
+                const hasAudio = recording !== '';
+
+                const cardHTML = `
+                    <div onclick="openModal(${row.__naturalIndex})" class="relative bg-white rounded-2xl p-6 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+                        ${hasAudio ? `<span class="absolute top-4 right-4 bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase px-2 py-0.5 tracking-wider rounded-md">試聽 Listen</span>` : ''}
+                        
+                        <div class="mb-4">
+                            ${titleC ? `<h3 class="text-xl font-bold text-[#4A2E80] leading-snug">${titleC}</h3>` : ''}
+                            ${titleE ? `<p class="text-base text-[#B3923E] mt-1">${titleE}</p>` : ''}
+                        </div>
+
+                        <table class="w-full text-sm">
+                            <tbody class="font-inter">
+                                ${year ? `<tr><td class="font-bold text-[#4A2E80] w-1/3 py-1">Year</td><td>${year}</td></tr>` : ''}
+                                ${voice ? `<tr><td class="font-bold text-[#4A2E80] w-1/3 py-1">Voice</td><td>${voice}</td></tr>` : ''}
+                                ${instrument ? `<tr><td class="font-bold text-[#4A2E80] w-1/3 py-1">Instrument</td><td>${instrument}</td></tr>` : ''}
+                                ${duration ? `<tr><td class="font-bold text-[#4A2E80] w-1/3 py-1">Duration</td><td>${duration}</td></tr>` : ''}
+                                ${level ? `<tr><td class="font-bold text-[#4A2E80] w-1/3 py-1">Level</td><td>${level}</td></tr>` : ''}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                cardsLayoutEl.insertAdjacentHTML('beforeend', cardHTML);
+            });
         }
 
-        function getLevelClass(level) {
-            if (level.includes('初級') || level.includes('Beginner')) return 'level-beginner';
-            if (level.includes('中級') || level.includes('Intermediate')) return 'level-intermediate';
-            if (level.includes('高級') || level.includes('Advanced')) return 'level-advanced';
-            return '';
-        }
+        window.openModal = function(index) {
+            const row = globalData.find(r => r.__naturalIndex === index);
+            if (!row) return;
 
-        function setupFilters() {
-            // Global search already handled by DataTable
-            // Additional filters
-            $('#langFilter').on('change', function() {
-                const val = $(this).val();
-                table.column(2).search(val).draw();
+            const titleC = row['曲名'] || '';
+            const titleE = row['Title'] || '';
+            const recording = row['錄音 Recording'] || '';
+
+            let infoHTML = `
+                <div class="p-6 border-b border-slate-100 flex justify-between items-start bg-white sticky top-0 z-10">
+                    <div>
+                        ${titleC ? `<h2 class="text-2xl font-bold text-[#4A2E80]">${titleC}</h2>` : ''}
+                        ${titleE ? `<p class="text-lg text-[#B3923E]">${titleE}</p>` : ''}
+                    </div>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600">✕</button>
+                </div>
+                <div class="p-6 space-y-6 overflow-auto max-h-[70vh]">
+            `;
+
+            // Add fields
+            const fields = [
+                ['Year', row['年 Year']],
+                ['Voice Type', row['聲部 Voice Type']],
+                ['Instrument', row['樂器Instrument']],
+                ['Duration', row['Duration']],
+                ['Text by', row['文本作者 Text by']],
+                ['Level', row['程度Level']],
+                ['Premiere', row['首演日 Premiere']],
+                ['Notes', row['附註 Notes']]
+            ];
+
+            fields.forEach(([label, value]) => {
+                if (value) {
+                    infoHTML += `
+                        <div>
+                            <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider">${label}</span>
+                            <p class="mt-1 text-slate-700">${value}</p>
+                        </div>
+                    `;
+                }
             });
 
-            $('#levelFilter').on('change', function() {
-                const val = $(this).val();
-                table.column(10).search(val).draw();
-            });
+            // Embedded Video
+            if (recording) {
+                const videoId = recording.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube.com\/embed\/)([^&\n?#]+)/);
+                if (videoId && videoId[1]) {
+                    infoHTML += `
+                        <div class="pt-6 border-t border-slate-200">
+                            <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-3">Recording / 錄音</span>
+                            <div class="aspect-video rounded-xl overflow-hidden shadow-inner">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId[1]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
 
-            // Extra global search box
-            $('#globalSearch').on('keyup', function() {
-                table.search(this.value).draw();
-            });
-        }
+            infoHTML += `</div>`;
+            modalBox.innerHTML = infoHTML;
+            modalEl.classList.remove('hidden');
+        };
 
-        // Load data when page loads
-        window.onload = loadData;
+        window.closeModal = function() {
+            modalEl.classList.add('hidden');
+        };
+
+        document.getElementById('resetFilters').addEventListener('click', () => {
+            searchInput.value = '';
+            document.querySelector('input[value="latest_entry"]').checked = true;
+            audioFilterCheckbox.checked = false;
+            dropdownCurrentLabel.textContent = '最新加入 Latest Entry';
+            processDashboardEngine();
+        });
+
+        init();
     </script>
 </body>
 </html>
