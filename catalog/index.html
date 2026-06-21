@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>粵語藝術歌曲資料庫 | Cantonese Art Song Database</title>
+    <title>陳啟揚合唱作品 | Choral Works by Kai-Young Chan</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -29,8 +29,8 @@
         
         <div class="flex flex-col md:flex-row md:items-end md:justify-between border-b border-[#D4AF37]/30 pb-8 mb-8 gap-4">
             <div>
-                <h1 class="text-4xl font-bold text-[#4A2E80] tracking-wide">粵語藝術歌曲資料庫</h1>
-                <p class="text-2xl font-semibold text-[#B3923E] mt-1 tracking-[0.25em] font-inter uppercase">Cantonese Art Song Database</p>
+                <h1 class="text-4xl font-bold text-[#4A2E80] tracking-wide">陳啟揚合唱作品</h1>
+                <p class="text-2xl font-semibold text-[#B3923E] mt-1 tracking-[0.25em] font-inter uppercase">Choral Works by Kai-Young Chan</p>
                 <p class="mt-3 text-xs text-slate-400 flex items-center gap-2 font-inter">
                     <span class="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     Powered by <a href="https://cantonesecomposition.com" target="_blank" rel="noopener noreferrer" class="text-[#4A2E80] hover:text-[#B3923E] transition-colors font-semibold">Cantonese Contemporary Music Research</a>
@@ -44,48 +44,48 @@
 
         <div class="bg-white p-6 rounded-2xl shadow-xs border border-slate-200/60 mb-8 flex flex-col md:flex-row gap-4 items-end">
             <div class="w-full md:flex-1 font-inter">
-                <label for="searchInput" class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Search Catalog / 搜尋目錄</label>
+                <label for="searchInput" class="block text-sm font-bold text-[#4A2E80] uppercase tracking-wider mb-2">搜尋目錄 / Search Catalog</label>
                 <input type="text" id="searchInput" placeholder="Search title, composer, instrumentation, text type..." 
                     class="w-full px-4 py-3 bg-[#FAF9F6] border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-[#4A2E80] focus:border-[#4A2E80] transition-all text-sm font-medium">
             </div>
             
             <div class="w-full md:w-72 relative font-inter">
-                <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Sort & Filter / 排序與篩選</span>
-                <button id="dropdownBtn" class="w-full bg-[#FAF9F6] border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-left flex justify-between items-center focus:outline-hidden focus:ring-2 focus:ring-[#4A2E80] cursor-pointer">
+                <span class="block text-sm font-bold text-[#4A2E80] uppercase tracking-wider mb-2">排序與篩選 / SORT & FILTER</span>
+                <button id="dropdownBtn" class="w-full bg-[#FAF9F6] border-2 border-[#4A2E80] rounded-xl px-4 py-3 text-base font-semibold text-slate-800 text-left flex justify-between items-center focus:outline-hidden focus:ring-2 focus:ring-[#4A2E80] cursor-pointer">
                     <span id="dropdownCurrentLabel">最新加入 Latest Entry</span>
-                    <svg id="dropdownArrow" class="h-4 w-4 text-slate-500 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg id="dropdownArrow" class="h-5 w-5 text-slate-600 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
                 
                 <div id="dropdownMenu" class="hidden absolute left-0 mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg z-30 py-2">
-                    <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-medium text-slate-700">
-                        <input type="radio" name="sortOption" value="latest_entry" checked class="accent-[#4A2E80] mr-3 h-4 w-4">
+                    <label class="flex items-center px-4 py-3 hover:bg-slate-50 cursor-pointer text-base font-semibold text-slate-700">
+                        <input type="radio" name="sortOption" value="latest_entry" checked class="accent-[#4A2E80] mr-3 h-5 w-5">
                         <span>最新加入 Latest Entry</span>
                     </label>
-                    <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-medium text-slate-700">
-                        <input type="radio" name="sortOption" value="earliest_entry" class="accent-[#4A2E80] mr-3 h-4 w-4">
+                    <label class="flex items-center px-4 py-3 hover:bg-slate-50 cursor-pointer text-base font-semibold text-slate-700">
+                        <input type="radio" name="sortOption" value="earliest_entry" class="accent-[#4A2E80] mr-3 h-5 w-5">
                         <span>最先加入 Earliest Entry</span>
                     </label>
-                    <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-medium text-slate-700">
-                        <input type="radio" name="sortOption" value="year_latest" class="accent-[#4A2E80] mr-3 h-4 w-4">
+                    <label class="flex items-center px-4 py-3 hover:bg-slate-50 cursor-pointer text-base font-semibold text-slate-700">
+                        <input type="radio" name="sortOption" value="year_latest" class="accent-[#4A2E80] mr-3 h-5 w-5">
                         <span>年份最近 Year: Latest</span>
                     </label>
-                    <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-medium text-slate-700">
-                        <input type="radio" name="sortOption" value="year_oldest" class="accent-[#4A2E80] mr-3 h-4 w-4">
+                    <label class="flex items-center px-4 py-3 hover:bg-slate-50 cursor-pointer text-base font-semibold text-slate-700">
+                        <input type="radio" name="sortOption" value="year_oldest" class="accent-[#4A2E80] mr-3 h-5 w-5">
                         <span>年份最遠 Year: Earliest</span>
                     </label>
                     
                     <div class="border-t border-slate-100 my-1"></div>
                     
-                    <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-semibold text-[#4A2E80]">
-                        <input type="checkbox" id="audioFilterCheckbox" class="accent-[#4A2E80] mr-3 h-4 w-4 rounded-xs">
-                        <span>Audio Available 可供試聽</span>
+                    <label class="flex items-center px-4 py-3 hover:bg-slate-50 cursor-pointer text-base font-bold text-[#4A2E80]">
+                        <input type="checkbox" id="audioFilterCheckbox" class="accent-[#4A2E80] mr-3 h-5 w-5 rounded-xs">
+                        <span>可供試聽 Audio Available</span>
                     </label>
                 </div>
             </div>
 
-            <button id="resetFilters" class="w-full md:w-auto px-5 py-3 bg-slate-100 hover:bg-slate-200 active:scale-98 transition-all text-sm font-semibold text-slate-600 rounded-xl cursor-pointer whitespace-nowrap font-inter">
+            <button id="resetFilters" class="w-full md:w-auto px-5 py-3.5 bg-slate-100 hover:bg-slate-200 active:scale-98 transition-all text-sm font-bold text-slate-600 rounded-xl cursor-pointer whitespace-nowrap font-inter">
                 Reset / 重設
             </button>
         </div>
@@ -109,7 +109,7 @@
         </div>
 
         <div id="gridContainer" class="hidden">
-            <div id="cardsLayout" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+            <div id="cardsLayout" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
 
             <div id="noResults" class="hidden text-center py-20 bg-white border border-dashed border-slate-200 rounded-2xl font-inter">
                 <svg class="mx-auto h-12 w-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -142,6 +142,7 @@
         const modalEl = document.getElementById('detailsModal');
         const modalBox = document.getElementById('modalBox');
 
+        // Custom Dropdown elements
         const dropdownBtn = document.getElementById('dropdownBtn');
         const dropdownMenu = document.getElementById('dropdownMenu');
         const dropdownArrow = document.getElementById('dropdownArrow');
@@ -182,12 +183,14 @@
         }
 
         function setupCustomDropdownListeners() {
+            // Dropdown visibility toggling
             dropdownBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 dropdownMenu.classList.toggle('hidden');
                 dropdownArrow.classList.toggle('rotate-180');
             });
 
+            // Auto-hide when clicking outside the container
             document.addEventListener('click', (e) => {
                 if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
                     dropdownMenu.classList.add('hidden');
@@ -195,6 +198,7 @@
                 }
             });
 
+            // Radio selections updates
             const sortRadios = document.querySelectorAll('input[name="sortOption"]');
             sortRadios.forEach(radio => {
                 radio.addEventListener('change', (e) => {
@@ -204,23 +208,29 @@
                 });
             });
 
+            // Nest filter checkbox updates
             audioFilterCheckbox.addEventListener('change', processDashboardEngine);
         }
 
         function processDashboardEngine() {
             const query = searchInput.value.toLowerCase().trim();
+            
+            // Extract parameters from custom component state values
             const selectedRadio = document.querySelector('input[name="sortOption"]:checked');
             const sortingType = selectedRadio ? selectedRadio.value : 'latest_entry';
             const audioOnly = audioFilterCheckbox.checked;
 
             let items = globalData.filter(row => {
+                // Main search logic queries matching fields
                 const matchesSearch = headers.some(h => String(row[h] || '').toLowerCase().includes(query));
                 if (!matchesSearch) return false;
 
+                // Handle nested Audio filter constraints
                 if (audioOnly) {
                     const hasMedia = (row['Media Link'] || '').trim() !== '';
                     if (!hasMedia) return false;
                 }
+
                 return true;
             });
 
@@ -261,15 +271,21 @@
 
                 const compC = (row['Composer (C)'] || '').trim();
                 const compE = (row['Composer (E)'] || '').trim();
-                let masterComposer = (compC && compE) ? `${compC} ${compE}` : (compC || compE || '');
+                let masterComposer = '';
+                if (compC && compE) masterComposer = `${compC} ${compE}`;
+                else masterComposer = compC || compE || '';
 
                 const voice = (row['Voice Type'] || '').trim();
                 const instruments = (row['Instrument(s)'] || '').trim();
-                let masterInstrumentation = (voice && instruments) ? `${voice}, ${instruments}` : (voice || instruments || '');
+                let masterInstrumentation = '';
+                if (voice && instruments) masterInstrumentation = `${voice}, ${instruments}`;
+                else masterInstrumentation = voice || instruments || '';
 
                 const textC = (row['Text (C)'] || '').trim();
                 const textE = (row['Text (E)'] || '').trim();
-                let masterLyrics = (textC && textE) ? `${textC} ${textE}` : (textC || textE || '');
+                let masterLyrics = '';
+                if (textC && textE) masterLyrics = `${textC} ${textE}`;
+                else masterLyrics = textC || textE || '';
 
                 const year = (row['Year'] || '').trim();
                 const duration = (row['Duration'] || '').trim();
@@ -284,27 +300,26 @@
 
                 let tableRowsHtml = '';
                 rowsArray.forEach(([label, val]) => {
-                    // Thick white borders, airy padding, purple bold labels, serif values (matching screenshot)
                     tableRowsHtml += `
-                        <tr class="border-b-2 border-white last:border-0">
-                            <td class="py-3 pr-2 font-extrabold text-[#4A2E80] text-[13px] uppercase tracking-wider w-[40%] align-top font-inter">${label}:</td>
-                            <td class="py-3 text-[#2d3748] text-[16px] align-top leading-snug font-serif whitespace-pre-wrap">${val}</td>
+                        <tr class="border-b border-slate-100 last:border-0">
+                            <td class="py-2 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">${label}:</td>
+                            <td class="py-2 text-slate-700 font-medium text-sm align-top line-clamp-3">${val}</td>
                         </tr>
                     `;
                 });
 
                 const hasMedia = mediaLink !== '';
-                const audioTagMarkup = hasMedia ? `<span class="absolute top-4 right-4 bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase px-2 py-0.5 tracking-wider rounded-md select-none font-inter border border-[#4A2E80]/20">試聽 Listen</span>` : '';
+                const audioTagMarkup = hasMedia ? `<span class="absolute top-4 right-4 bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase px-2 py-0.5 tracking-wider rounded-md select-none font-inter">試聽 Listen</span>` : '';
 
-                // Outer Card styling matches the beige/cream from the screenshot (bg-[#F5F1E4])
+                // Setting bg-white default and hover:bg-[#F3E5AB]/40 (light gold)
                 let cardHtml = `
-                    <div onclick="openModal(${row.__naturalIndex})" class="relative bg-[#F5F1E4] rounded-xl p-7 shadow-sm transition-all duration-300 flex flex-col justify-between cursor-pointer hover:shadow-md hover:-translate-y-1 hover:brightness-105 border border-slate-100">
+                    <div onclick="openModal(${row.__naturalIndex})" class="relative bg-white rounded-2xl p-6 shadow-xs transition-all duration-300 flex flex-col justify-between cursor-pointer hover:shadow-md hover:-translate-y-1 hover:bg-[#F3E5AB]/40 border border-slate-200">
                         ${audioTagMarkup}
                         <div>
-                            <div class="mb-5 border-b-2 border-white pb-4">
-                                ${titleC ? `<h3 class="text-3xl font-bold text-[#4A2E80] leading-snug font-serif">${titleC}</h3>` : ''}
-                                ${titleE ? `<p class="text-xl font-bold text-[#B3923E] mt-1.5 leading-snug font-inter">${titleE}</p>` : ''}
-                                ${(!titleC && !titleE) ? `<h3 class="text-2xl font-bold text-slate-400">Untitled Work</h3>` : ''}
+                            <div class="mb-4 font-inter border-b border-slate-100 pb-3">
+                                ${titleC ? `<h3 class="text-xl font-bold text-[#4A2E80] leading-snug font-serif">${titleC}</h3>` : ''}
+                                ${titleE ? `<p class="text-md font-medium text-[#B3923E] mt-0.5 leading-snug">${titleE}</p>` : ''}
+                                ${(!titleC && !titleE) ? `<h3 class="text-xl font-bold text-slate-400">Untitled Work</h3>` : ''}
                             </div>
                             <table class="w-full border-collapse mt-2">
                                 <tbody>
@@ -384,6 +399,7 @@
             if (duration) modalRows.push(['Duration', duration]);
 
             let textTypeContent = textType;
+
             if (textFirst && textFirst !== '') {
                 const tagMarkup = `
                     <div class="mt-2">
@@ -407,8 +423,8 @@
             modalRows.forEach(([label, val]) => {
                 tableHtml += `
                     <tr class="border-b border-slate-100 last:border-0">
-                        <td class="py-4 pr-4 font-bold text-[#4A2E80] text-[13px] uppercase tracking-wider w-1/3 align-top font-inter">${label}:</td>
-                        <td class="py-4 text-slate-800 font-medium text-base align-top whitespace-pre-wrap font-serif">${val}</td>
+                        <td class="py-3 pr-4 font-bold text-[#4A2E80] text-xs uppercase tracking-wider w-1/3 align-top font-inter">${label}:</td>
+                        <td class="py-3 text-slate-700 font-medium text-sm align-top">${val}</td>
                     </tr>
                 `;
             });
@@ -416,16 +432,16 @@
             const embedHtml = mediaLink ? getMediaEmbedHtml(mediaLink) : '';
 
             modalBox.innerHTML = `
-                <div class="p-8 border-b border-slate-100 flex justify-between items-start sticky top-0 bg-white z-10 shadow-xs">
+                <div class="p-6 border-b border-slate-100 flex justify-between items-start sticky top-0 bg-white z-10 shadow-xs">
                     <div class="font-inter">
-                        ${titleC ? `<h2 class="text-3xl font-bold text-[#4A2E80] leading-snug font-serif">${titleC}</h2>` : ''}
-                        ${titleE ? `<p class="text-xl font-bold text-[#B3923E] mt-1.5 leading-snug">${titleE}</p>` : ''}
+                        ${titleC ? `<h2 class="text-2xl font-bold text-[#4A2E80] leading-snug font-serif">${titleC}</h2>` : ''}
+                        ${titleE ? `<p class="text-lg font-medium text-[#B3923E] mt-0.5 leading-snug">${titleE}</p>` : ''}
                     </div>
-                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-2 bg-slate-50 hover:bg-slate-100 rounded-full cursor-pointer transition-all ml-4 shrink-0">
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1 bg-slate-50 hover:bg-slate-100 rounded-full cursor-pointer transition-all">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
-                <div class="p-8 overflow-y-auto">
+                <div class="p-6 overflow-y-auto">
                     <table class="w-full border-collapse">
                         <tbody>
                             ${tableHtml}
@@ -456,6 +472,8 @@
         
         resetBtn.addEventListener('click', () => {
             searchInput.value = '';
+            
+            // Reset custom interactive elements status
             document.querySelector('input[name="sortOption"][value="latest_entry"]').checked = true;
             audioFilterCheckbox.checked = false;
             dropdownCurrentLabel.textContent = '最新加入 Latest Entry';
