@@ -35,8 +35,12 @@
         let globalData = [];
 
         function init() {
+            // PapaParse automatically treats row 2 as headers if using {header: true}
             Papa.parse(csvUrl, {
-                download: true, header: true, complete: (results) => {
+                download: true, 
+                header: true, 
+                skipEmptyLines: true,
+                complete: (results) => {
                     globalData = results.data;
                     renderCards(globalData);
                 }
@@ -47,8 +51,9 @@
             const container = document.getElementById('cardsLayout');
             container.innerHTML = data.map((row, index) => `
                 <div onclick="openModal(${index})" class="bg-white border border-slate-200 p-6 rounded-2xl cursor-pointer hover:bg-[#F3E5AB]/40 transition-all shadow-sm">
-                    <h3 class="text-xl font-bold text-[#4A2E80] mb-2">${row['曲名Title'] || 'Untitled'}</h3>
-                    <p class="text-sm text-slate-600 font-inter">${row['聲部 Voice Type'] || ''}</p>
+                    <h3 class="text-lg font-bold text-[#4A2E80] mb-2">${row['曲名'] || 'Untitled'}</h3>
+                    <p class="text-xs text-slate-500 font-inter uppercase tracking-wider">${row['年 Year'] || ''}</p>
+                    <p class="text-sm text-slate-700 mt-2">${row['聲部 Voice Type'] || ''}</p>
                 </div>
             `).join('');
         }
@@ -60,21 +65,26 @@
             
             modalBox.innerHTML = `
                 <div class="flex justify-between items-start mb-6">
-                    <h2 class="text-3xl font-bold text-[#4A2E80]">${row['曲名Title']}</h2>
+                    <h2 class="text-2xl font-bold text-[#4A2E80]">${row['曲名']} (${row['Title']})</h2>
                     <button onclick="document.getElementById('detailsModal').classList.add('hidden')" class="text-slate-400">✕</button>
                 </div>
-                <div class="space-y-4 font-inter text-sm">
+                <div class="space-y-3 font-inter text-sm">
                     <p><strong>Year:</strong> ${row['年 Year']}</p>
-                    <p><strong>Voice:</strong> ${row['聲部 Voice Type']}</p>
-                    ${videoId ? `<div class="aspect-video mt-4"><iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe></div>` : ''}
+                    <p><strong>Voice Type:</strong> ${row['聲部 Voice Type']}</p>
+                    <p><strong>Instrument:</strong> ${row['樂器Instrument']}</p>
+                    <p><strong>Duration:</strong> ${row['Duration']}</p>
+                    <p><strong>Text by:</strong> ${row['文本作者 Text by']}</p>
+                    <p><strong>Level:</strong> ${row['程度Level']}</p>
+                    ${videoId ? `<div class="aspect-video mt-4 rounded-xl overflow-hidden"><iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe></div>` : ''}
                 </div>
             `;
             document.getElementById('detailsModal').classList.remove('hidden');
         }
 
         function extractYouTubeID(url) {
+            if (!url) return null;
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url?.match(regExp);
+            const match = url.match(regExp);
             return (match && match[2].length === 11) ? match[2] : null;
         }
 
