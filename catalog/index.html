@@ -18,6 +18,13 @@
         .font-inter {
             font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
         }
+        .data-label {
+            color: #4A2E80;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body class="bg-[#FAF9F6] text-slate-900 selection:bg-[#D4AF37] selection:text-white">
@@ -30,10 +37,6 @@
             <div>
                 <h1 class="text-4xl font-bold text-[#4A2E80] tracking-wide">陳啟揚 Kai-Young Chan</h1>
                 <p class="text-2xl font-semibold text-[#B3923E] mt-1 tracking-[0.25em] font-inter uppercase">合唱作品目錄 • Choral Catalogue</p>
-                <p class="mt-3 text-xs text-slate-400 flex items-center gap-2 font-inter">
-                    <span class="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    演出較多作品 | 最新錄音
-                </p>
             </div>
             <div class="bg-white px-5 py-3 rounded-xl border border-slate-200 shadow-xs flex items-center gap-3 w-fit font-inter">
                 <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Entries / 總數</span>
@@ -41,17 +44,17 @@
             </div>
         </div>
 
-        <!-- Search & Filter Bar -->
+        <!-- Search & Filter -->
         <div class="bg-white p-6 rounded-2xl shadow-xs border border-slate-200/60 mb-8 flex flex-col md:flex-row gap-4 items-end">
             <div class="w-full md:flex-1 font-inter">
                 <label class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Search Catalog / 搜尋目錄</label>
-                <input type="text" id="searchInput" placeholder="Search title, composer, text, year..." 
-                    class="w-full px-4 py-3 bg-[#FAF9F6] border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-[#4A2E80] focus:border-[#4A2E80] transition-all text-sm font-medium">
+                <input type="text" id="searchInput" placeholder="Search title, year, voice type..." 
+                    class="w-full px-4 py-3 bg-[#FAF9F6] border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-[#4A2E80] focus:border-[#4A2E80] transition-all text-sm">
             </div>
             
             <div class="w-full md:w-72 relative font-inter">
-                <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Sort & Filter / 排序與篩選</span>
-                <button id="dropdownBtn" class="w-full bg-[#FAF9F6] border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-left flex justify-between items-center focus:outline-hidden focus:ring-2 focus:ring-[#4A2E80] cursor-pointer">
+                <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">Sort & Filter</span>
+                <button id="dropdownBtn" class="w-full bg-[#FAF9F6] border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-left flex justify-between items-center">
                     <span id="dropdownCurrentLabel">最新加入 Latest Entry</span>
                     <svg id="dropdownArrow" class="h-4 w-4 text-slate-500 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -71,9 +74,7 @@
                         <input type="radio" name="sortOption" value="year_oldest" class="accent-[#4A2E80] mr-3 h-4 w-4">
                         <span>年份最遠 Year: Earliest</span>
                     </label>
-                    
                     <div class="border-t border-slate-100 my-1"></div>
-                    
                     <label class="flex items-center px-4 py-2.5 hover:bg-slate-50 cursor-pointer text-sm font-semibold text-[#4A2E80]">
                         <input type="checkbox" id="audioFilterCheckbox" class="accent-[#4A2E80] mr-3 h-4 w-4 rounded-xs">
                         <span>有錄音 Audio Available</span>
@@ -81,28 +82,25 @@
                 </div>
             </div>
 
-            <button id="resetFilters" class="w-full md:w-auto px-5 py-3 bg-slate-100 hover:bg-slate-200 active:scale-98 transition-all text-sm font-semibold text-slate-600 rounded-xl cursor-pointer whitespace-nowrap font-inter">
+            <button id="resetFilters" class="w-full md:w-auto px-5 py-3 bg-slate-100 hover:bg-slate-200 text-sm font-semibold text-slate-600 rounded-xl cursor-pointer whitespace-nowrap font-inter">
                 Reset / 重設
             </button>
         </div>
 
         <div id="loading" class="flex flex-col justify-center items-center py-24 font-inter">
             <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-[#4A2E80]"></div>
-            <span class="mt-4 text-sm font-semibold text-slate-500 tracking-wide">Loading live data from Google Sheet...</span>
+            <span class="mt-4 text-sm font-semibold text-slate-500">Loading from Google Sheet...</span>
         </div>
 
         <div id="gridContainer" class="hidden">
             <div id="cardsLayout" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-
             <div id="noResults" class="hidden text-center py-20 bg-white border border-dashed border-slate-200 rounded-2xl font-inter">
-                <svg class="mx-auto h-12 w-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 <h3 class="mt-4 text-sm font-bold text-slate-900">No matching works found</h3>
-                <p class="mt-1 text-xs text-slate-500">Try different keywords or clear some filters.</p>
             </div>
         </div>
     </div>
 
-    <!-- Detail Modal -->
+    <!-- Modal -->
     <div id="detailsModal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl" id="modalBox"></div>
     </div>
@@ -111,7 +109,6 @@
         const csvUrl = 'https://docs.google.com/spreadsheets/d/1gUY4w6OIb9_mbQ0M1GmXP_Lp27oO-ThcKqKiI5sWJJ0/gviz/tq?tqx=out:csv&gid=0';
 
         let globalData = [];
-        let headers = [];
 
         const loadingEl = document.getElementById('loading');
         const gridContainerEl = document.getElementById('gridContainer');
@@ -119,92 +116,70 @@
         const recordCountEl = document.getElementById('recordCount');
         const searchInput = document.getElementById('searchInput');
         const noResultsEl = document.getElementById('noResults');
-
         const modalEl = document.getElementById('detailsModal');
         const modalBox = document.getElementById('modalBox');
-
-        const dropdownBtn = document.getElementById('dropdownBtn');
-        const dropdownMenu = document.getElementById('dropdownMenu');
-        const dropdownArrow = document.getElementById('dropdownArrow');
-        const dropdownCurrentLabel = document.getElementById('dropdownCurrentLabel');
-        const audioFilterCheckbox = document.getElementById('audioFilterCheckbox');
 
         function init() {
             Papa.parse(csvUrl, {
                 download: true,
                 header: true,
                 skipEmptyLines: true,
-                complete: function(results) {
-                    headers = results.meta.fields;
+                complete: (results) => {
                     globalData = results.data
                         .filter(row => row['曲名'] || row['Title'])
-                        .map((row, index) => ({ ...row, __naturalIndex: index }));
-
-                    setupListeners();
+                        .map((row, i) => ({ ...row, __index: i }));
+                    
                     loadingEl.classList.add('hidden');
                     gridContainerEl.classList.remove('hidden');
+                    setupListeners();
                     processDashboardEngine();
-                },
-                error: function() {
-                    loadingEl.innerHTML = `<p class="text-red-600">Failed to load data. Please make sure the Google Sheet is published to the web.</p>`;
                 }
             });
         }
 
         function setupListeners() {
-            dropdownBtn.addEventListener('click', (e) => {
+            document.getElementById('dropdownBtn').addEventListener('click', (e) => {
                 e.stopPropagation();
-                dropdownMenu.classList.toggle('hidden');
-                dropdownArrow.classList.toggle('rotate-180');
+                document.getElementById('dropdownMenu').classList.toggle('hidden');
+                document.getElementById('dropdownArrow').classList.toggle('rotate-180');
             });
 
             document.addEventListener('click', () => {
-                dropdownMenu.classList.add('hidden');
-                dropdownArrow.classList.remove('rotate-180');
+                document.getElementById('dropdownMenu').classList.add('hidden');
+                document.getElementById('dropdownArrow').classList.remove('rotate-180');
             });
 
             document.querySelectorAll('input[name="sortOption"]').forEach(radio => {
-                radio.addEventListener('change', () => {
-                    const label = radio.nextElementSibling.textContent;
-                    dropdownCurrentLabel.textContent = label;
-                    processDashboardEngine();
-                });
+                radio.addEventListener('change', processDashboardEngine);
             });
 
-            audioFilterCheckbox.addEventListener('change', processDashboardEngine);
+            document.getElementById('audioFilterCheckbox').addEventListener('change', processDashboardEngine);
             searchInput.addEventListener('input', processDashboardEngine);
         }
 
         function processDashboardEngine() {
             const query = searchInput.value.toLowerCase().trim();
-            const sortingType = document.querySelector('input[name="sortOption"]:checked').value;
-            const audioOnly = audioFilterCheckbox.checked;
+            const sortType = document.querySelector('input[name="sortOption"]:checked').value;
+            const audioOnly = document.getElementById('audioFilterCheckbox').checked;
 
-            let items = globalData.filter(row => {
-                const matchesSearch = headers.some(h => 
-                    String(row[h] || '').toLowerCase().includes(query)
+            let filtered = globalData.filter(row => {
+                const match = Object.values(row).some(val => 
+                    String(val || '').toLowerCase().includes(query)
                 );
-                if (!matchesSearch) return false;
-
-                if (audioOnly) {
-                    const hasRecording = (row['錄音 Recording'] || '').trim() !== '';
-                    if (!hasRecording) return false;
-                }
+                if (!match) return false;
+                if (audioOnly && !(row['錄音 Recording'] || '').trim()) return false;
                 return true;
             });
 
-            // Sorting
-            items.sort((a, b) => {
-                if (sortingType === 'latest_entry') return b.__naturalIndex - a.__naturalIndex;
-                if (sortingType === 'year_latest' || sortingType === 'year_oldest') {
-                    const yearA = parseInt(a['年 Year'] || 0);
-                    const yearB = parseInt(b['年 Year'] || 0);
-                    return sortingType === 'year_latest' ? yearB - yearA : yearA - yearB;
-                }
-                return 0;
-            });
+            if (sortType === 'year_latest') {
+                filtered.sort((a, b) => parseInt(b['年 Year'] || 0) - parseInt(a['年 Year'] || 0));
+            } else if (sortType === 'year_oldest') {
+                filtered.sort((a, b) => parseInt(a['年 Year'] || 0) - parseInt(b['年 Year'] || 0));
+            } else {
+                filtered.sort((a, b) => b.__index - a.__index);
+            }
 
-            renderCards(items);
+            renderCards(filtered);
         }
 
         function renderCards(data) {
@@ -224,32 +199,32 @@
                 const voice = (row['聲部 Voice Type'] || '').trim();
                 const instrument = (row['樂器Instrument'] || '').trim();
                 const duration = (row['Duration'] || '').trim();
-                const textBy = (row['文本作者 Text by'] || '').trim();
                 const recording = (row['錄音 Recording'] || '').trim();
-                const level = (row['程度Level'] || '').trim();
-                const premiere = (row['首演日 Premiere'] || '').trim();
-                const notes = (row['附註 Notes'] || '').trim();
 
-                const hasAudio = recording !== '';
+                const hasRecording = recording.length > 0;
 
                 const cardHTML = `
-                    <div onclick="openModal(${row.__naturalIndex})" class="relative bg-white rounded-2xl p-6 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
-                        ${hasAudio ? `<span class="absolute top-4 right-4 bg-[#4A2E80]/10 text-[#4A2E80] text-[10px] font-bold uppercase px-2 py-0.5 tracking-wider rounded-md">試聽 Listen</span>` : ''}
+                    <div onclick="openModal(${row.__index})" class="bg-white rounded-2xl p-6 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer relative group">
+                        ${hasRecording ? `
+                            <span class="absolute top-4 right-4 bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+                                <span class="relative flex h-2 w-2">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                </span>
+                                試聽 Listen
+                            </span>` : ''}
                         
-                        <div class="mb-4">
-                            ${titleC ? `<h3 class="text-xl font-bold text-[#4A2E80] leading-snug">${titleC}</h3>` : ''}
-                            ${titleE ? `<p class="text-base text-[#B3923E] mt-1">${titleE}</p>` : ''}
+                        <div class="mb-5">
+                            <h3 class="text-2xl font-bold text-[#4A2E80] leading-tight">${titleC || 'Untitled'}</h3>
+                            ${titleE ? `<p class="text-[#B3923E] text-lg mt-1">${titleE}</p>` : ''}
                         </div>
 
-                        <table class="w-full text-sm">
-                            <tbody class="font-inter">
-                                ${year ? `<tr><td class="font-bold text-[#4A2E80] w-1/3 py-1">Year</td><td>${year}</td></tr>` : ''}
-                                ${voice ? `<tr><td class="font-bold text-[#4A2E80] w-1/3 py-1">Voice</td><td>${voice}</td></tr>` : ''}
-                                ${instrument ? `<tr><td class="font-bold text-[#4A2E80] w-1/3 py-1">Instrument</td><td>${instrument}</td></tr>` : ''}
-                                ${duration ? `<tr><td class="font-bold text-[#4A2E80] w-1/3 py-1">Duration</td><td>${duration}</td></tr>` : ''}
-                                ${level ? `<tr><td class="font-bold text-[#4A2E80] w-1/3 py-1">Level</td><td>${level}</td></tr>` : ''}
-                            </tbody>
-                        </table>
+                        <div class="space-y-3 text-sm">
+                            ${year ? `<div><span class="data-label">YEAR:</span> <span class="font-medium">${year}</span></div>` : ''}
+                            ${voice ? `<div><span class="data-label">VOICE TYPE:</span> <span class="font-medium">${voice}</span></div>` : ''}
+                            ${instrument ? `<div><span class="data-label">INSTRUMENT:</span> <span class="font-medium">${instrument}</span></div>` : ''}
+                            ${duration ? `<div><span class="data-label">DURATION:</span> <span class="font-medium">${duration}</span></div>` : ''}
+                        </div>
                     </div>
                 `;
                 cardsLayoutEl.insertAdjacentHTML('beforeend', cardHTML);
@@ -257,64 +232,70 @@
         }
 
         window.openModal = function(index) {
-            const row = globalData.find(r => r.__naturalIndex === index);
+            const row = globalData.find(r => r.__index === index);
             if (!row) return;
 
-            const titleC = row['曲名'] || '';
-            const titleE = row['Title'] || '';
-            const recording = row['錄音 Recording'] || '';
-
-            let infoHTML = `
-                <div class="p-6 border-b border-slate-100 flex justify-between items-start bg-white sticky top-0 z-10">
+            let content = `
+                <div class="p-8 border-b border-slate-100 flex justify-between items-start sticky top-0 bg-white z-10">
                     <div>
-                        ${titleC ? `<h2 class="text-2xl font-bold text-[#4A2E80]">${titleC}</h2>` : ''}
-                        ${titleE ? `<p class="text-lg text-[#B3923E]">${titleE}</p>` : ''}
+                        <h2 class="text-3xl font-bold text-[#4A2E80]">${row['曲名'] || ''}</h2>
+                        ${row['Title'] ? `<p class="text-2xl text-[#B3923E] mt-1">${row['Title']}</p>` : ''}
                     </div>
-                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600">✕</button>
+                    <button onclick="closeModal()" class="text-3xl text-slate-300 hover:text-slate-500">×</button>
                 </div>
-                <div class="p-6 space-y-6 overflow-auto max-h-[70vh]">
+                <div class="p-8 space-y-6 overflow-auto max-h-[65vh]">
             `;
 
-            // Add fields
-            const fields = [
-                ['Year', row['年 Year']],
-                ['Voice Type', row['聲部 Voice Type']],
-                ['Instrument', row['樂器Instrument']],
-                ['Duration', row['Duration']],
-                ['Text by', row['文本作者 Text by']],
-                ['Level', row['程度Level']],
-                ['Premiere', row['首演日 Premiere']],
-                ['Notes', row['附註 Notes']]
+            // Main fields like in screenshot
+            const mainFields = [
+                ['YEAR', row['年 Year']],
+                ['VOICE TYPE', row['聲部 Voice Type']],
+                ['INSTRUMENT', row['樂器Instrument']],
+                ['DURATION', row['Duration']],
+                ['TEXT BY', row['文本作者 Text by']],
+                ['LEVEL', row['程度Level']],
+                ['PREMIERE', row['首演日 Premiere']]
             ];
 
-            fields.forEach(([label, value]) => {
+            mainFields.forEach(([label, value]) => {
                 if (value) {
-                    infoHTML += `
-                        <div>
-                            <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider">${label}</span>
-                            <p class="mt-1 text-slate-700">${value}</p>
+                    content += `
+                        <div class="flex border-b border-slate-100 pb-3 last:border-0">
+                            <span class="data-label w-40 flex-shrink-0">${label}:</span>
+                            <span class="font-medium">${value}</span>
                         </div>
                     `;
                 }
             });
 
+            if (row['附註 Notes']) {
+                content += `
+                    <div>
+                        <span class="data-label">NOTES:</span>
+                        <p class="mt-2 text-slate-700">${row['附註 Notes']}</p>
+                    </div>
+                `;
+            }
+
             // Embedded Video
+            const recording = row['錄音 Recording'] || '';
             if (recording) {
-                const videoId = recording.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube.com\/embed\/)([^&\n?#]+)/);
-                if (videoId && videoId[1]) {
-                    infoHTML += `
+                const match = recording.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+                if (match && match[1]) {
+                    content += `
                         <div class="pt-6 border-t border-slate-200">
-                            <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-3">Recording / 錄音</span>
-                            <div class="aspect-video rounded-xl overflow-hidden shadow-inner">
-                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId[1]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <span class="data-label block mb-3">RECORDING / 錄音</span>
+                            <div class="aspect-video rounded-2xl overflow-hidden shadow-inner border border-slate-200">
+                                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/${match[1]}" 
+                                    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                             </div>
                         </div>
                     `;
                 }
             }
 
-            infoHTML += `</div>`;
-            modalBox.innerHTML = infoHTML;
+            content += `</div>`;
+            modalBox.innerHTML = content;
             modalEl.classList.remove('hidden');
         };
 
@@ -325,8 +306,7 @@
         document.getElementById('resetFilters').addEventListener('click', () => {
             searchInput.value = '';
             document.querySelector('input[value="latest_entry"]').checked = true;
-            audioFilterCheckbox.checked = false;
-            dropdownCurrentLabel.textContent = '最新加入 Latest Entry';
+            document.getElementById('audioFilterCheckbox').checked = false;
             processDashboardEngine();
         });
 
