@@ -10,7 +10,8 @@
     
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <style>
+    
+<style>
         /* Applying traditional Songti (Serif) typography for a classical aesthetic */
         body {
             font-family: "Times New Roman", "Songti TC", "Noto Serif TC", "Playfair Display", serif;
@@ -19,7 +20,45 @@
         .font-inter {
             font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
         }
+
+        /* ---------- NEW CARD STYLES ---------- */
+        .work-card {
+            --purple: #4b2e83; --gold: #a8904a; --ink: #2d2a33; --muted: #6e6878;
+            box-sizing: border-box;
+            background: #fff; border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
+            color: var(--ink);
+            padding: 18px 20px;
+        }
+        .work-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+        .work-zh { margin: 0; font: 400 1.5rem/1.2 "Noto Serif TC", serif; color: var(--purple); }
+        .work-en { margin: 2px 0 0; font-size: .95rem; font-weight: 600; color: var(--gold); }
+        .work-audio {
+            flex-shrink: 0;
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px; border-radius: 50%;
+            background: #efeaf7; color: var(--purple);
+            cursor: pointer;
+        }
+        .work-audio svg { width: 20px; height: 20px; fill: currentColor; }
+        .work-credits { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 12px 0 0; font-size: .9rem; padding: 0; }
+        .work-credits .credit { display: inline-flex; align-items: center; }
+        .credit-icon {
+            flex-shrink: 0; width: 20px; height: 20px; margin-right: 6px;
+            padding: 3px; box-sizing: border-box; border-radius: 4px;
+            background: #efeaf7; fill: var(--purple);
+        }
+        .work-meta {
+            display: flex; flex-wrap: wrap; margin: 10px 0 0; padding: 10px 0 0;
+            list-style: none; border-top: 1px solid #f0edf3; font-size: .85rem; color: var(--muted);
+        }
+        .work-meta li + li::before { content: "•"; margin: 0 8px; color: #c9c3d3; }
+        .sr-only {
+            position: absolute; width: 1px; height: 1px; overflow: hidden;
+            clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+        }
     </style>
+
 </head>
 <body class="bg-[#FAF9F6] text-slate-900 selection:bg-[#D4AF37] selection:text-white relative">
 
@@ -109,7 +148,7 @@
         </div>
 
         <div id="gridContainer" class="hidden">
-            <div id="cardsLayout" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+            <div id="cardsLayout" style="display: flex; flex-wrap: wrap; gap: 24px;"></div>
 
             <div id="noResults" class="hidden text-center py-20 bg-white border border-dashed border-slate-200 rounded-2xl font-inter">
                 <svg class="mx-auto h-12 w-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -183,12 +222,14 @@
         }
 
         function setupCustomDropdownListeners() {
+            // Dropdown visibility toggling
             dropdownBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 dropdownMenu.classList.toggle('hidden');
                 dropdownArrow.classList.toggle('rotate-180');
             });
 
+            // Auto-hide when clicking outside the container
             document.addEventListener('click', (e) => {
                 if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
                     dropdownMenu.classList.add('hidden');
@@ -196,6 +237,7 @@
                 }
             });
 
+            // Radio selections updates
             const sortRadios = document.querySelectorAll('input[name="sortOption"]');
             sortRadios.forEach(radio => {
                 radio.addEventListener('change', (e) => {
@@ -205,20 +247,24 @@
                 });
             });
 
+            // Nest filter checkbox updates
             audioFilterCheckbox.addEventListener('change', processDashboardEngine);
         }
 
         function processDashboardEngine() {
             const query = searchInput.value.toLowerCase().trim();
             
+            // Extract parameters from custom component state values
             const selectedRadio = document.querySelector('input[name="sortOption"]:checked');
             const sortingType = selectedRadio ? selectedRadio.value : 'earliest_entry';
             const audioOnly = audioFilterCheckbox.checked;
 
             let items = globalData.filter(row => {
+                // Main search logic queries matching fields
                 const matchesSearch = headers.some(h => String(row[h] || '').toLowerCase().includes(query));
                 if (!matchesSearch) return false;
 
+                // Handle nested Audio filter constraints
                 if (audioOnly) {
                     const hasMedia = (row['Media Link'] || '').trim() !== '';
                     if (!hasMedia) return false;
@@ -248,6 +294,7 @@
             return isNaN(parsedInt) ? 0 : parsedInt;
         }
 
+        
         function renderCatalogCards(data) {
             cardsLayoutEl.innerHTML = '';
             recordCountEl.textContent = data.length;
@@ -264,61 +311,67 @@
 
                 const compC = (row['Composer (C)'] || '').trim();
                 const compE = (row['Composer (E)'] || '').trim();
-                let masterComposer = '';
-                if (compC && compE) masterComposer = `${compC} ${compE}`;
-                else masterComposer = compC || compE || '';
+                let masterComposer = compC && compE ? `${compC} ${compE}` : (compC || compE || '');
 
                 const textC = (row['Text (C)'] || '').trim();
                 const textE = (row['Text (E)'] || '').trim();
-                let masterLyrics = '';
-                if (textC && textE) masterLyrics = `${textC} ${textE}`;
-                else masterLyrics = textC || textE || '';
+                let masterLyrics = textC && textE ? `${textC} ${textE}` : (textC || textE || '');
 
                 const voice = (row['Voice Type'] || '').trim();
                 const instruments = (row['Instrument(s)'] || '').trim();
-                let masterInstrumentation = '';
-                if (voice && instruments) masterInstrumentation = `${voice} &middot; ${instruments}`;
-                else masterInstrumentation = voice || instruments || '';
+                let forces = voice && instruments ? `${voice} &middot; ${instruments}` : (voice || instruments || '');
 
                 const year = (row['Year'] || '').trim();
                 const duration = (row['Duration'] || '').trim();
                 const mediaLink = (row['Media Link'] || '').trim();
+                const commissionPremiere = (row['Commission/Premiere'] || '').trim();
 
-                let detailsArray = [];
-                if (masterInstrumentation) detailsArray.push(masterInstrumentation);
-                if (duration) detailsArray.push(duration);
-                if (year) detailsArray.push(year);
-                
-                const detailsLine = detailsArray.join(' &middot; ');
-                
                 const hasMedia = mediaLink !== '';
                 const audioIconMarkup = hasMedia ? `
-                    <div class="absolute top-6 right-6 h-10 w-10 bg-violet-100 rounded-full flex items-center justify-center text-violet-600 shadow-xs">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M10 3a1 1 0 011 1v1.333a1 1 0 01-2 0V4a1 1 0 011-1zm-1-1a3 3 0 00-3 3v2.586A3 3 0 003 10v4a3 3 0 003 3h8a3 3 0 003-3v-4a3 3 0 00-2.414-2.914V6a3 3 0 00-3-3H9zM5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H6z" />
-                        </svg>
-                    </div>
+                    <span class="work-audio" title="Audio recording available">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1c-4.97 0-9 4.030-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"/></svg>
+                        <span class="sr-only">Audio recording available</span>
+                    </span>
                 ` : '';
 
-                let cardHtml = `
-                    <div onclick="openModal(${row.__naturalIndex})" class="relative bg-white rounded-2xl p-6 shadow-xs transition-all duration-300 flex flex-col justify-between cursor-pointer hover:shadow-md hover:-translate-y-1 hover:bg-[#F3E5AB]/40">
-                        <div>
-                            <div class="mb-4 pr-12">
-                                ${titleC ? `<h3 class="text-xl font-bold text-[#4A2E80] leading-snug font-serif">${titleC}</h3>` : ''}
-                                ${titleE ? `<p class="text-md font-medium text-[#B3923E] mt-0.5 leading-snug font-inter">${titleE}</p>` : ''}
-                                ${(!titleC && !titleE) ? `<h3 class="text-xl font-bold text-slate-400">Untitled Work</h3>` : ''}
+                const composerMarkup = masterComposer ? `
+                    <span class="credit">
+                        <svg class="credit-icon" viewBox="0 0 24 24" aria-hidden="true"><title>Music 曲</title><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
+                        <span class="sr-only">Music:</span>
+                        ${masterComposer}
+                    </span>
+                ` : '';
+
+                const lyricsMarkup = masterLyrics ? `
+                    <span class="credit">
+                        <svg class="credit-icon" viewBox="0 0 24 24" aria-hidden="true"><title>Lyrics 詞</title><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                        <span class="sr-only">Lyrics:</span>
+                        ${masterLyrics}
+                    </span>
+                ` : '';
+                
+                let metaItems = [];
+                if (forces) metaItems.push(`<li>${forces}</li>`);
+                if (duration) metaItems.push(`<li>${duration}</li>`);
+                if (year) metaItems.push(`<li title="${commissionPremiere || ''}">${year}</li>`);
+
+                const cardHtml = `
+                    <article class="work-card" onclick="openModal(${row.__naturalIndex})">
+                        <header class="work-head">
+                            <div>
+                                ${titleC ? `<h3 class="work-zh" lang="zh-Hant">${titleC}</h3>` : ''}
+                                ${titleE ? `<p class="work-en">${titleE}</p>` : ''}
                             </div>
-                            
                             ${audioIconMarkup}
-
-                            ${masterComposer ? `<div class="flex items-center gap-2 text-sm font-medium text-slate-700 font-inter mb-1.5"><span class="text-violet-600">♪</span><span>${masterComposer}</span></div>` : ''}
-                            ${masterLyrics ? `<div class="flex items-center gap-2 text-sm font-medium text-slate-700 font-inter"><span class="text-violet-600">✎</span><span>${masterLyrics}</span></div>` : ''}
-                            
-                            <div class="border-t border-slate-200 my-4"></div>
-
-                            <div class="text-xs text-slate-500 font-medium font-inter tracking-wide">${detailsLine}</div>
-                        </div>
-                    </div>
+                        </header>
+                        <p class="work-credits">
+                            ${composerMarkup}
+                            ${lyricsMarkup}
+                        </p>
+                        <ul class="work-meta">
+                            ${metaItems.join('')}
+                        </ul>
+                    </article>
                 `;
                 cardsLayoutEl.insertAdjacentHTML('beforeend', cardHtml);
             });
@@ -389,7 +442,11 @@
             if (masterInstrumentation) modalRows.push(['Forces', masterInstrumentation]);
             if (duration) modalRows.push(['Duration', duration]);
 
+            /* Text Type and Text-First structural embedding row implementation rules. 
+               Omits standard text labels, creating the badge directly as a new line inside the Text Type row container.
+            */
             let textTypeContent = textType;
+
             if (textFirst && textFirst !== '') {
                 const tagMarkup = `
                     <div class="mt-2">
@@ -462,6 +519,8 @@
         
         resetBtn.addEventListener('click', () => {
             searchInput.value = '';
+            
+            // Reset custom interactive elements status
             document.querySelector('input[name="sortOption"][value="earliest_entry"]').checked = true;
             audioFilterCheckbox.checked = false;
             dropdownCurrentLabel.textContent = '最先加入 Earliest Entry';
