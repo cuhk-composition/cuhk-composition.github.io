@@ -20,7 +20,6 @@
         .font-inter {
             font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
         }
-
         /* ---------- NEW CARD STYLES ---------- */
         .work-card {
             --purple: #4b2e83; --gold: #a8904a; --ink: #2d2a33; --muted: #6e6878;
@@ -29,7 +28,6 @@
             box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
             color: var(--ink);
             padding: 18px 20px;
-            /* Uniform widths, expands natively inside grid column */
             width: 100%; height: 100%; display: flex; flex-direction: column;
         }
         .work-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
@@ -43,8 +41,6 @@
             cursor: pointer;
         }
         .work-audio svg { width: 20px; height: 20px; fill: currentColor; }
-        
-        /* Stacked Credits (Lyricist below Composer) */
         .work-credits { display: flex; flex-direction: column; gap: 8px; margin: 12px 0 0; font-size: .9rem; padding: 0; }
         .work-credits .credit { display: inline-flex; align-items: center; }
         .credit-icon {
@@ -52,11 +48,8 @@
             padding: 3px; box-sizing: border-box; border-radius: 4px;
             background: #efeaf7; fill: var(--purple);
         }
-        
         .work-meta {
-            /* Margin-top: auto pushes the meta footer uniformly to the bottom of the card on longer descriptions */
-            margin-top: auto; 
-            display: flex; flex-wrap: wrap; padding: 10px 0 0;
+            margin-top: auto; display: flex; flex-wrap: wrap; padding: 10px 0 0;
             list-style: none; border-top: 1px solid #f0edf3; font-size: .85rem; color: var(--muted);
         }
         .work-meta li + li::before { content: "•"; margin: 0 8px; color: #c9c3d3; }
@@ -65,12 +58,9 @@
             clip: rect(0 0 0 0); white-space: nowrap; border: 0;
         }
     </style>
-
 </head>
 <body class="bg-[#FAF9F6] text-slate-900 selection:bg-[#D4AF37] selection:text-white relative">
-
     <div class="h-2 bg-gradient-to-r from-[#B3923E] via-[#D4AF37] to-[#F3E5AB]"></div>
-
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         
         <div class="flex flex-col md:flex-row md:items-end md:justify-between border-b border-[#D4AF37]/30 pb-8 mb-8 gap-4">
@@ -87,7 +77,6 @@
                 <span id="recordCount" class="text-2xl font-bold text-[#4A2E80]">0</span>
             </div>
         </div>
-
         <div class="bg-white p-6 rounded-2xl shadow-xs border border-slate-200/60 mb-8 flex flex-col md:flex-row gap-4 items-end">
             <div class="w-full md:flex-1 font-inter">
                 <label for="searchInput" class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-2">搜尋目錄 / Search Catalog </label>
@@ -130,17 +119,14 @@
                     </label>
                 </div>
             </div>
-
             <button id="resetFilters" class="w-full md:w-auto px-5 py-3 bg-slate-100 hover:bg-slate-200 active:scale-98 transition-all text-sm font-semibold text-slate-600 rounded-xl cursor-pointer whitespace-nowrap font-inter">
                 重設 / Reset
             </button>
         </div>
-
         <div id="loading" class="flex flex-col justify-center items-center py-24 font-inter">
             <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-[#4A2E80]"></div>
             <span class="mt-4 text-sm font-semibold text-slate-500 tracking-wide">Streaming real-time entries...</span>
         </div>
-
         <div id="error" class="hidden bg-rose-50 border border-rose-200 text-rose-900 p-6 rounded-2xl mb-8 shadow-xs font-inter">
             <div class="flex gap-3">
                 <svg class="h-6 w-6 text-rose-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
@@ -153,11 +139,8 @@
                 </div>
             </div>
         </div>
-
         <div id="gridContainer" class="hidden">
-            <!-- Grid forces max 4 cards layout (lg:grid-cols-4), items stretch uniformly -->
             <div id="cardsLayout" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 items-stretch"></div>
-
             <div id="noResults" class="hidden text-center py-20 bg-white border border-dashed border-slate-200 rounded-2xl font-inter">
                 <svg class="mx-auto h-12 w-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 <h3 class="mt-4 text-sm font-bold text-slate-900">沒有相關結果 No matching search criteria found</h3>
@@ -165,18 +148,14 @@
             </div>
         </div>
     </div>
-
     <div id="detailsModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl border border-slate-200 flex flex-col transform transition-transform duration-300 scale-95" id="modalBox"></div>
     </div>
-
     <script>
         const sheetId = '1ClxNbtnTS94u7WqscJZcY3d5MaBYyJZTwvI5eWrtWZ8';
         const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
-
         let globalData = [];
         let headers = [];
-
         const loadingEl = document.getElementById('loading');
         const errorEl = document.getElementById('error');
         const gridContainerEl = document.getElementById('gridContainer');
@@ -188,211 +167,14 @@
         
         const modalEl = document.getElementById('detailsModal');
         const modalBox = document.getElementById('modalBox');
-
         // Custom Dropdown elements
         const dropdownBtn = document.getElementById('dropdownBtn');
         const dropdownMenu = document.getElementById('dropdownMenu');
         const dropdownArrow = document.getElementById('dropdownArrow');
         const dropdownCurrentLabel = document.getElementById('dropdownCurrentLabel');
         const audioFilterCheckbox = document.getElementById('audioFilterCheckbox');
-
         function init() {
             Papa.parse(csvUrl, {
                 download: true,
                 header: true,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    headers = results.meta.fields;
-                    globalData = results.data.map((row, index) => ({
-                        ...row,
-                        __naturalIndex: index
-                    }));
-
-                    if (headers && headers.length > 0) {
-                        setupCustomDropdownListeners();
-                        processDashboardEngine();
-                        loadingEl.classList.add('hidden');
-                        gridContainerEl.classList.remove('hidden');
-                    } else {
-                        showError();
-                    }
-                },
-                error: function(err) {
-                    console.error("Connection failed:", err);
-                    showError();
-                }
-            });
-        }
-
-        function showError() {
-            loadingEl.classList.add('hidden');
-            errorEl.classList.remove('hidden');
-        }
-
-        function setupCustomDropdownListeners() {
-            // Dropdown visibility toggling
-            dropdownBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdownMenu.classList.toggle('hidden');
-                dropdownArrow.classList.toggle('rotate-180');
-            });
-
-            // Auto-hide when clicking outside the container
-            document.addEventListener('click', (e) => {
-                if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                    dropdownMenu.classList.add('hidden');
-                    dropdownArrow.classList.remove('rotate-180');
-                }
-            });
-
-            // Radio selections updates
-            const sortRadios = document.querySelectorAll('input[name="sortOption"]');
-            sortRadios.forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    const labelText = e.target.nextElementSibling.textContent;
-                    dropdownCurrentLabel.textContent = labelText;
-                    processDashboardEngine();
-                });
-            });
-
-            // Nest filter checkbox updates
-            audioFilterCheckbox.addEventListener('change', processDashboardEngine);
-        }
-
-        function processDashboardEngine() {
-            const query = searchInput.value.toLowerCase().trim();
-            
-            // Extract parameters from custom component state values
-            const selectedRadio = document.querySelector('input[name="sortOption"]:checked');
-            const sortingType = selectedRadio ? selectedRadio.value : 'earliest_entry';
-            const audioOnly = audioFilterCheckbox.checked;
-
-            let items = globalData.filter(row => {
-                // Main search logic queries matching fields
-                const matchesSearch = headers.some(h => String(row[h] || '').toLowerCase().includes(query));
-                if (!matchesSearch) return false;
-
-                // Handle nested Audio filter constraints
-                if (audioOnly) {
-                    const hasMedia = (row['Media Link'] || '').trim() !== '';
-                    if (!hasMedia) return false;
-                }
-
-                return true;
-            });
-
-            items.sort((a, b) => {
-                if (sortingType === 'latest_entry') return b.__naturalIndex - a.__naturalIndex;
-                if (sortingType === 'earliest_entry') return a.__naturalIndex - b.__naturalIndex;
-                if (sortingType === 'year_latest' || sortingType === 'year_oldest') {
-                    const yearA = parseYearValue(a['Year']);
-                    const yearB = parseYearValue(b['Year']);
-                    return sortingType === 'year_latest' ? yearB - yearA : yearA - yearB;
-                }
-                return 0;
-            });
-
-            renderCatalogCards(items);
-        }
-
-        function parseYearValue(yearStr) {
-            if (!yearStr) return 0;
-            const corePart = String(yearStr).split('/')[0];
-            const parsedInt = parseInt(corePart.replace(/\D/g, ''));
-            return isNaN(parsedInt) ? 0 : parsedInt;
-        }
-
-        function renderCatalogCards(data) {
-            cardsLayoutEl.innerHTML = '';
-            recordCountEl.textContent = data.length;
-
-            if (data.length === 0) {
-                noResultsEl.classList.remove('hidden');
-                return;
-            }
-            noResultsEl.classList.add('hidden');
-
-            data.forEach(row => {
-                const titleC = (row['Title (C)'] || '').trim();
-                const titleE = (row['Title (E)'] || '').trim();
-
-                const compC = (row['Composer (C)'] || '').trim();
-                const compE = (row['Composer (E)'] || '').trim();
-                let masterComposer = compC && compE ? `${compC} ${compE}` : (compC || compE || '');
-
-                const textC = (row['Text (C)'] || '').trim();
-                const textE = (row['Text (E)'] || '').trim();
-                let masterLyrics = textC && textE ? `${textC} ${textE}` : (textC || textE || '');
-
-                const voice = (row['Voice Type'] || '').trim();
-                const instruments = (row['Instrument(s)'] || '').trim();
-                let forces = voice && instruments ? `${voice} &middot; ${instruments}` : (voice || instruments || '');
-
-                const year = (row['Year'] || '').trim();
-                const duration = (row['Duration'] || '').trim();
-                const mediaLink = (row['Media Link'] || '').trim();
-                const commissionPremiere = (row['Commission/Premiere'] || '').trim();
-
-                const hasMedia = mediaLink !== '';
-                const audioIconMarkup = hasMedia ? `
-                    <span class="work-audio" title="Audio recording available">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1c-4.97 0-9 4.030-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"/></svg>
-                        <span class="sr-only">Audio recording available</span>
-                    </span>
-                ` : '';
-
-                const composerMarkup = masterComposer ? `
-                    <span class="credit">
-                        <svg class="credit-icon" viewBox="0 0 24 24" aria-hidden="true"><title>Music 曲</title><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
-                        <span class="sr-only">Music:</span>
-                        ${masterComposer}
-                    </span>
-                ` : '';
-
-                const lyricsMarkup = masterLyrics ? `
-                    <span class="credit">
-                        <svg class="credit-icon" viewBox="0 0 24 24" aria-hidden="true"><title>Lyrics 詞</title><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                        <span class="sr-only">Lyrics:</span>
-                        ${masterLyrics}
-                    </span>
-                ` : '';
-                
-                let metaItems = [];
-                if (forces) metaItems.push(`<li>${forces}</li>`);
-                if (duration) metaItems.push(`<li>${duration}</li>`);
-                if (year) metaItems.push(`<li title="${commissionPremiere || ''}">${year}</li>`);
-
-                const cardHtml = `
-                    <article class="work-card cursor-pointer hover:-translate-y-1 hover:bg-[#F3E5AB]/40 transition-all" onclick="openModal(${row.__naturalIndex})">
-                        <header class="work-head">
-                            <div>
-                                ${titleC ? `<h3 class="work-zh" lang="zh-Hant">${titleC}</h3>` : ''}
-                                ${titleE ? `<p class="work-en">${titleE}</p>` : ''}
-                            </div>
-                            ${audioIconMarkup}
-                        </header>
-                        <p class="work-credits">
-                            ${composerMarkup}
-                            ${lyricsMarkup}
-                        </p>
-                        <ul class="work-meta">
-                            ${metaItems.join('')}
-                        </ul>
-                    </article>
-                `;
-                cardsLayoutEl.insertAdjacentHTML('beforeend', cardHtml);
-            });
-        }
-
-        function getMediaEmbedHtml(url) {
-            if (!url) return '';
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            
-            if (match && match[2].length === 11) {
-                const videoId = match[2];
-                return `
-                    <div class="mt-6 border-t border-slate-100 pt-6 font-inter">
-                        <span class="block text-xs font-bold text-[#4A2E80] uppercase tracking-wider mb-3">Media / 試聽</span>
-                        <div class="aspect-video w-full rounded-xl overflow-hidden shadow-xs border border-slate-200 bg-black">
-                            <iframe class="w-fu
+                skipEmptyLines
